@@ -1,0 +1,707 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exchange Rate Manager</title>
+    <link rel="stylesheet" href="/web/styles/styles_profits.css" />
+    <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+    <style>
+      /* Exchange Rate Manager specific styles */
+      .table-container {
+        max-width: 100%;
+        overflow-x: auto;
+      }
+
+      .rate-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .rate-display {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .rate-box {
+        flex: 0 1 400px;
+        max-width: 400px;
+        padding: 20px;
+        background: #f0fdf4;
+        border: 2px solid #10b981;
+        border-radius: 12px;
+        text-align: center;
+      }
+
+      .rate-label {
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .rate-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #134e4a;
+        font-family: "Courier New", monospace;
+      }
+
+      .rate-updated {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-top: 8px;
+      }
+
+      .update-btn {
+        background: #134e4a;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: block;
+        margin: 20px auto;
+      }
+
+      .update-btn:hover {
+        background: #0f3f3a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      #history-table {
+        width: 100%;
+        min-width: 1200px;
+        table-layout: fixed;
+      }
+
+      #history-table th,
+      #history-table td {
+        padding: 12px;
+        vertical-align: top;
+        word-wrap: break-word;
+      }
+
+      /* Column widths for unified History table */
+      #history-table th:nth-child(1),
+      #history-table td:nth-child(1) {
+        width: 8%;
+      } /* From */
+
+      #history-table th:nth-child(2),
+      #history-table td:nth-child(2) {
+        width: 8%;
+      } /* To */
+
+      #history-table th:nth-child(3),
+      #history-table td:nth-child(3) {
+        width: 10%;
+      } /* Rate */
+
+      #history-table th:nth-child(4),
+      #history-table td:nth-child(4) {
+        width: 13%;
+      } /* Valid From */
+
+      #history-table th:nth-child(5),
+      #history-table td:nth-child(5) {
+        width: 10%;
+      } /* Valid To - REDUCED from 13% to 10% */
+
+      #history-table th:nth-child(6),
+      #history-table td:nth-child(6) {
+        width: 10%;
+      } /* Status */
+
+      #history-table th:nth-child(7),
+      #history-table td:nth-child(7) {
+        width: 10%;
+      } /* Changed By */
+
+      #history-table th:nth-child(8),
+      #history-table td:nth-child(8) {
+        width: 13%;
+      } /* Changed At */
+
+      #history-table th:nth-child(9),
+      #history-table td:nth-child(9) {
+        width: 10%;
+      } /* Reason */
+
+      #history-table th:nth-child(10),
+      #history-table td:nth-child(10) {
+        width: 8%;
+      } /* Actions - INCREASED from 5% to 8% */
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .status-current {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .status-expired {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      /* Action buttons */
+      .action-btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin: 2px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .edit-btn {
+        background: #10b981;
+        color: white;
+      }
+
+      .edit-btn:hover {
+        background: #059669;
+      }
+
+      /* Modal styles - FIXED for proper centering without cutoff */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: flex-start; /* Changed from center to flex-start */
+        justify-content: center;
+        overflow-y: auto; /* Allow modal backdrop to scroll */
+        padding: 20px; /* Add padding to prevent edge touching */
+        box-sizing: border-box;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        width: 90%;
+        max-width: 600px;
+        max-height: none; /* Remove max-height restriction */
+        overflow-y: visible; /* Let parent handle overflow */
+        overflow-x: hidden;
+        box-sizing: border-box;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        margin: auto; /* Center vertically with auto margins */
+        flex-shrink: 0; /* Prevent shrinking */
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        color: #00573e;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #6b7280;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+      }
+
+      .close-btn:hover {
+        background: #f3f4f6;
+        color: #000;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #134e4a;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 16px;
+        background: #fff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        box-sizing: border-box;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        border-color: #10b981;
+        outline: none;
+        box-shadow: 0 0 0 1px #10b981;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 24px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: #134e4a;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #0f3f3a;
+      }
+
+      .btn-secondary {
+        background: #6b7280;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #4b5563;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      thead {
+        background: #f9fafb;
+      }
+
+      th {
+        text-align: left;
+        font-weight: 600;
+        color: #134e4a;
+        border-bottom: 2px solid #e5e7eb;
+      }
+
+      td {
+        color: #1f2937;
+      }
+
+      tbody tr {
+        border-bottom: 1px solid #f3f4f6;
+        transition: background 0.15s;
+      }
+
+      tbody tr:hover {
+        background: #f9fafb;
+      }
+
+      .loading,
+      .no-data {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+      }
+
+      .accent-line {
+        border: none;
+        height: 4px;
+        width: 100%;
+        background: linear-gradient(to right, #facc15, #fcd34d);
+        margin: 18px 0 28px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 48px auto 56px;
+        padding: 0 16px;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 22px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 12px 0 10px;
+      }
+
+      .logo {
+        height: 40px;
+      }
+
+      h1 {
+        font-size: 32px;
+        line-height: 1.2;
+        font-weight: 800;
+        margin: 6px 0 8px;
+        color: #134e4a;
+      }
+
+      header p {
+        color: #6b7280;
+        margin: 0 0 16px;
+        font-size: 16px;
+      }
+
+      h2 {
+        font-size: 24px;
+        line-height: 1.3;
+        margin: 18px 0 10px;
+        font-weight: 800;
+        color: #134e4a;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin: 0 0 20px;
+        font-weight: 600;
+        text-decoration: underline;
+        color: #5b21b6;
+      }
+
+      .back-link:hover {
+        color: #4c1d95;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- FORM NAVBAR (identical style to dashboard) -->
+    <nav class="esk-nav" role="navigation" aria-label="Primary">
+      <div class="esk-nav__inner">
+        <!-- Brand -->
+        <a class="esk-nav__brand" id="esk-form-brand" href="#">
+          <img src="/Assets/Eskala-Logo.png" alt="" />
+          <span>Eskala</span>
+        </a>
+
+        <div class="esk-nav__spacer"></div>
+
+        <!-- Language Dropdown -->
+        <div class="esk-nav__group">
+          <button
+            class="esk-nav__btn"
+            type="button"
+            data-menu="lang"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="menu-lang"
+          >
+            English ▾
+          </button>
+          <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+            <a href="#" role="menuitem" data-lang="en">English</a>
+            <a href="#" role="menuitem" data-lang="es">Español</a>
+          </div>
+        </div>
+
+        <!-- Back/Home -->
+        <a href="#" id="esk-form-home" class="esk-nav__btn esk-nav__btn--ghost"
+          >← Home</a
+        >
+      </div>
+    </nav>
+
+    <!-- Thin completion progress bar -->
+    <div class="esk-form-progress">
+      <div class="esk-form-progress__bar" id="esk-form-progress-bar"></div>
+    </div>
+    <!-- END FORM NAVBAR -->
+    
+    <div class="container">
+      <header>
+        <div class="brand">
+          <img src="/Assets/Eskala-Logo.png" alt="Eskala Logo" class="logo" />
+        </div>
+
+        <h1 data-en="Exchange Rate Manager" data-es="Gestor de Tasas de Cambio">
+          Exchange Rate Manager
+        </h1>
+
+        <p
+          data-en="Manage exchange rates for currency conversions (L → USD)"
+          data-es="Administrar tasas de cambio para conversiones de moneda (L → USD)"
+        >
+          Manage exchange rates for currency conversions (L → USD)
+        </p>
+
+        <hr class="accent-line" />
+      </header>
+
+      <div class="table-container">
+        <a
+          href="/web/Dashboard.html"
+          class="back-link"
+          data-en="← Back to Dashboard"
+          data-es="← Volver al Panel"
+        >
+          ← Back to Dashboard
+        </a>
+
+        <!-- Current Exchange Rate Display -->
+        <div class="rate-card">
+          <h2 data-en="Current Exchange Rate" data-es="Tasa de Cambio Actual">
+            Current Exchange Rate
+          </h2>
+
+          <div class="rate-display">
+            <div class="rate-box">
+              <div
+                class="rate-label"
+                data-en="HNL (L) to USD"
+                data-es="HNL (L) a USD"
+              >
+                HNL (L) to USD
+              </div>
+              <div class="rate-value" id="current-rate-hnl-usd">25.2500</div>
+              <div class="rate-updated" id="rate-updated-hnl">
+                <span data-en="Last updated:" data-es="Última actualización:"
+                  >Last updated:</span
+                >
+                <span id="rate-date-hnl">--</span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            class="update-btn"
+            id="update-rate-btn"
+            data-en="Update Exchange Rate"
+            data-es="Actualizar Tasa de Cambio"
+          >
+            Update Exchange Rate
+          </button>
+        </div>
+
+        <!-- Single Unified Table -->
+        <h2
+          data-en="Exchange Rate History"
+          data-es="Historial de Tasas de Cambio"
+        >
+          Exchange Rate History
+        </h2>
+
+        <div id="history-loading" class="loading">Loading history...</div>
+        <div id="history-no-data" class="no-data" style="display: none">
+          No history found
+        </div>
+
+        <table id="history-table" style="display: none">
+          <thead>
+            <tr>
+              <th data-en="From" data-es="De">From</th>
+              <th data-en="To" data-es="A">To</th>
+              <th data-en="Rate" data-es="Tasa">Rate</th>
+              <th data-en="Valid From" data-es="Válido Desde">Valid From</th>
+              <th data-en="Valid To" data-es="Válido Hasta">Valid To</th>
+              <th data-en="Status" data-es="Estado">Status</th>
+              <th data-en="Changed By" data-es="Cambiado Por">Changed By</th>
+              <th data-en="Changed At" data-es="Fecha de Cambio">Changed At</th>
+              <th data-en="Reason" data-es="Razón">Reason</th>
+              <th data-en="Actions" data-es="Acciones">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Update Exchange Rate Modal -->
+    <div id="update-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2
+            data-en="Update Exchange Rate"
+            data-es="Actualizar Tasa de Cambio"
+          >
+            Update Exchange Rate
+          </h2>
+          <button id="close-modal" class="close-btn">&times;</button>
+        </div>
+
+        <form id="update-rate-form">
+          <div class="form-group">
+            <label
+              for="new-rate-hnl-usd"
+              data-en="New Exchange Rate (HNL to USD)"
+              data-es="Nueva Tasa de Cambio (HNL a USD)"
+            >
+              New Exchange Rate (HNL to USD)
+            </label>
+            <input
+              type="number"
+              id="new-rate-hnl-usd"
+              step="0.0001"
+              min="0.0001"
+              required
+              placeholder="25.2500"
+            />
+          </div>
+
+          <div class="form-group">
+            <label
+              for="effective-date"
+              data-en="Effective Date & Time"
+              data-es="Fecha y Hora Efectiva"
+            >
+              Effective Date & Time
+            </label>
+            <input type="datetime-local" id="effective-date" required />
+          </div>
+
+          <div class="form-group">
+            <label
+              for="update-reason"
+              data-en="Reason for Change (Required)"
+              data-es="Motivo del Cambio (Obligatorio)"
+            >
+              Reason for Change (Required)
+            </label>
+            <textarea
+              id="update-reason"
+              required
+              placeholder="Explain why the exchange rate is being updated..."
+            ></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" id="cancel-update" class="btn btn-secondary">
+              <span data-en="Cancel" data-es="Cancelar">Cancel</span>
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <span data-en="Save Changes" data-es="Guardar Cambios"
+                >Save Changes</span
+              >
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Language handler (before navbar JS) -->
+    <script>
+      (function () {
+        const LANG_KEY = "eskala_lang";
+
+        // Global hook used by form-navbar.js
+        window.setLanguage = function setLanguage(lang) {
+          lang = lang === "es" ? "es" : "en";
+
+          // Update all visible text
+          document.querySelectorAll("[data-en]").forEach((el) => {
+            const text = el.getAttribute("data-" + lang);
+            if (text != null) el.textContent = text;
+          });
+
+          // Update placeholders
+          document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+            const ph = el.getAttribute("data-" + lang + "-placeholder");
+            if (ph != null) el.placeholder = ph;
+          });
+
+          // Sync <html lang>
+          document.documentElement.setAttribute("lang", lang);
+
+          // Update the dropdown label immediately
+          const btn = document.querySelector('[data-menu="lang"]');
+          if (btn)
+            btn.innerHTML = (lang === "es" ? "Español" : "English") + " ▾";
+
+          // Translate & preserve QS for navbar Home link
+          const home = document.getElementById("esk-form-home");
+          if (home) {
+            const qs = location.search || "";
+            home.textContent = lang === "es" ? "← Inicio" : "← Home";
+            home.setAttribute("href", "/web/Dashboard.html" + qs);
+          }
+
+          // Back link in page content (also preserve QS)
+          const back = document.querySelector(".back-link");
+          if (back) {
+            const qs = location.search || "";
+            back.textContent =
+              lang === "es" ? "← Volver al Panel" : "← Back to Dashboard";
+            back.setAttribute("href", "/web/Dashboard.html" + qs);
+          }
+        };
+
+        // Apply the saved/default language before navbar JS runs
+        const saved = localStorage.getItem(LANG_KEY) || "en";
+        window.setLanguage(saved);
+      })();
+    </script>
+
+    <!-- Shared navbar behavior -->
+    <script src="/js/form-navbar.js" defer></script>
+
+    <!-- Page logic -->
+    <script src="/js/exchange-rate-manager.client.js"></script>
+  </body>
+</html>

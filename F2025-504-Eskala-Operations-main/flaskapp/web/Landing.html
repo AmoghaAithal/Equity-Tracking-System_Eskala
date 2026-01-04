@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- The character encoding used (UTF-8 supports most characters across languages) -->
+  <meta charset="UTF-8" />
+
+  <!-- Makes the website responsive (fits well on phones, tablets, and desktops) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- The title that appears on the browser tab -->
+  <title>Eskala Landing Page</title>
+
+  <!-- Styles live in flaskapp/web/styles/Landing.css -->
+  <link rel="stylesheet" href="/web/styles/Landing.css" />
+</head>
+
+<body>
+  <!-- Wrapper that centers the login box on the screen -->
+  <div class="page-wrapper">
+
+    <!-- Main container with shadow and rounded corners -->
+    <div class="card-container">
+      <div class="card-content">
+
+        <!-- LEFT SIDE: Displays the Eskala logo or image -->
+        <div class="card-left">
+          <div class="logo-image"></div> <!-- Image styled in CSS -->
+        </div>
+
+        <!-- RIGHT SIDE: Lets the user choose their login type -->
+        <div class="card-right">
+          <div class="role-section">
+
+            <!-- Text that prompts the user to choose a role -->
+            <h2 class="role-title">Please select your role:</h2>
+
+            <!-- Button to go to the Eskala Staff login page -->
+            <!-- staff-login.html is at flaskapp/web/staff-login.html -->
+            <a href="/web/staff-login.html">
+              <button class="role-button">Eskala Staff</button>
+            </a>
+
+            <!-- Button to go to the Bank Partner login page -->
+            <!-- partner-login.html is at flaskapp/web/partner-login.html -->
+            <a href="/web/partner-login.html">
+              <button class="role-button">Bank Partner</button>
+            </a>
+
+            <!-- Optional decorative image placed below the buttons -->
+            <div class="decorative-image"></div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Order matters: helpers first, then page logic -->
+  <!-- JS files live in flaskapp/js -->
+  <script src="/js/api.js"></script>
+  <script src="/js/login.client.js"></script>
+</body>
+</html>

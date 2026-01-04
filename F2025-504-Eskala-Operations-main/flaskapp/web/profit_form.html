@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Micro Equity Profit Form</title>
+
+    <!-- Use the SAME CSS stack as Matching Form for identical visuals -->
+    <link rel="stylesheet" href="/web/styles/Loan_vs_Investments.css" />
+    <link rel="stylesheet" href="/web/styles/Equity_Conversion.css" />
+    <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+
+    <!-- Tiny override to ensure any missing input types still render correctly -->
+    <style>
+      .form-container input:not([type]),
+      .form-container input[type=""],
+      .form-container input[type="text"],
+      .form-container input[type="search"],
+      .form-container input[type="email"],
+      .form-container input[type="tel"] {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 16px;
+        background: #fff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .form-container textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 16px;
+        background: #fff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .form-container input:focus,
+      .form-container textarea:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 1px #10b981;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- FORM NAVBAR (identical style to dashboard) -->
+    <nav class="esk-nav" role="navigation" aria-label="Primary">
+      <div class="esk-nav__inner">
+        <!-- Brand -->
+        <a class="esk-nav__brand" id="esk-form-brand" href="#">
+          <img src="/Assets/Eskala-Logo.png" alt="" />
+          <span>Eskala</span>
+        </a>
+
+        <div class="esk-nav__spacer"></div>
+
+        <!-- Language Dropdown -->
+        <div class="esk-nav__group">
+          <button
+            class="esk-nav__btn"
+            type="button"
+            data-menu="lang"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="menu-lang"
+          >
+            English ▾
+          </button>
+          <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+            <a href="#" role="menuitem" data-lang="en">English</a>
+            <a href="#" role="menuitem" data-lang="es">Español</a>
+          </div>
+        </div>
+
+        <!-- Back/Home -->
+        <a href="#" id="esk-form-home" class="esk-nav__btn esk-nav__btn--ghost"
+          >← Home</a
+        >
+      </div>
+    </nav>
+
+    <!-- Thin completion progress bar -->
+    <div class="esk-form-progress">
+      <div class="esk-form-progress__bar" id="esk-form-progress-bar"></div>
+    </div>
+    <!-- END FORM NAVBAR -->
+
+    <div class="eskala-equity-frame">
+      <main class="main-content">
+        <!-- Header / Logo -->
+        <header class="form-header">
+          <img
+            class="eskala-header"
+            src="/Assets/Eskala-Logo.png"
+            alt="Eskala logo"
+          />
+        </header>
+
+        <!-- Title -->
+        <h1
+          class="form-title"
+          data-en="Micro Equity Profit Form"
+          data-es="Formulario de Ganancia por Microequidad"
+        >
+          Micro Equity Profit Form
+        </h1>
+
+        <form
+          id="profit-form"
+          class="form-container"
+          method="post"
+          action="#"
+          novalidate
+        >
+          <!-- Partner Details -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Partner Details"
+              data-es="Información del socio"
+            >
+              Partner Details
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="bank-id"
+                data-en="🏦 Bank ID"
+                data-es="🏦 ID del Banco"
+                >🏦 Bank ID</label
+              >
+              <input
+                id="bank-id"
+                name="bankId"
+                type="text"
+                placeholder="Enter Bank ID"
+                data-en-placeholder="Enter Bank ID"
+                data-es-placeholder="Ingrese ID del Banco"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="partner-name"
+                data-en="👤 Partner Name"
+                data-es="👤 Nombre del Socio"
+                >👤 Partner Name</label
+              >
+              <input
+                id="partner-name"
+                name="partnerName"
+                type="text"
+                placeholder="e.g., María Fernanda López"
+                data-en-placeholder="e.g., María Fernanda López"
+                data-es-placeholder="p. ej., María Fernanda López"
+                autocomplete="organization"
+              />
+            </div>
+
+            <div class="input-group">
+              <label for="year" data-en="📆 Year" data-es="📆 Año"
+                >📆 Year</label
+              >
+              <input
+                id="year"
+                name="year"
+                type="number"
+                placeholder="e.g., 2025"
+                data-en-placeholder="e.g., 2025"
+                data-es-placeholder="p. ej., 2025"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="technician"
+                data-en="🧑‍🔧 Technician Name"
+                data-es="🧑‍🔧 Nombre del Técnico"
+                >🧑‍🔧 Technician Name</label
+              >
+              <input
+                id="technician"
+                name="technician"
+                type="text"
+                placeholder="e.g., MIGUEL RODRIGUEZ"
+                data-en-placeholder="e.g., MIGUEL RODRIGUEZ"
+                data-es-placeholder="p. ej., MIGUEL RODRIGUEZ"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="comments"
+                data-en="📝 Comments"
+                data-es="📝 Comentarios"
+                >📝 Comments</label
+              >
+              <textarea
+                id="comments"
+                name="comments"
+                rows="3"
+                placeholder="Notes about pitch, context, etc."
+                data-en-placeholder="Notes about pitch, context, etc."
+                data-es-placeholder="Notas sobre la propuesta, contexto, etc."
+              ></textarea>
+            </div>
+          </section>
+
+          <!-- Profit & Valuation -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Profit & Valuation"
+              data-es="Utilidad y Valoración"
+            >
+              Profit & Valuation
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="profit-l"
+                data-en="📈 Last Reported Profit (L)"
+                data-es="📈 Última Utilidad Reportada (L)"
+                >📈 Last Reported Profit (L)</label
+              >
+              <div class="inline">
+                <input
+                  id="profit-l"
+                  name="lastReportedProfitL"
+                  type="number"
+                  step="0.01"
+                  inputmode="decimal"
+                  placeholder="e.g., 1113259.33"
+                  data-en-placeholder="e.g., 1,113,259.33"
+                  data-es-placeholder="p. ej., 1,113,259.33"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="expected-pct"
+                data-en="📉 Expected Profit %"
+                data-es="📉 % de Ganancia Esperado"
+                >📉 Expected Profit %</label
+              >
+              <div class="inline">
+                <input
+                  id="expected-pct"
+                  name="expectedProfitPct"
+                  type="number"
+                  step="0.01"
+                  inputmode="decimal"
+                  placeholder="e.g., 10"
+                  data-en-placeholder="e.g., 10"
+                  data-es-placeholder="p. ej., 10"
+                />
+                <span class="addon">%</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="company-value"
+                data-en="🏢 Company Value (L) – Auto-Calculated"
+                data-es="🏢 Valor de la Empresa (L) – Auto-Calculado"
+              >
+                🏢 Company Value (L) – Auto-Calculated
+              </label>
+              <div class="inline">
+                <input
+                  id="company-value"
+                  name="companyValueL"
+                  type="text"
+                  readonly
+                  style="
+                    background: #f3f4f6;
+                    cursor: not-allowed;
+                    font-weight: 600;
+                    color: #059669;
+                  "
+                  placeholder="Calculated by formula"
+                  data-en-placeholder="Calculated by formula"
+                  data-es-placeholder="Calculado por fórmula"
+                />
+                <span class="addon">L.</span>
+              </div>
+              <small
+                style="
+                  color: #6b7280;
+                  font-size: 12px;
+                  display: block;
+                  margin-top: 4px;
+                "
+              >
+                <span
+                  data-en="Formula managed in Formula Manager"
+                  data-es="Fórmula gestionada en Gestor de Fórmulas"
+                >
+                  Formula managed in Formula Manager
+                </span>
+              </small>
+            </div>
+          </section>
+
+          <!-- Investment -->
+          <section>
+            <h2 class="section-title" data-en="Investment" data-es="Inversión">
+              Investment
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="inv-l"
+                data-en="💲 Investment Amount (L) – Auto-Calculated"
+                data-es="💲 Monto de Inversión (L) – Auto-Calculado"
+              >
+                💲 Investment Amount (L) – Auto-Calculated
+              </label>
+              <div class="inline">
+                <input
+                  id="inv-l"
+                  name="investmentAmountL"
+                  type="text"
+                  readonly
+                  style="
+                    background: #f3f4f6;
+                    cursor: not-allowed;
+                    font-weight: 600;
+                    color: #059669;
+                  "
+                  placeholder="Calculated by formula"
+                  data-en-placeholder="Calculated by formula"
+                  data-es-placeholder="Calculado por fórmula"
+                />
+                <span class="addon">L.</span>
+              </div>
+              <small
+                style="
+                  color: #6b7280;
+                  font-size: 12px;
+                  display: block;
+                  margin-top: 4px;
+                "
+              >
+                <span
+                  data-en="Formula managed in Formula Manager"
+                  data-es="Fórmula gestionada en Gestor de Fórmulas"
+                >
+                  Formula managed in Formula Manager
+                </span>
+              </small>
+            </div>
+
+            <div class="input-group" style="max-width: 360px">
+              <label
+                for="fx"
+                data-en="💱 Exchange Rate (L per $) – Auto-Loaded"
+                data-es="💱 Tipo de Cambio (L por $) – Auto-Cargado"
+              >
+                💱 Exchange Rate (L per $) – Auto-Loaded
+              </label>
+              <div class="inline">
+                <input
+                  id="fx"
+                  name="exchangeRate"
+                  type="text"
+                  readonly
+                  style="
+                    background: #f3f4f6;
+                    cursor: not-allowed;
+                    font-weight: 600;
+                    color: #059669;
+                  "
+                  inputmode="decimal"
+                  placeholder="Loaded from Exchange Rate Manager"
+                  data-en-placeholder="Loaded from Exchange Rate Manager"
+                  data-es-placeholder="Cargado desde Gestor de Tipo de Cambio"
+                />
+                <span class="addon">L / $</span>
+              </div>
+              <small
+                style="
+                  color: #6b7280;
+                  font-size: 12px;
+                  display: block;
+                  margin-top: 4px;
+                "
+              >
+                <span
+                  data-en="Rate managed in Exchange Rate Manager"
+                  data-es="Tasa gestionada en Gestor de Tipo de Cambio"
+                >
+                  Rate managed in Exchange Rate Manager
+                </span>
+              </small>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="inv-usd"
+                data-en="💲 Investment Amount (USD) – Auto-Calculated"
+                data-es="💲 Monto de Inversión (USD) – Auto-Calculado"
+              >
+                💲 Investment Amount (USD) – Auto-Calculated
+              </label>
+              <div class="inline">
+                <input
+                  id="inv-usd"
+                  name="investmentAmountUSD"
+                  type="text"
+                  readonly
+                  style="
+                    background: #f3f4f6;
+                    cursor: not-allowed;
+                    font-weight: 600;
+                    color: #059669;
+                  "
+                  placeholder="Calculated by formula"
+                  data-en-placeholder="Calculated by formula"
+                  data-es-placeholder="Calculado por fórmula"
+                />
+                <span class="addon">$</span>
+              </div>
+              <small
+                style="
+                  color: #6b7280;
+                  font-size: 12px;
+                  display: block;
+                  margin-top: 4px;
+                "
+              >
+                <span
+                  data-en="Formula managed in Formula Manager"
+                  data-es="Fórmula gestionada en Gestor de Fórmulas"
+                >
+                  Formula managed in Formula Manager
+                </span>
+              </small>
+            </div>
+          </section>
+
+          <!-- Proposal & Transaction -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Proposal & Transaction"
+              data-es="Propuesta y Transacción"
+            >
+              Proposal & Transaction
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="proposal"
+                data-en="📄 Proposal State"
+                data-es="📄 Estado de la Propuesta"
+                >📄 Proposal State</label
+              >
+              <select id="proposal" name="proposalState">
+                <option
+                  value=""
+                  data-en="Select state"
+                  data-es="Seleccione estado"
+                >
+                  Select state
+                </option>
+                <option value="pitched" data-en="Pitched" data-es="Presentado">
+                  Pitched
+                </option>
+                <option
+                  value="presented"
+                  data-en="Presented"
+                  data-es="Expuesto"
+                >
+                  Presented
+                </option>
+                <option value="accepted" data-en="Accepted" data-es="Aceptado">
+                  Accepted
+                </option>
+                <option value="rejected" data-en="Rejected" data-es="Rechazado">
+                  Rejected
+                </option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="transaction"
+                data-en="📄 Transaction Type"
+                data-es="📄 Tipo de Transacción"
+                >📄 Transaction Type</label
+              >
+              <select id="transaction" name="transactionType">
+                <option
+                  value=""
+                  data-en="Select type"
+                  data-es="Seleccione tipo"
+                >
+                  Select type
+                </option>
+                <option
+                  value="disbursement"
+                  data-en="Disbursement"
+                  data-es="Desembolso"
+                >
+                  Disbursement
+                </option>
+                <option
+                  value="conversion"
+                  data-en="Conversion"
+                  data-es="Conversión"
+                >
+                  Conversion
+                </option>
+              </select>
+            </div>
+          </section>
+
+          <!-- Location & Company -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Location & Company"
+              data-es="Ubicación y Empresa"
+            >
+              Location & Company
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="bizcat"
+                data-en="🏭 Influence Zone Business Category"
+                data-es="🏭 Categoría de la Zona de Influencia"
+                >🏭 Influence Zone Business Category</label
+              >
+              <input
+                id="bizcat"
+                name="businessCategory"
+                type="text"
+                placeholder="e.g., Coffee / Commerce / Staple Grains"
+                data-en-placeholder="e.g., Coffee / Commerce / Staple Grains"
+                data-es-placeholder="p. ej., Café / Comercio / Granos Básicos"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="company-type"
+                data-en="🏢 Company Type"
+                data-es="🏢 Tipo de Empresa"
+                >🏢 Company Type</label
+              >
+              <input
+                id="company-type"
+                name="companyType"
+                type="text"
+                placeholder="e.g., Cooperative"
+                data-en-placeholder="e.g., Cooperative"
+                data-es-placeholder="p. ej., Cooperativa"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="community"
+                data-en="🏘️ Community"
+                data-es="🏘️ Comunidad"
+                >🏘️ Community</label
+              >
+              <input
+                id="community"
+                name="community"
+                type="text"
+                placeholder="e.g., El Paraíso"
+                data-en-placeholder="e.g., El Paraíso"
+                data-es-placeholder="p. ej., El Paraíso"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="municipality"
+                data-en="🏛️ Municipality"
+                data-es="🏛️ Municipio"
+                >🏛️ Municipality</label
+              >
+              <input
+                id="municipality"
+                name="municipality"
+                type="text"
+                placeholder="e.g., Danlí"
+                data-en-placeholder="e.g., Danlí"
+                data-es-placeholder="p. ej., Danlí"
+              />
+            </div>
+
+            <div class="input-group">
+              <label for="state" data-en="🗺️ State" data-es="🗺️ Departamento"
+                >🗺️ State</label
+              >
+              <input
+                id="state"
+                name="state"
+                type="text"
+                placeholder="e.g., El Paraíso"
+                data-en-placeholder="e.g., El Paraíso"
+                data-es-placeholder="p. ej., El Paraíso"
+              />
+            </div>
+          </section>
+
+          <!-- Monthly Distributions -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Monthly Distributions (Lempiras)"
+              data-es="Distribuciones Mensuales (Lempiras)"
+            >
+              Monthly Distributions (Lempiras)
+            </h2>
+
+            <p
+              class="no-data"
+              style="color: #6b7280; margin: 0 0 12px 0"
+              data-en="Enter profit distributions for each month. Leave as 0 if no distribution."
+              data-es="Ingrese las distribuciones de ganancias para cada mes. Dejar en 0 si no hay distribución."
+            >
+              Enter profit distributions for each month. Leave as 0 if no
+              distribution.
+            </p>
+
+            <!-- 12 months -->
+            <div class="input-group">
+              <label for="january" data-en="January" data-es="Enero"
+                >January</label
+              >
+              <div class="inline">
+                <input
+                  id="january"
+                  name="januaryL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="february" data-en="February" data-es="Febrero"
+                >February</label
+              >
+              <div class="inline">
+                <input
+                  id="february"
+                  name="februaryL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="march" data-en="March" data-es="Marzo">March</label>
+              <div class="inline">
+                <input
+                  id="march"
+                  name="marchL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="april" data-en="April" data-es="Abril">April</label>
+              <div class="inline">
+                <input
+                  id="april"
+                  name="aprilL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="may" data-en="May" data-es="Mayo">May</label>
+              <div class="inline">
+                <input
+                  id="may"
+                  name="mayL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="june" data-en="June" data-es="Junio">June</label>
+              <div class="inline">
+                <input
+                  id="june"
+                  name="juneL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="july" data-en="July" data-es="Julio">July</label>
+              <div class="inline">
+                <input
+                  id="july"
+                  name="julyL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="august" data-en="August" data-es="Agosto"
+                >August</label
+              >
+              <div class="inline">
+                <input
+                  id="august"
+                  name="augustL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="september" data-en="September" data-es="Septiembre"
+                >September</label
+              >
+              <div class="inline">
+                <input
+                  id="september"
+                  name="septemberL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="october" data-en="October" data-es="Octubre"
+                >October</label
+              >
+              <div class="inline">
+                <input
+                  id="october"
+                  name="octoberL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="november" data-en="November" data-es="Noviembre"
+                >November</label
+              >
+              <div class="inline">
+                <input
+                  id="november"
+                  name="novemberL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="december" data-en="December" data-es="Diciembre"
+                >December</label
+              >
+              <div class="inline">
+                <input
+                  id="december"
+                  name="decemberL"
+                  type="number"
+                  step="0.01"
+                  value="0"
+                  placeholder="0.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+          </section>
+
+          <hr class="submit-divider" />
+
+          <button
+            type="submit"
+            id="submit-button"
+            class="submit-button"
+            data-en="Save Prospect Details"
+            data-es="Guardar Detalles del Prospecto"
+          >
+            Save Prospect Details
+          </button>
+
+          <!-- Link to view all entries -->
+          <div style="text-align: center; margin-top: 16px">
+            <a
+              href="/web/profit-table.html"
+              style="
+                color: #10b981;
+                font-weight: 600;
+                text-decoration: none;
+                font-size: 16px;
+              "
+              data-en="View All Entries →"
+              data-es="Ver Todas las Entradas →"
+            >
+              View All Entries →
+            </a>
+          </div>
+
+          <!-- <section style="background: transparent">
+            <p
+              class="no-data"
+              style="color: #9ca3af; margin: 16px 0 0 0"
+              data-en="All information is confidential and used solely for equity management purposes."
+              data-es="Toda la información es confidencial y se utiliza únicamente para fines de gestión de equidad."
+            >
+              All information is confidential and used solely for equity
+              management purposes.
+            </p>
+          </section> -->
+        </form>
+      </main>
+    </div>
+
+    <!-- Language handler: must come before /form-navbar.js -->
+    <script>
+      (function () {
+        const LANG_KEY = "eskala_lang";
+
+        // Global hook used by form-navbar.js
+        window.setLanguage = function setLanguage(lang) {
+          lang = lang === "es" ? "es" : "en";
+
+          // Update all visible text
+          document.querySelectorAll("[data-en]").forEach((el) => {
+            const text = el.getAttribute("data-" + lang);
+            if (text != null) el.textContent = text;
+          });
+
+          // Update placeholders
+          document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+            const ph = el.getAttribute("data-" + lang + "-placeholder");
+            if (ph != null) el.placeholder = ph;
+          });
+
+          // Sync <html lang>
+          document.documentElement.setAttribute("lang", lang);
+
+          // Optional: update the dropdown label immediately
+          const btn = document.querySelector('[data-menu="lang"]');
+          if (btn)
+            btn.innerHTML = (lang === "es" ? "Español" : "English") + " ▾";
+
+          // Translate the navbar Home link
+          const home = document.getElementById("esk-form-home");
+          if (home) home.textContent = lang === "es" ? "← Inicio" : "← Home";
+        };
+
+        // Apply the saved or default language before navbar JS runs
+        const saved = localStorage.getItem(LANG_KEY) || "en";
+        window.setLanguage(saved);
+      })();
+    </script>
+
+    <!-- Navbar logic -->
+    <script src="/js/form-navbar.js" defer></script>
+
+    <!-- Client logic -->
+    <script src="/js/form-autosave.js"></script>
+    <script src="/js/profit_form.client.js" defer></script>
+  </body>
+</html>

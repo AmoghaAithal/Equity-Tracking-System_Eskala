@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eskala Login</title>
+
+    <!-- CSS lives in flaskapp/web/styles/login-staff.css -->
+    <link rel="stylesheet" href="/web/styles/login-staff.css" />
+  </head>
+
+  <body>
+    <div class="page-wrapper">
+      <div class="card-container">
+        <div class="card-content">
+          <!-- LEFT: Logo -->
+          <div class="card-left">
+            <div class="logo-column">
+              <div class="logo-image"></div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Login Form -->
+          <div class="card-right">
+            <div class="login-box">
+              <button
+                type="button"
+                class="language-toggle"
+                onclick="toggleLanguage()"
+              >
+                🌐 Español
+              </button>
+
+              <h2
+                class="login-title"
+                data-en="Login to your Account"
+                data-es="Iniciar sesión en su cuenta"
+              >
+                Login to your Account
+              </h2>
+
+              <!-- Login form (JS listens on #login-form submit) -->
+              <form id="login-form" novalidate>
+                <label
+                  class="input-label"
+                  for="email"
+                  data-en="EMAIL"
+                  data-es="CORREO"
+                  >EMAIL</label
+                >
+                <input
+                  type="email"
+                  id="email"
+                  class="login-input"
+                  placeholder="Email address"
+                  data-en-placeholder="Email address"
+                  data-es-placeholder="Dirección de correo"
+                  autocomplete="email"
+                  required
+                />
+
+                <label
+                  class="input-label"
+                  for="password"
+                  data-en="PASSWORD"
+                  data-es="CONTRASEÑA"
+                  >PASSWORD</label
+                >
+                <input
+                  type="password"
+                  id="password"
+                  class="login-input"
+                  placeholder="Password"
+                  data-en-placeholder="Password"
+                  data-es-placeholder="Contraseña"
+                  autocomplete="current-password"
+                  required
+                />
+
+                <div class="remember-row">
+                  <input type="checkbox" id="remember" />
+                  <label
+                    for="remember"
+                    class="remember-label"
+                    data-en="REMEMBER ME"
+                    data-es="RECORDARME"
+                  >
+                    REMEMBER ME
+                  </label>
+                </div>
+
+                <button
+                  class="sign-in-button"
+                  type="submit"
+                  data-en="SIGN IN"
+                  data-es="INICIAR SESIÓN"
+                >
+                  SIGN IN
+                </button>
+              </form>
+
+              <!-- helper link to signup (Staff preselected) -->
+              <div class="auth-helper">
+                Need an account?
+                <!-- signup.html is also under flaskapp/web -->
+                <a class="auth-link" href="/web/signup.html?role=Staff">
+                  Sign up
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentLang = "en";
+      function toggleLanguage() {
+        currentLang = currentLang === "en" ? "es" : "en";
+        document.querySelectorAll("[data-en]").forEach((el) => {
+          el.textContent = el.getAttribute(`data-${currentLang}`);
+        });
+        document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+          const ph = el.getAttribute(`data-${currentLang}-placeholder`);
+          if (ph) el.placeholder = ph;
+        });
+        const btn = document.querySelector(".language-toggle");
+        if (btn)
+          btn.textContent = currentLang === "en" ? "🌐 Español" : "🌐 English";
+      }
+    </script>
+
+    <!-- JS files live in flaskapp/js -->
+    <script src="/js/api.js"></script>
+    <script src="/js/login.client.js"></script>
+  </body>
+</html>

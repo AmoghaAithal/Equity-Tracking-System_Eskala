@@ -1,0 +1,264 @@
+
+:root{
+  --green: #005359;
+  --yellow: #f4a300;
+  --panel: #f9f9f9;
+  --bg: #f4f4f4;
+  --text: #333;
+  --border: #dddddd;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  color: var(--text);
+  background: var(--bg);
+  font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* ===== Frame / card ===== */
+.eskala-equity-frame {
+  display: flex;
+  justify-content: center;
+  padding: 40px 10px;
+  background-color: var(--white);
+}
+.main-content {
+  width: 100%;
+  max-width: 960px;
+  background: var(--white);
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* ===== Header with logo + pill toggle ===== */
+.form-header { position: relative; text-align: center; margin-bottom: 12px; }
+.eskala-header { width: 120px; height: auto; display: block; margin: 0 auto 12px; }
+.language-toggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  background: #e6f7f1;
+  color: #1f3d38;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+}
+.language-toggle:hover { background: #d0ede8; }
+
+/* ===== Title ===== */
+.form-title {
+  text-align: center;
+  color: var(--green);
+  margin: 10px 0 24px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* ===== Section block ===== */
+section {
+  padding: 20px;
+  background-color: var(--panel);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.section-title {
+  background-color: var(--green);
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 20px;
+  margin: -20px -20px 20px -20px;
+}
+
+/* ===== Fields ===== */
+.input-group { margin-bottom: 20px; }
+.input-group label { display: block; font-weight: 700; margin-bottom: 6px; color: #1f1f1f; }
+.input-group input[type="text"],
+.input-group input[type="number"],
+.input-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 16px;
+  background: #fff;
+}
+.input-group textarea { min-height: 100px; }
+
+/* Percentage field addon */
+.inline { display: grid; grid-template-columns: 1fr auto; align-items: stretch; }
+.inline input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.addon {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-left: none;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background: #f6f6f6;
+  color: #666;
+  font-weight: 700;
+}
+
+/* ===== Attachments & Declaration ===== */
+.attachments-and-declaration { background: var(--panel); }
+.attachment-field { margin: 16px 0 22px; }
+.attachment-field label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #1f1f1f;
+}
+.attachment-field input[type="file"],
+.attachment-field textarea {
+  width: 100%;
+  font-size: 16px;
+}
+.attachment-field textarea {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  min-height: 140px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+/* Declaration checkbox row */
+.confirm-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: #2c2c2c;
+  margin: 8px 0 18px;
+}
+.confirm-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+/* Yellow divider & centered submit */
+.submit-divider {
+  border: none;
+  height: 3px;
+  background-color: var(--yellow);
+  margin: 22px 0 18px;
+}
+.submit-button {
+  background-color: var(--yellow);
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  padding: 14px 34px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,.15);
+  display: block;
+  margin: 0 auto;
+}
+.submit-button:hover { background-color: #e09400; }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .form-title { font-size: 22px; }
+  .submit-button { width: 100%; }
+}
+
+/* ===== Table Controls (Search & CSV) ===== */
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 0 20px;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  flex: 1;
+  min-width: 250px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  background: white;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(0, 83, 89, 0.1);
+}
+
+.csv-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background-color: var(--green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  white-space: nowrap;
+}
+
+.csv-download-btn:hover {
+  background-color: #003d42;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.csv-download-btn:active {
+  transform: translateY(0);
+}
+
+.csv-icon {
+  font-size: 18px;
+}
+
+/* ===== Recently Edited Highlighting ===== */
+.data-table tr[style*="background-color: rgb(254, 243, 199)"],
+.data-table tr[style*="background-color: #fef3c7"] {
+  background-color: #fef3c7 !important;
+  transition: background-color 0.3s ease;
+}
+
+.data-table tr[style*="background-color: rgb(254, 243, 199)"]:hover,
+.data-table tr[style*="background-color: #fef3c7"]:hover {
+  background-color: #fde68a !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .csv-download-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

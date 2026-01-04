@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dividend Payout Submissions - Admin</title>
+
+    <!-- Shared Eskala form navbar styles -->
+    <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: #f5f5f5;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: #134e4a;
+        color: white;
+        padding: 24px 30px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .header p {
+        opacity: 0.9;
+        font-size: 14px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1px;
+        background: #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 20px 24px;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #134e4a;
+      }
+
+      .controls {
+        padding: 20px 24px;
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 280px;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 10px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: #134e4a;
+        box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.1);
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 10px;
+      }
+
+      select {
+        padding: 10px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      select:focus {
+        outline: none;
+        border-color: #134e4a;
+        box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.1);
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-refresh {
+        background: #134e4a;
+        color: white;
+      }
+      .btn-refresh:hover {
+        background: #0f3f3a;
+      }
+
+      .btn-download {
+        background: #0891b2;
+        color: white;
+      }
+      .btn-download:hover {
+        background: #0e7490;
+      }
+
+      .btn-view {
+        background: #3b82f6;
+        color: white;
+        padding: 6px 14px;
+        font-size: 13px;
+      }
+      .btn-view:hover {
+        background: #2563eb;
+      }
+
+      .btn-edit {
+        background: #f59e0b;
+        color: white;
+        padding: 6px 14px;
+        font-size: 13px;
+      }
+      .btn-edit:hover {
+        background: #d97706;
+      }
+
+      .btn-delete {
+        background: #ef4444;
+        color: white;
+        padding: 6px 14px;
+        font-size: 13px;
+      }
+      .btn-delete:hover {
+        background: #dc2626;
+      }
+
+      .btn-save {
+        background: #10b981;
+        color: white;
+      }
+      .btn-save:hover {
+        background: #059669;
+      }
+
+      .btn-cancel {
+        background: #6b7280;
+        color: white;
+      }
+      .btn-cancel:hover {
+        background: #4b5563;
+      }
+
+      /* File download link styling */
+      .file-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 13px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+      .file-link:hover {
+        background: #dbeafe;
+        color: #2563eb;
+      }
+
+      .no-file {
+        color: #9ca3af;
+        font-size: 13px;
+      }
+
+      /* Confirmed badge */
+      .confirmed-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .confirmed-yes {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .confirmed-no {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      thead {
+        background: #f9fafb;
+        border-bottom: 2px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      th {
+        padding: 12px 16px;
+        text-align: left;
+        font-weight: 600;
+        color: #374151;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+
+      tbody tr {
+        border-bottom: 1px solid #f3f4f6;
+        transition: background 0.15s;
+      }
+      tbody tr:hover {
+        background: #f9fafb;
+      }
+
+      td {
+        padding: 16px;
+        color: #1f2937;
+        max-width: 200px;
+      }
+
+      .id-cell {
+        font-weight: 600;
+        color: #134e4a;
+      }
+
+      .comments-cell {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+        color: #6b7280;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .status-submitted {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-approved {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #6b7280;
+      }
+      .empty-state-icon {
+        font-size: 56px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 60px 20px;
+        font-size: 16px;
+        color: #6b7280;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        overflow-y: auto;
+      }
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .modal-content {
+        background: white;
+        border-radius: 12px;
+        max-width: 700px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 30px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .modal-header h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #134e4a;
+      }
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+      .close-btn:hover {
+        background: #f3f4f6;
+        color: #374151;
+      }
+
+      #modal-body {
+        padding: 30px;
+      }
+
+      .detail-row {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid #f3f4f6;
+      }
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+      .detail-label {
+        font-weight: 600;
+        color: #6b7280;
+        width: 180px;
+        flex-shrink: 0;
+      }
+      .detail-value {
+        color: #1f2937;
+        flex: 1;
+        word-break: break-word;
+      }
+
+      /* Form Styles in Modal */
+      .form-grid {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group label {
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 10px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #134e4a;
+        box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.1);
+      }
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        .modal-content {
+          max-height: 95vh;
+        }
+        .detail-row {
+          flex-direction: column;
+          gap: 4px;
+        }
+        .detail-label {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Shared Eskala Navbar -->
+    <nav class="esk-nav" role="navigation" aria-label="Primary">
+      <div class="esk-nav__inner">
+        <!-- Brand -->
+        <a class="esk-nav__brand" id="esk-form-brand" href="#">
+          <img src="/Assets/Eskala-Logo.png" alt="" />
+          <span>Eskala</span>
+        </a>
+
+        <div class="esk-nav__spacer"></div>
+
+        <!-- Language Dropdown -->
+        <div class="esk-nav__group">
+          <button
+            class="esk-nav__btn"
+            type="button"
+            data-menu="lang"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="menu-lang"
+          >
+            English ▾
+          </button>
+          <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+            <a href="#" role="menuitem" data-lang="en">English</a>
+            <a href="#" role="menuitem" data-lang="es">Español</a>
+          </div>
+        </div>
+
+        <!-- Back -->
+        <a
+          href="/web/Equity_Entry.html"
+          id="esk-form-home"
+          class="esk-nav__btn esk-nav__btn--ghost"
+          >← Back</a
+        >
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="header">
+        <h1>💸 Dividend Payout Submissions</h1>
+        <p>Review and manage dividend payment records from partners</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Submissions</div>
+          <div class="stat-value" id="total-submissions">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Paid (HNL)</div>
+          <div class="stat-value" id="total-paid-hnl">L 0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Paid (USD)</div>
+          <div class="stat-value" id="total-paid-usd">$ 0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Review</div>
+          <div class="stat-value" id="pending-submissions">0</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search-box">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="🔍 Search by partner name or RTN number..."
+          />
+        </div>
+        <div class="filter-group">
+          <select id="status-filter">
+            <option value="">All Statuses</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+          <select id="payment-method-filter">
+            <option value="">All Payment Methods</option>
+            <option value="bank">Bank Transfer</option>
+            <option value="cash">Cash</option>
+            <option value="cheque">Cheque</option>
+            <option value="other">Other</option>
+          </select>
+          <button class="btn btn-refresh" onclick="loadSubmissions()">
+            🔄 Refresh
+          </button>
+          <button class="btn btn-download" onclick="downloadCSV()">
+            📥 Download CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div id="loading" class="loading">
+          <div>⏳ Loading submissions...</div>
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display: none">
+          <div class="empty-state-icon">📋</div>
+          <h3>No Submissions Found</h3>
+          <p>There are no dividend payout submissions to display.</p>
+        </div>
+
+        <table id="submissions-table" style="display: none">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Partner Name</th>
+              <th>RTN</th>
+              <th>Shares</th>
+              <th>Investment (HNL)</th>
+              <th>Investment (USD)</th>
+              <th>Payout Date</th>
+              <th>Amount Paid</th>
+              <th>Method</th>
+              <th>Payment Proof</th>
+              <th>Comments</th>
+              <th>Confirmed</th>
+              <th>Status</th>
+              <th>Submitted</th>
+              <th>Last Edited</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Dividend Payout Details</h2>
+          <button class="close-btn" onclick="closeModal('details-modal')">
+            &times;
+          </button>
+        </div>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Edit Dividend Payout</h2>
+          <button class="close-btn" onclick="closeModal('edit-modal')">
+            &times;
+          </button>
+        </div>
+        <form id="edit-form" class="form-grid">
+          <input type="hidden" id="edit-submission-id" />
+
+          <div class="form-group">
+            <label for="edit-partner-name">Partner Name *</label>
+            <input type="text" id="edit-partner-name" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-bank-id">RTN Number</label>
+              <input type="text" id="edit-bank-id" />
+            </div>
+            <div class="form-group">
+              <label for="edit-reported-shares">Reported Shares</label>
+              <input type="number" id="edit-reported-shares" step="0.01" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-investment-hnl">Investment (HNL)</label>
+              <input type="number" id="edit-investment-hnl" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label for="edit-investment-usd">Investment (USD)</label>
+              <input type="number" id="edit-investment-usd" step="0.01" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-payout-date">Payout Date</label>
+              <input type="date" id="edit-payout-date" />
+            </div>
+            <div class="form-group">
+              <label for="edit-amount-paid">Amount Paid</label>
+              <input type="number" id="edit-amount-paid" step="0.01" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-payment-method">Payment Method</label>
+            <select id="edit-payment-method">
+              <option value="">Select method</option>
+              <option value="bank">Bank Transfer</option>
+              <option value="cash">Cash</option>
+              <option value="cheque">Cheque</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-status">Status *</label>
+            <select id="edit-status" required>
+              <option value="SUBMITTED">Submitted</option>
+              <option value="APPROVED">Approved</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-comments">Comments</label>
+            <textarea id="edit-comments"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-cancel"
+              onclick="closeModal('edit-modal')"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-save">💾 Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Language bootstrap (mirrors other pages) -->
+    <script>
+      (function () {
+        const LANG_KEY = "eskala_lang";
+
+        window.setLanguage = function setLanguage(lang) {
+          lang = lang === "es" ? "es" : "en";
+
+          // Text swaps
+          document.querySelectorAll("[data-en]").forEach((el) => {
+            const text = el.getAttribute("data-" + lang);
+            if (text != null) el.textContent = text;
+          });
+
+          // Placeholders
+          document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+            const ph = el.getAttribute("data-" + lang + "-placeholder");
+            if (ph != null) el.placeholder = ph;
+          });
+
+          // <html lang>
+          document.documentElement.setAttribute("lang", lang);
+
+          // Language button label
+          const btn = document.querySelector('[data-menu="lang"]');
+          if (btn)
+            btn.innerHTML = (lang === "es" ? "Español" : "English") + " ▾";
+
+          // Back link text + target (preserve query string flags)
+          const home = document.getElementById("esk-form-home");
+          if (home) {
+            const qs = location.search || "";
+            home.textContent = lang === "es" ? "← Atrás" : "← Back";
+            home.setAttribute("href", "Equity_Entry.html" + qs);
+          }
+        };
+
+        // Apply saved/default language ASAP
+        const saved = localStorage.getItem(LANG_KEY) || "en";
+        window.setLanguage(saved);
+      })();
+    </script>
+
+    <script>
+      const API_BASE = "";
+      let allSubmissions = [];
+
+      // ---- Attachment helper: try several keys + heuristic ----
+      function getAttachmentPath(sub) {
+        if (!sub || typeof sub !== "object") return null;
+
+        // 1) Known / likely keys your backend might use
+        const knownKeys = [
+          "payment_proof_path",
+          "supporting_file_path",
+          "attachment_path",
+          "supporting_file",
+          "attachment",
+          "file_path",
+          "proof_path",
+        ];
+        for (const key of knownKeys) {
+          if (sub[key]) return sub[key];
+        }
+
+        // 2) Fallback heuristic: first string value that looks like a file/path
+        for (const [k, v] of Object.entries(sub)) {
+          if (
+            typeof v === "string" &&
+            (v.includes("/uploads/") ||
+              v.toLowerCase().endsWith(".pdf") ||
+              v.toLowerCase().endsWith(".jpg") ||
+              v.toLowerCase().endsWith(".jpeg") ||
+              v.toLowerCase().endsWith(".png"))
+          ) {
+            return v;
+          }
+        }
+        return null;
+      }
+
+      // adding user role
+      let currentUserRole = null;
+
+      async function loadUserRole() {
+        try {
+          const res = await fetch(`${API_BASE}/api/user/role`, {
+            credentials: "include",
+          });
+          if (!res.ok) return;
+
+          const data = await res.json();
+          currentUserRole = (data.role || data.user_role || "").toUpperCase();
+          console.log("Current user role:", currentUserRole);
+        } catch (err) {
+          console.warn("Could not load user role", err);
+        }
+      }
+
+      async function loadSubmissions() {
+        const loading = document.getElementById("loading");
+        const emptyState = document.getElementById("empty-state");
+        const table = document.getElementById("submissions-table");
+
+        loading.style.display = "block";
+        emptyState.style.display = "none";
+        table.style.display = "none";
+
+        try {
+          const res = await fetch(`${API_BASE}/api/equity/entry/submissions`);
+          const data = await res.json();
+
+          if (!res.ok || !data.ok)
+            throw new Error(data.error || "Failed to load");
+
+          allSubmissions = data.submissions || [];
+          // Debug: see exactly what backend is sending
+          console.log("Dividend submissions:", allSubmissions);
+
+          updateStats();
+          displaySubmissions(allSubmissions);
+        } catch (err) {
+          console.error("Error loading submissions:", err);
+          loading.innerHTML =
+            '<div style="color: #ef4444;">❌ Error loading submissions. Please try again.</div>';
+        } finally {
+          loading.style.display = "none";
+        }
+      }
+
+      function updateStats() {
+        const total = allSubmissions.length;
+        const pending = allSubmissions.filter(
+          (s) => s.status === "SUBMITTED"
+        ).length;
+
+        const totalHNL = allSubmissions.reduce((sum, s) => {
+          const amount = parseFloat(s.amount_paid) || 0;
+          if (s.investment_hnl || !s.investment_usd) return sum + amount;
+          return sum;
+        }, 0);
+
+        const totalUSD = allSubmissions.reduce((sum, s) => {
+          const amount = parseFloat(s.amount_paid) || 0;
+          if (s.investment_usd && !s.investment_hnl) return sum + amount;
+          return sum;
+        }, 0);
+
+        document.getElementById("total-submissions").textContent = total;
+        document.getElementById("pending-submissions").textContent = pending;
+        document.getElementById("total-paid-hnl").textContent = formatCurrency(
+          totalHNL,
+          "HNL"
+        );
+        document.getElementById("total-paid-usd").textContent = formatCurrency(
+          totalUSD,
+          "USD"
+        );
+      }
+
+      function displaySubmissions(submissions) {
+        const tbody = document.getElementById("table-body");
+        const table = document.getElementById("submissions-table");
+        const emptyState = document.getElementById("empty-state");
+
+        if (!submissions || submissions.length === 0) {
+          table.style.display = "none";
+          emptyState.style.display = "block";
+          return;
+        }
+
+        table.style.display = "table";
+        emptyState.style.display = "none";
+
+        tbody.innerHTML = submissions
+          .map((sub) => {
+            const filePath = getAttachmentPath(sub);
+
+            return `
+            <tr>
+              <td class="id-cell">#${sub.submission_id}</td>
+              <td>${sub.partner_name || "-"}</td>
+              <td>${sub.bank_id || "-"}</td>
+              <td>${
+                sub.reported_shares
+                  ? parseFloat(sub.reported_shares).toLocaleString()
+                  : "-"
+              }</td>
+              <td>${formatCurrency(sub.investment_hnl, "HNL")}</td>
+              <td>${formatCurrency(sub.investment_usd, "USD")}</td>
+              <td>${formatDate(sub.payout_date, "date")}</td>
+              <td>${formatCurrency(sub.amount_paid, "HNL")}</td>
+              <td>${formatPaymentMethod(sub.payment_method)}</td>
+              <td>
+                ${
+                  filePath
+                    ? `<a href="${API_BASE}${filePath}" target="_blank" class="file-link" download>📎 Download</a>`
+                    : '<span class="no-file">No file</span>'
+                }
+              </td>
+              <td class="comments-cell" title="${sub.comments || ""}">
+                ${sub.comments || "-"}
+              </td>
+              <td>
+                <span class="confirmed-badge ${
+                  sub.confirmed ? "confirmed-yes" : "confirmed-no"
+                }">
+                  ${sub.confirmed ? "✓ Yes" : "✗ No"}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge status-${sub.status.toLowerCase()}">
+                  ${sub.status}
+                </span>
+              </td>
+              <td>${formatDate(sub.created_at, "datetime")}</td>
+              <td>${
+                sub.edited_by
+                  ? `${
+                      sub.edited_by
+                    }<br><small style="color: #6b7280;">${formatDate(
+                      sub.edited_at,
+                      "datetime"
+                    )}</small>`
+                  : "-"
+              }</td>
+              <td>
+                ${
+                  currentUserRole === "COMMUNITY_REP"
+                    ? `
+                  <div class="actions">
+                    <button class="btn btn-view" onclick="viewDetails(${sub.submission_id})">
+                      View
+                    </button>
+                  </div>
+                `
+                    : `
+                  <div class="actions">
+                    <button class="btn btn-view" onclick="viewDetails(${sub.submission_id})">
+                      View
+                    </button>
+                    <button class="btn btn-edit" onclick="editSubmission(${sub.submission_id})">
+                      ✏️ Edit
+                    </button>
+                    <button class="btn btn-delete" onclick="deleteSubmission(${sub.submission_id})">
+                      🗑️ Delete
+                    </button>
+                  </div>
+                `
+                }
+              </td>
+            </tr>
+          `;
+          })
+          .join("");
+      }
+
+      function viewDetails(submissionId) {
+        const sub = allSubmissions.find((s) => s.submission_id === submissionId);
+        if (!sub) return;
+
+        const filePath = getAttachmentPath(sub);
+
+        const modalBody = document.getElementById("modal-body");
+        modalBody.innerHTML = `
+          <div class="detail-row">
+            <div class="detail-label">Submission ID</div>
+            <div class="detail-value">#${sub.submission_id}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Partner Name</div>
+            <div class="detail-value">${sub.partner_name || "-"}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">RTN Number</div>
+            <div class="detail-value">${sub.bank_id || "-"}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Reported Shares</div>
+            <div class="detail-value">${
+              sub.reported_shares
+                ? parseFloat(sub.reported_shares).toLocaleString()
+                : "-"
+            }</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Investment (HNL)</div>
+            <div class="detail-value">${formatCurrency(
+              sub.investment_hnl,
+              "HNL"
+            )}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Investment (USD)</div>
+            <div class="detail-value">${formatCurrency(
+              sub.investment_usd,
+              "USD"
+            )}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Payout Date</div>
+            <div class="detail-value">${formatDate(sub.payout_date, "date")}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Amount Paid</div>
+            <div class="detail-value">${formatCurrency(
+              sub.amount_paid,
+              "HNL"
+            )}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Payment Method</div>
+            <div class="detail-value">${formatPaymentMethod(
+              sub.payment_method
+            )}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Payment Proof</div>
+            <div class="detail-value">
+              ${
+                filePath
+                  ? `<a href="${API_BASE}${filePath}" target="_blank" class="file-link" download>📎 Download Payment Proof</a>`
+                  : "No proof uploaded"
+              }
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Comments</div>
+            <div class="detail-value">${sub.comments || "No comments"}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Confirmed</div>
+            <div class="detail-value">
+              <span class="confirmed-badge ${
+                sub.confirmed ? "confirmed-yes" : "confirmed-no"
+              }">
+                ${
+                  sub.confirmed
+                    ? "✓ Yes - Payment Confirmed"
+                    : "✗ No - Not Confirmed"
+                }
+              </span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Status</div>
+            <div class="detail-value">
+              <span class="status-badge status-${sub.status.toLowerCase()}">
+                ${sub.status}
+              </span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Submitted</div>
+            <div class="detail-value">${formatDate(
+              sub.created_at,
+              "datetime"
+            )}</div>
+          </div>
+          ${
+            sub.edited_by
+              ? `
+            <div class="detail-row">
+              <div class="detail-label">Last Edited By</div>
+              <div class="detail-value">${sub.edited_by} on ${formatDate(
+                  sub.edited_at,
+                  "datetime"
+                )}</div>
+            </div>
+          `
+              : ""
+          }
+        `;
+
+        document.getElementById("details-modal").classList.add("active");
+      }
+
+      function editSubmission(submissionId) {
+        const sub = allSubmissions.find((s) => s.submission_id === submissionId);
+        if (!sub) return;
+
+        document.getElementById("edit-submission-id").value = sub.submission_id;
+        document.getElementById("edit-partner-name").value =
+          sub.partner_name || "";
+        document.getElementById("edit-bank-id").value = sub.bank_id || "";
+        document.getElementById("edit-reported-shares").value =
+          sub.reported_shares || "";
+        document.getElementById("edit-investment-hnl").value =
+          sub.investment_hnl || "";
+        document.getElementById("edit-investment-usd").value =
+          sub.investment_usd || "";
+        document.getElementById("edit-payout-date").value = sub.payout_date
+          ? sub.payout_date.split("T")[0]
+          : "";
+        document.getElementById("edit-amount-paid").value =
+          sub.amount_paid || "";
+        document.getElementById("edit-payment-method").value =
+          sub.payment_method || "";
+        document.getElementById("edit-status").value =
+          sub.status || "SUBMITTED";
+        document.getElementById("edit-comments").value = sub.comments || "";
+
+        document.getElementById("edit-modal").classList.add("active");
+      }
+
+      async function deleteSubmission(submissionId) {
+        if (
+          !confirm(
+            "Are you sure you want to delete this submission? This action cannot be undone."
+          )
+        ) {
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            `${API_BASE}/api/equity/entry/submission/${submissionId}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          const result = await res.json();
+          if (!res.ok || !result.ok)
+            throw new Error(result.error || "Failed to delete");
+
+          alert("Submission deleted successfully!");
+          loadSubmissions();
+        } catch (err) {
+          console.error("Error deleting submission:", err);
+          alert("Failed to delete submission: " + err.message);
+        }
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove("active");
+      }
+
+      // Handle edit form submission
+      document
+        .getElementById("edit-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const submissionId =
+            document.getElementById("edit-submission-id").value;
+
+          const data = {
+            partner_name: document.getElementById("edit-partner-name").value,
+            bank_id: document.getElementById("edit-bank-id").value,
+            reported_shares:
+              parseFloat(
+                document.getElementById("edit-reported-shares").value
+              ) || null,
+            investment_hnl:
+              parseFloat(
+                document.getElementById("edit-investment-hnl").value
+              ) || null,
+            investment_usd:
+              parseFloat(
+                document.getElementById("edit-investment-usd").value
+              ) || null,
+            payout_date: document.getElementById("edit-payout-date").value || null,
+            amount_paid:
+              parseFloat(document.getElementById("edit-amount-paid").value) ||
+              null,
+            payment_method: document.getElementById("edit-payment-method").value,
+            status: document.getElementById("edit-status").value,
+            comments: document.getElementById("edit-comments").value,
+          };
+
+          try {
+            const res = await fetch(
+              `${API_BASE}/api/equity/entry/submission/${submissionId}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+              }
+            );
+
+            const result = await res.json();
+            if (!res.ok || !result.ok)
+              throw new Error(result.error || "Failed to update");
+
+            alert("Submission updated successfully!");
+            closeModal("edit-modal");
+            loadSubmissions();
+          } catch (err) {
+            console.error("Error updating submission:", err);
+            alert("Failed to update submission: " + err.message);
+          }
+        });
+
+      function formatCurrency(value, currency = "HNL") {
+        if (!value) return "-";
+        const prefix = currency === "USD" ? "$ " : "L ";
+        return (
+          prefix +
+          parseFloat(value).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        );
+      }
+
+      function formatDate(dateStr, type = "date") {
+        if (!dateStr) return "-";
+        const date = new Date(dateStr);
+
+        if (type === "date") {
+          return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          });
+        } else {
+          return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+      }
+
+      function formatPaymentMethod(method) {
+        const methods = {
+          bank: "Bank Transfer",
+          cash: "Cash",
+          cheque: "Cheque",
+          other: "Other",
+        };
+        return methods[method] || method || "-";
+      }
+
+      // Search and filter
+      document
+        .getElementById("search-input")
+        .addEventListener("input", filterSubmissions);
+      document
+        .getElementById("status-filter")
+        .addEventListener("change", filterSubmissions);
+      document
+        .getElementById("payment-method-filter")
+        .addEventListener("change", filterSubmissions);
+
+      function filterSubmissions() {
+        const searchTerm = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const statusFilter = document.getElementById("status-filter").value;
+        const methodFilter = document.getElementById("payment-method-filter").value;
+
+        const filtered = allSubmissions.filter((sub) => {
+          const matchesSearch =
+            (sub.partner_name || "").toLowerCase().includes(searchTerm) ||
+            (sub.bank_id || "").toLowerCase().includes(searchTerm);
+
+          const matchesStatus = !statusFilter || sub.status === statusFilter;
+          const matchesMethod =
+            !methodFilter || sub.payment_method === methodFilter;
+
+          return matchesSearch && matchesStatus && matchesMethod;
+        });
+
+        displaySubmissions(filtered);
+      }
+
+      // Close modal on outside click
+      document
+        .getElementById("details-modal")
+        .addEventListener("click", (e) => {
+          if (e.target.id === "details-modal") {
+            closeModal("details-modal");
+          }
+        });
+
+      document.getElementById("edit-modal").addEventListener("click", (e) => {
+        if (e.target.id === "edit-modal") {
+          closeModal("edit-modal");
+        }
+      });
+
+      // Download CSV
+      function downloadCSV() {
+        if (!allSubmissions || allSubmissions.length === 0) {
+          alert("No data to export. Please load submissions first.");
+          return;
+        }
+
+        const headers = [
+          "ID",
+          "RTN Number",
+          "Partner Name",
+          "Reported Shares",
+          "Investment (HNL)",
+          "Investment (USD)",
+          "Payout Date",
+          "Amount Paid",
+          "Payment Method",
+          "Payment Proof",
+          "Comments",
+          "Confirmed",
+          "Status",
+          "Created At",
+          "Last Edited By",
+          "Last Edited At",
+        ];
+
+        let csvContent = headers.join(",") + "\n";
+
+        allSubmissions.forEach((sub) => {
+          const filePath = getAttachmentPath(sub);
+
+          const row = [
+            sub.submission_id || "",
+            escapeCSV(sub.bank_id || ""),
+            escapeCSV(sub.partner_name || ""),
+            sub.reported_shares || "",
+            sub.investment_hnl || "",
+            sub.investment_usd || "",
+            sub.payout_date || "",
+            sub.amount_paid || "",
+            escapeCSV(sub.payment_method || ""),
+            filePath ? "Yes" : "No",
+            escapeCSV(sub.comments || ""),
+            sub.confirmed ? "Yes" : "No",
+            escapeCSV(sub.status || ""),
+            sub.created_at || "",
+            escapeCSV(sub.edited_by || ""),
+            sub.edited_at || "",
+          ];
+          csvContent += row.join(",") + "\n";
+        });
+
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+
+        const now = new Date();
+        const dateStr = now.toISOString().split("T")[0];
+        const filename = `dividend_payout_submissions_${dateStr}.csv`;
+
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function escapeCSV(value) {
+        if (value === null || value === undefined) return "";
+        const stringValue = String(value);
+        if (
+          stringValue.includes(",") ||
+          stringValue.includes('"') ||
+          stringValue.includes("\n")
+        ) {
+          return '"' + stringValue.replace(/"/g, '""') + '"';
+        }
+        return stringValue;
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadUserRole();
+        loadSubmissions();
+      });
+    </script>
+
+
+    <!-- Shared navbar behavior (role-based, language menu, focus mgmt, etc.) -->
+    <script src="/js/form-navbar.js" defer></script>
+  </body>
+</html>

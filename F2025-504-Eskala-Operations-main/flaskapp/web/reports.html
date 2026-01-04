@@ -1,0 +1,783 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Eskala Reporting Dashboard</title>
+
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- PDF Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Shared lightweight form navbar styles (same as your IVL page) -->
+    <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+
+    <style>
+      :root {
+        --eskala-orange: #ef8431;
+        --eskala-orange-700: #d56f23;
+        --eskala-green: #0a5a44;
+        --eskala-green-500: #16785b;
+
+        --ink-0: #08131d;
+        --ink-1: #203041;
+        --ink-2: #667085;
+
+        --bg: #fafafa;
+        --card: #ffffff;
+        --line: #e6e7ea;
+        --shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
+
+        --chart-line: var(--eskala-green-500);
+        --chart-fill: rgba(22, 120, 91, 0.14);
+        --chart-bar: rgba(239, 132, 49, 0.92);
+        --chart-bar-2: rgba(10, 90, 68, 0.92);
+        --grid: rgba(16, 24, 40, 0.08);
+      }
+
+      html,
+      body {
+        background: linear-gradient(
+            90deg,
+            rgba(239, 132, 49, 0.12) 0%,
+            rgba(239, 132, 49, 0) 40%
+          ),
+          var(--bg);
+        color: var(--ink-1);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI,
+          Roboto, Arial;
+        margin: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 28px clamp(16px, 4vw, 32px);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: radial-gradient(
+            80% 80% at 30% 30%,
+            #ffd6b2 0%,
+            rgba(255, 255, 255, 0) 60%
+          ),
+          linear-gradient(180deg, var(--eskala-orange) 0%, #ffb46b 100%);
+        box-shadow: 0 0 0 4px rgba(239, 132, 49, 0.15), var(--shadow);
+      }
+      h2 {
+        margin: 0;
+        color: var(--ink-0);
+        font-weight: 800;
+        font-size: clamp(18px, 2vw, 22px);
+        letter-spacing: 0.2px;
+      }
+
+      .source-switch {
+        margin-left: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 8px 10px;
+        box-shadow: var(--shadow);
+      }
+      .source-switch label {
+        font-size: 13px;
+        color: var(--ink-2);
+        font-weight: 600;
+      }
+      select {
+        appearance: none;
+        background: #fff;
+        color: var(--ink-1);
+        border: 1px solid var(--line);
+        padding: 8px 32px 8px 10px;
+        border-radius: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+      }
+      select:focus {
+        outline: 2px solid rgba(239, 132, 49, 0.35);
+        outline-offset: 1px;
+      }
+
+      /* Download Button */
+      .download-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--eskala-green);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: background 0.2s, transform 0.1s;
+      }
+      .download-btn:hover {
+        background: var(--eskala-green-500);
+      }
+      .download-btn:active {
+        transform: scale(0.98);
+      }
+      .download-btn:disabled {
+        background: var(--ink-2);
+        cursor: not-allowed;
+      }
+      .download-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1.5fr;
+        gap: 16px;
+      }
+      .row2 {
+        display: grid;
+        grid-template-columns: 1.5fr 1.5fr;
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: var(--shadow);
+      }
+      .title {
+        font-weight: 800;
+        color: var(--ink-0);
+        margin-bottom: 10px;
+        letter-spacing: 0.3px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .title::before {
+        content: "";
+        height: 10px;
+        width: 10px;
+        border-radius: 999px;
+        background: var(--eskala-orange);
+        box-shadow: 0 0 0 4px rgba(239, 132, 49, 0.15);
+      }
+      .kpi {
+        font-size: clamp(28px, 5vw, 40px);
+        font-weight: 900;
+        line-height: 1.1;
+        color: var(--eskala-green);
+        margin-top: 6px;
+      }
+      .muted {
+        color: var(--ink-2);
+        font-size: 14px;
+      }
+
+      .breakdown {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .pill {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: #fffdfb;
+        color: var(--ink-1);
+      }
+      .pill b {
+        color: var(--eskala-orange);
+        font-weight: 900;
+        margin-left: 6px;
+      }
+
+      .interpret {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--line);
+        color: var(--ink-2);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+      .interpret b {
+        color: var(--eskala-green);
+      }
+
+      canvas {
+        width: 100% !important;
+        height: 360px !important;
+      }
+
+      /* Report header for PDF */
+      .report-header {
+        display: none;
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--eskala-orange);
+      }
+      .report-header h1 {
+        margin: 0 0 5px 0;
+        color: var(--eskala-green);
+        font-size: 24px;
+      }
+      .report-header .report-meta {
+        color: var(--ink-2);
+        font-size: 14px;
+      }
+
+      @media (max-width: 1100px) {
+        .row {
+          grid-template-columns: 1fr;
+        }
+        .row2 {
+          grid-template-columns: 1fr;
+        }
+        canvas {
+          height: 300px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- FORM NAVBAR -->
+    <nav class="esk-nav" role="navigation" aria-label="Primary">
+      <div class="esk-nav__inner">
+        <!-- Brand -->
+        <a class="esk-nav__brand" id="esk-form-brand" href="/web/Dashboard.html">
+          <img src="/Assets/Eskala-Logo.png" alt="" />
+          <span>Eskala</span>
+        </a>
+
+        <div class="esk-nav__spacer"></div>
+
+        <!-- HOME BUTTON -->
+        <a 
+          href="/web/Dashboard.html" 
+          class="esk-nav__btn esk-nav__btn--ghost"
+          id="esk-form-home"
+          data-en="← Home"
+          data-es="← Inicio"
+        >
+          ← Home
+        </a>
+
+        <!-- Language Dropdown -->
+        <div class="esk-nav__group">
+          <button
+            class="esk-nav__btn"
+            type="button"
+            data-menu="lang"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="menu-lang"
+          >
+            English ▾
+          </button>
+          <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+            <a href="#" role="menuitem" data-lang="en">English</a>
+            <a href="#" role="menuitem" data-lang="es">Español</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Form Completion Progress Bar -->
+    <div class="esk-form-progress" aria-label="Form completion progress">
+      <div class="esk-form-progress__bar" id="esk-form-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+    </div>
+
+    <!-- Page content -->
+    <div class="wrap" id="report-content">
+      <!-- Report Header (shown only in PDF) -->
+      <div class="report-header" id="report-header">
+        <h1>Eskala Operations - Equity Report</h1>
+        <div class="report-meta">
+          <span id="report-source">Source: Matching Equity</span> | 
+          <span id="report-date">Generated: —</span>
+        </div>
+      </div>
+
+      <!-- Top -->
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo"></div>
+          <h2>Reporting Dashboard</h2>
+        </div>
+
+        <!-- Source toggle (MATCHING vs PROFIT) -->
+        <div class="source-switch">
+          <label for="src">Source:</label>
+          <select id="src">
+            <option value="MATCHING">Matching Equity</option>
+            <option value="PROFIT">Profit-Sharing</option>
+          </select>
+        </div>
+
+        <!-- Download Button -->
+        <button class="download-btn" id="download-btn" onclick="downloadReport()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          <span data-en="Download PDF" data-es="Descargar PDF">Download PDF</span>
+        </button>
+      </div>
+
+      <!-- Top row: KPI + 2 small charts -->
+      <div class="row">
+        <!-- KPI -->
+        <div class="card">
+          <div class="title">Total Pipeline</div>
+          <div class="kpi" id="kpi-total">—</div>
+          <div class="breakdown" id="kpi-breakdown">—</div>
+        </div>
+
+        <!-- Proposal state (line) -->
+        <div class="card">
+          <div class="title">Proposal State</div>
+          <canvas id="chart-proposal"></canvas>
+        </div>
+
+        <!-- Monthly Disbursement (line) -->
+        <div class="card">
+          <div class="title">Tentative Monthly Disbursement</div>
+          <canvas id="chart-months"></canvas>
+          <div class="interpret" id="sum-months">—</div>
+        </div>
+      </div>
+
+      <!-- Second row: Geographic poll + Category -->
+      <div class="row2">
+        <div class="card">
+          <div class="title">Geographic Poll (State)</div>
+          <canvas id="chart-geo"></canvas>
+          <div class="interpret" id="sum-geo">—</div>
+        </div>
+
+        <div class="card">
+          <div class="title">Business Category / Influence Zone</div>
+          <canvas id="chart-cat"></canvas>
+          <div class="interpret" id="sum-cat">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Language helper (keeps your pattern consistent) -->
+    <script>
+      (function () {
+        const LANG_KEY = "eskala_lang";
+
+        // Broadcast language changes from the navbar so chart labels update
+        window.setLanguage = function (lang) {
+          try {
+            localStorage.setItem(LANG_KEY, lang);
+          } catch {}
+
+          // Translate the language toggle
+          const btn = document.querySelector('[data-menu="lang"]');
+          if (btn)
+            btn.textContent = (lang === "es" ? "Español" : "English") + " ▾";
+
+          // Translate the navbar Home link
+          const home = document.getElementById("esk-form-home");
+          if (home) home.textContent = lang === "es" ? "← Inicio" : "← Home";
+
+          // Translate download button
+          const dlBtn = document.querySelector("#download-btn span");
+          if (dlBtn) dlBtn.textContent = lang === "es" ? "Descargar PDF" : "Download PDF";
+        };
+
+        // Apply the saved or default language before navbar JS runs
+        const saved = localStorage.getItem(LANG_KEY) || "en";
+        window.setLanguage(saved);
+      })();
+    </script>
+
+    <!-- Navbar logic (same file your forms use) -->
+    <script src="/js/form-navbar.js" defer></script>
+
+    <!-- Reports app JS -->
+    <script>
+      // Theme-aware Chart defaults
+      const css = getComputedStyle(document.documentElement);
+      const CHART_COLORS = {
+        line: css.getPropertyValue("--chart-line").trim(),
+        fill: css.getPropertyValue("--chart-fill").trim(),
+        bar: css.getPropertyValue("--chart-bar").trim(),
+        bar2: css.getPropertyValue("--chart-bar-2").trim(),
+        grid: css.getPropertyValue("--grid").trim(),
+        ticks: "#50607a",
+      };
+
+      Chart.defaults.font.family =
+        "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+      Chart.defaults.color = CHART_COLORS.ticks;
+      Chart.defaults.borderColor = CHART_COLORS.grid;
+      Chart.defaults.plugins.legend.labels.usePointStyle = true;
+
+      let chProposal, chMonths, chGeo, chCat;
+
+      const elSrc = document.getElementById("src");
+      elSrc.addEventListener("change", loadAll);
+
+      async function api(path) {
+        const src = elSrc.value;
+        const res = await fetch(
+          `/api/reports/${path}?source=${encodeURIComponent(src)}`
+        );
+        if (!res.ok) throw new Error(await res.text());
+        return await res.json();
+      }
+
+      function renderKpis(summary) {
+        document.getElementById("kpi-total").textContent = Number(
+          summary.total || 0
+        ).toLocaleString();
+
+        const host = document.getElementById("kpi-breakdown");
+        host.innerHTML = "";
+        (summary.breakdown || []).forEach((r) => {
+          const pill = document.createElement("span");
+          pill.className = "pill";
+          pill.innerHTML = `${r.label} <b>${r.value}</b>`;
+          host.appendChild(pill);
+        });
+        if (!host.children.length) host.textContent = "—";
+      }
+
+      function makeOrUpdateChart(
+        ctxId,
+        type,
+        labels,
+        data,
+        instance,
+        extras = {}
+      ) {
+        const ctx = document.getElementById(ctxId).getContext("2d");
+        const ds = [
+          {
+            label: extras.label || "",
+            data,
+            borderWidth: 2,
+            tension: type === "line" ? 0.35 : undefined,
+            pointRadius: type === "line" ? 2.5 : 0,
+            borderColor:
+              type === "line"
+                ? CHART_COLORS.line
+                : extras.alt
+                ? CHART_COLORS.bar2
+                : CHART_COLORS.bar,
+            backgroundColor:
+              type === "line"
+                ? CHART_COLORS.fill
+                : extras.alt
+                ? CHART_COLORS.bar2
+                : CHART_COLORS.bar,
+          },
+        ];
+
+        const options = {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: !!extras.label },
+            tooltip: { mode: "index", intersect: false },
+          },
+          scales: extras.scales || {
+            x: { grid: { color: CHART_COLORS.grid } },
+            y: {
+              beginAtZero: true,
+              grid: { color: CHART_COLORS.grid },
+              ticks: {
+                callback: (v) =>
+                  typeof v === "number" ? v.toLocaleString() : v,
+              },
+            },
+          },
+        };
+
+        if (instance) {
+          instance.data.labels = labels;
+          instance.data.datasets[0].data = data;
+          instance.update();
+          return instance;
+        }
+        return new Chart(ctx, {
+          type,
+          data: { labels, datasets: ds },
+          options,
+        });
+      }
+
+      // --------- Dynamic interpretations (still English by default) ----------
+      function writeDisbursementSummary(labels, data, elId) {
+        const total = data.reduce((a, b) => a + (Number(b) || 0), 0);
+        let maxIdx = 0;
+        data.forEach((v, i) => {
+          if ((Number(v) || 0) > (Number(data[maxIdx]) || 0)) maxIdx = i;
+        });
+        const active = data.filter((v) => Number(v) > 0).length;
+
+        const el = document.getElementById(elId);
+        el.innerHTML =
+          `Total planned disbursements: <b>L ${total.toLocaleString()}</b>. ` +
+          `Peak month is <b>${labels[maxIdx]}</b> with <b>L ${Number(
+            data[maxIdx]
+          ).toLocaleString()}</b>. ` +
+          `${active} of 12 months show activity.`;
+      }
+
+      function writeGeoSummary(labels, data, elId) {
+        if (!labels.length) {
+          document.getElementById(elId).textContent = "—";
+          return;
+        }
+        let maxIdx = 0;
+        data.forEach((v, i) => {
+          if (Number(v) > Number(data[maxIdx])) maxIdx = i;
+        });
+
+        const total = data.reduce((a, b) => a + Number(b || 0), 0);
+        const share = total ? (Number(data[maxIdx]) / total) * 100 : 0;
+
+        const el = document.getElementById(elId);
+        el.innerHTML =
+          `Coverage across <b>${labels.length}</b> states. ` +
+          `Top state: <b>${labels[maxIdx]}</b> with <b>${Number(
+            data[maxIdx]
+          ).toLocaleString()}</b> prospects ` +
+          `(${share.toFixed(1)}% of total).`;
+      }
+
+      function writeCatSummary(labels, data, elId) {
+        if (!labels.length) {
+          document.getElementById(elId).textContent = "—";
+          return;
+        }
+        let maxIdx = 0;
+        data.forEach((v, i) => {
+          if (Number(v) > Number(data[maxIdx])) maxIdx = i;
+        });
+
+        const total = data.reduce((a, b) => a + Number(b || 0), 0);
+        const pct = total ? (Number(data[maxIdx]) / total) * 100 : 0;
+
+        const el = document.getElementById(elId);
+        el.innerHTML =
+          `Primary category: <b>${labels[maxIdx]}</b> with <b>${Number(
+            data[maxIdx]
+          ).toLocaleString()}</b> prospects ` +
+          `(${pct.toFixed(
+            1
+          )}%). <span class="muted">All figures update automatically with data changes.</span>`;
+      }
+      // ----------------------------------------------------------------------
+
+      async function loadAll() {
+        try {
+          const [summary, ps, months, geo, cat] = await Promise.all([
+            api("summary"),
+            api("proposal-state"),
+            api("disbursement"),
+            api("geography"),
+            api("categories"),
+          ]);
+
+          renderKpis(summary);
+
+          // Proposal State – Line
+          chProposal = makeOrUpdateChart(
+            "chart-proposal",
+            "line",
+            ps.labels,
+            ps.data,
+            chProposal,
+            { label: "Proposals" }
+          );
+
+          // Monthly Disbursement – Line
+          chMonths = makeOrUpdateChart(
+            "chart-months",
+            "line",
+            months.labels,
+            months.data,
+            chMonths,
+            {
+              label: "Amount (L)",
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: { callback: (v) => Number(v).toLocaleString() },
+                },
+                x: { grid: { display: false } },
+              },
+            }
+          );
+          writeDisbursementSummary(months.labels, months.data, "sum-months");
+
+          // Geographic Poll – Line (alt green)
+          chGeo = makeOrUpdateChart(
+            "chart-geo",
+            "line",
+            geo.labels,
+            geo.data,
+            chGeo,
+            { label: "Count by State", alt: true }
+          );
+          writeGeoSummary(geo.labels, geo.data, "sum-geo");
+
+          // Business Category – Bar (orange)
+          chCat = makeOrUpdateChart(
+            "chart-cat",
+            "bar",
+            cat.labels,
+            cat.data,
+            chCat,
+            { label: "Count" }
+          );
+          writeCatSummary(cat.labels, cat.data, "sum-cat");
+        } catch (e) {
+          console.error(e);
+          alert("Failed to load reports. Check console for details.");
+        }
+      }
+
+      // --------- PDF Download Function ----------
+      async function downloadReport() {
+        const btn = document.getElementById("download-btn");
+        const originalText = btn.querySelector("span").textContent;
+        
+        // Disable button and show loading state
+        btn.disabled = true;
+        btn.querySelector("span").textContent = "Generating...";
+
+        try {
+          const { jsPDF } = window.jspdf;
+          
+          // Update report header with current info
+          const srcSelect = document.getElementById("src");
+          const srcText = srcSelect.options[srcSelect.selectedIndex].text;
+          document.getElementById("report-source").textContent = `Source: ${srcText}`;
+          document.getElementById("report-date").textContent = `Generated: ${new Date().toLocaleString()}`;
+          
+          // Show report header for PDF
+          const reportHeader = document.getElementById("report-header");
+          reportHeader.style.display = "block";
+          
+          // Hide download button for screenshot
+          btn.style.visibility = "hidden";
+
+          // Scroll to top to ensure full capture
+          window.scrollTo(0, 0);
+          
+          // Small delay to let scroll complete
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+          const content = document.getElementById("report-content");
+          
+          // Capture the content with better settings
+          const canvas = await html2canvas(content, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: "#fafafa",
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: content.scrollWidth,
+            windowHeight: content.scrollHeight
+          });
+
+          // Hide report header and restore button
+          reportHeader.style.display = "none";
+          btn.style.visibility = "visible";
+
+          // Calculate dimensions - fit to single landscape A4 page
+          const pdf = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: "a4"
+          });
+
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          
+          // Calculate scaling to fit content on one page
+          const imgRatio = canvas.width / canvas.height;
+          const pageRatio = pageWidth / pageHeight;
+          
+          let imgWidth, imgHeight, offsetX = 0, offsetY = 0;
+          
+          if (imgRatio > pageRatio) {
+            // Image is wider - fit to width
+            imgWidth = pageWidth - 10; // 5mm margin each side
+            imgHeight = imgWidth / imgRatio;
+            offsetX = 5;
+            offsetY = (pageHeight - imgHeight) / 2;
+          } else {
+            // Image is taller - fit to height
+            imgHeight = pageHeight - 10; // 5mm margin top/bottom
+            imgWidth = imgHeight * imgRatio;
+            offsetX = (pageWidth - imgWidth) / 2;
+            offsetY = 5;
+          }
+
+          pdf.addImage(canvas.toDataURL("image/png"), "PNG", offsetX, offsetY, imgWidth, imgHeight);
+
+          // Generate filename with date and source
+          const date = new Date().toISOString().split("T")[0];
+          const source = srcSelect.value.toLowerCase();
+          const filename = `eskala-report-${source}-${date}.pdf`;
+          
+          pdf.save(filename);
+
+        } catch (error) {
+          console.error("PDF generation failed:", error);
+          alert("Failed to generate PDF. Please try again.");
+        } finally {
+          // Restore button state
+          btn.disabled = false;
+          btn.querySelector("span").textContent = originalText;
+        }
+      }
+      // -------------------------------------------
+
+      // initial
+      loadAll();
+    </script>
+  </body>
+</html>

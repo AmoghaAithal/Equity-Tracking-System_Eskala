@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dividend Payout</title>
+
+  <!-- Base/shared layout styles -->
+  <link rel="stylesheet" href="/web/styles/Loan_vs_Investments.css" />
+  <!-- Bring in the date/select look you prefer -->
+  <link rel="stylesheet" href="/web/styles/Equity_Conversion.css" />
+  <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+  <style>
+    /* Page-specific (admin card only) */
+    .admin-link-container{display:none;text-align:center;margin-top:20px;padding:15px;background:#f0f9ff;border:2px solid #3b82f6;border-radius:8px;}
+    .admin-link-container.visible{display:block;}
+    .admin-notice{color:#1e40af;font-size:13px;margin-bottom:10px;font-weight:500;}
+    .admin-link{display:inline-block;padding:10px 20px;background:#3b82f6;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;margin-top:8px;}
+    .admin-link:hover{background:#2563eb;}
+  </style>
+</head>
+<body>
+  <!-- FORM NAVBAR (identical style to dashboard) -->
+  <nav class="esk-nav" role="navigation" aria-label="Primary">
+    <div class="esk-nav__inner">
+      <!-- Brand -->
+      <a class="esk-nav__brand" id="esk-form-brand" href="#">
+        <img src="/Assets/Eskala-Logo.png" alt="" />
+        <span>Eskala</span>
+      </a>
+
+    <div class="esk-nav__spacer"></div>
+
+      <!-- Language Dropdown -->
+      <div class="esk-nav__group">
+        <button
+          class="esk-nav__btn"
+          type="button"
+          data-menu="lang"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="menu-lang"
+        >
+          English ▾
+        </button>
+        <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+          <a href="#" role="menuitem" data-lang="en">English</a>
+          <a href="#" role="menuitem" data-lang="es">Español</a>
+        </div>
+      </div>
+
+      <!-- Back/Home -->
+      <a href="#" id="esk-form-home" class="esk-nav__btn esk-nav__btn--ghost"
+        >← Home</a
+      >
+    </div>
+  </nav>
+
+  <!-- Thin completion progress bar -->
+  <div class="esk-form-progress">
+    <div class="esk-form-progress__bar" id="esk-form-progress-bar"></div>
+  </div>
+
+  <!-- MAIN FORM CONTENT -->
+  <div class="eskala-equity-frame">
+    <main class="main-content">
+      <!-- Header / Logo -->
+      <header class="form-header">
+        <img class="eskala-header" src="/Assets/Eskala-Logo.png" alt="Eskala logo" />
+        <!-- <button class="language-toggle" type="button" onclick="toggleLanguage()">Español</button>-->
+      </header>
+
+      <!-- Title -->
+      <h1 class="form-title"
+          data-en="Dividend Payout"
+          data-es="Pago de Dividendos">
+        Dividend Payout
+      </h1>
+
+      <!-- Form -->
+      <form
+        id="equity-form"
+        class="form-container"
+        method="post"
+        action="#"
+        enctype="multipart/form-data"     
+        novalidate
+      >
+
+        <!-- Section: Partner & Dividend Information -->
+        <section>
+          <h2 class="section-title"
+              data-en="Partner & Dividend Information"
+              data-es="Información del Socio y Dividendos">
+            Partner & Dividend Information
+          </h2>
+
+          <div class="input-group">
+            <label for="bank-id" data-en="🏦 RTN Number (Tax ID)" data-es="🏦 Número RTN (ID Fiscal)">🏦 RTN Number (Tax ID)</label>
+            <input type="text" id="bank-id" required autocomplete="off"
+                   placeholder="e.g., 08011985123456"
+                   data-en-placeholder="e.g., 08011985123456"
+                   data-es-placeholder="p. ej., 08011985123456" />
+          </div>
+
+          <div class="input-group">
+            <label for="partner-name" data-en="👤 Partner Name" data-es="👤 Nombre del Socio">👤 Partner Name</label>
+            <input type="text" id="partner-name" required autocomplete="organization"
+                   placeholder="e.g., María Fernanda López"
+                   data-en-placeholder="e.g., María Fernanda López"
+                   data-es-placeholder="p. ej., María Fernanda López" />
+          </div>
+
+          <div class="input-group">
+            <label for="shares" data-en="📈 Reported Shares" data-es="📈 Acciones Reportadas">📈 Reported Shares</label>
+            <input type="number" id="shares" required min="0" step="1" inputmode="numeric"
+                   placeholder="e.g., 125"
+                   data-en-placeholder="e.g., 125"
+                   data-es-placeholder="p. ej., 125" />
+          </div>
+        </section>
+
+<!-- Section: Financial Details -->
+<section>
+  <h2 class="section-title" data-en="Financial Details" data-es="Detalles Financieros">Financial Details</h2>
+
+  <!-- Lempiras amount (drives USD reference) -->
+  <div class="input-group">
+    <label for="investment-hnl" data-en="Investment (L.)" data-es="Inversión (L.)">Investment (L.)</label>
+    <div class="inline">
+      <input type="number" id="investment-hnl" inputmode="decimal" min="0" step="0.01"
+             placeholder="e.g., 46,320.00"
+             data-en-placeholder="e.g., 46,320.00"
+             data-es-placeholder="p. ej., 46,320.00" />
+      <span class="addon">L.</span>
+    </div>
+  </div>
+
+  <!-- Exchange rate (editable so you aren’t locked to a hardcoded rate) -->
+  <div class="input-group">
+    <label for="fx-rate" data-en="🔄 Exchange Rate (L → USD)" data-es="🔄 Tipo de Cambio (L → USD)">🔄 Exchange Rate (L → USD)</label>
+    <div class="inline">
+      <input type="number" id="fx-rate" inputmode="decimal" min="0" step="0.0001"
+             placeholder="e.g., 24.6000"
+             data-en-placeholder="e.g., 24.6000"
+             data-es-placeholder="p. ej., 24.6000" value="25.25" />
+      <span class="addon">L / $</span>
+    </div>
+  </div>
+
+  <!-- Auto-calculated USD reference (read-only) -->
+  <div class="input-group">
+    <label for="investment-usd" data-en="USD Reference" data-es="Referencia en USD">USD Reference</label>
+    <div class="inline">
+      <input type="text" id="investment-usd" readonly
+             placeholder="e.g., 1,850.00"
+             data-en-placeholder="To be converted"
+             data-es-placeholder="Ser convertido" />
+      <span class="addon">$</span>
+    </div>
+  </div>
+</section>
+
+
+        <!-- Section: Dividend Payment Details -->
+        <section>
+          <h2 class="section-title" data-en="Dividend Payment Details" data-es="Detalles del Pago de Dividendos">Dividend Payment Details</h2>
+
+          <div class="input-group">
+            <label for="payout-date" data-en="📅 Date of Dividend Payout" data-es="📅 Fecha del Pago de Dividendos">📅 Date of Dividend Payout</label>
+            <!-- Styled by Equity_Conversion.css -->
+            <input type="date" id="payout-date" required />
+          </div>
+
+          <div class="input-group">
+            <label for="amount-paid" data-en="💸 Total Dividend Paid" data-es="💸 Total de Dividendos Pagados">💸 Total Dividend Paid</label>
+            <input type="number" id="amount-paid" required min="0" step="0.01" inputmode="decimal"
+                   placeholder="e.g., 10,500.00"
+                   data-en-placeholder="e.g., 10,500.00"
+                   data-es-placeholder="p. ej., 10,500.00" />
+          </div>
+
+          <div class="input-group">
+            <label for="payment-method" data-en="💳 Payment Method" data-es="💳 Método de Pago">💳 Payment Method</label>
+            <!-- Styled by Equity_Conversion.css -->
+            <select id="payment-method" required>
+              <option value="" data-en="Select method" data-es="Seleccione método">Select method</option>
+              <option value="bank"   data-en="Bank Transfer" data-es="Transferencia Bancaria">Bank Transfer</option>
+              <option value="cash"   data-en="Cash"          data-es="Efectivo">Cash</option>
+              <option value="cheque" data-en="Cheque"        data-es="Cheque">Cheque</option>
+              <option value="other"  data-en="Other"         data-es="Otro">Other</option>
+            </select>
+          </div>
+
+          
+         <!-- Attachments & Declaration -->
+        <section>
+          <h2 class="section-title"
+              data-en="Attachments and Declaration"
+              data-es="Adjuntos y Declaración">
+            Attachments and Declaration
+          </h2>
+
+          <div class="input-group">
+            <label for="supporting-file"
+                   data-en="📎 Upload file (optional)"
+                   data-es="📎 Subir archivo (opcional)">
+              📎 Upload file (optional)
+            </label>
+            <input id="supporting-file" name="supporting_file" type="file" accept="application/pdf" />
+          </div>
+
+          <div class="input-group">
+            <label for="comments" data-en="📝 Comments" data-es="📝 Comentarios">📝 Comments</label>
+            <textarea id="comments" name="comments" rows="4"
+                      placeholder="Any additonal comments "
+                      data-en-placeholder="Any additonal comments "
+                      data-es-placeholder="¿Algún comentario adicional?"></textarea>
+          </div>
+
+          <label class="confirm-row" for="confirm-accurate">
+            <input type="checkbox" id="confirm-accurate" name="confirm_accurate" required />
+            <span data-en="I confirm the submitted details are accurate"
+                  data-es="Confirmo que los datos enviados son correctos">
+              I confirm the submitted details are accurate
+            </span>
+          </label>
+
+          <hr class="submit-divider" />
+          <button type="submit" class="submit-button"
+                  data-en="SUBMIT"
+                  data-es="ENVIAR">
+            SUBMIT
+          </button>
+
+          <div id="ivl-alert" class="alert" role="status" aria-live="polite"></div>
+        </section>
+      </form>
+
+      <div class="admin-link-container" id="admin-link-container">
+        <div class="admin-notice" id="admin-notice">🔒 View Submissions</div>
+        <a href="/web/Equity_Entry_Table.html" class="admin-link" id="admin-link">View Submissions</a>
+      </div>
+    </main>
+  </div>
+
+  <!-- Language toggle -->
+  <script>
+    // (function ensureEnglishOnLoad() {
+    //   document.querySelectorAll('[data-en]').forEach(el => {
+    //     const en = el.getAttribute('data-en'); if (en) el.textContent = en;
+    //   });
+    //   document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+    //     const ph = el.getAttribute('data-en-placeholder'); if (ph) el.placeholder = ph;
+    //   });
+    // })();
+
+    // let currentLang = 'en';
+    // function toggleLanguage() {
+    //   currentLang = currentLang === 'en' ? 'es' : 'en';
+    //   document.querySelectorAll('[data-en]').forEach(el => {
+    //     const val = el.getAttribute(`data-${currentLang}`); if (val) el.textContent = val;
+    //   });
+    //   document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+    //     const ph = el.getAttribute(`data-${currentLang}-placeholder`); if (ph) el.placeholder = ph;
+    //   });
+    //   const btn = document.querySelector('.language-toggle');
+    //   if (btn) btn.textContent = currentLang === 'en' ? 'Español' : 'English';
+    // }
+    
+
+    // Check user role and show appropriate link
+    (async function checkUserRole() {
+      try {
+        const res = await fetch('/api/auth/check-session', { credentials: 'include' });
+        const data = await res.json();
+        
+        if (data.is_authenticated) {
+          // Get user role
+          const roleRes = await fetch('/api/user/role', { credentials: 'include' });
+          const roleData = await roleRes.json();
+          
+          const container = document.getElementById('admin-link-container');
+          const notice = document.getElementById('admin-notice');
+          const link = document.getElementById('admin-link');
+          
+          if (roleData.ok && roleData.role) {
+            if (roleData.role === 'STAFF') {
+              notice.textContent = '🔒 Eskala Staff Access';
+              link.textContent = 'View All Dividend Submissions';
+              container.classList.add('visible');
+            } else if (roleData.role === 'COMMUNITY_REP') {
+              notice.textContent = '📊 View Your Submissions';
+              link.textContent = 'View My Dividend Submissions';
+              container.classList.add('visible');
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error checking user role:', err);
+      }
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const hnl = document.getElementById('investment-hnl');
+      const fx  = document.getElementById('fx-rate');
+      const usd = document.getElementById('investment-usd');
+
+      function format2(n) {
+        if (isNaN(n)) return '';
+        return Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function calcUSD() {
+        const h = parseFloat(hnl.value.replace(/,/g,''));  // allow commas
+        const r = parseFloat(fx.value.replace(/,/g,''));
+        if (isFinite(h) && isFinite(r) && r > 0) {
+          usd.value = format2(h / r);
+        } else {
+          usd.value = '';
+        }
+      }
+
+      ['input','change'].forEach(evt => {
+        hnl && hnl.addEventListener(evt, calcUSD);
+        fx && fx.addEventListener(evt, calcUSD);
+      });
+
+      // Initialize once
+      calcUSD();
+    })();
+  </script>
+
+  <!-- Language handler: must come before /form-navbar.js -->
+  <script>
+    (function () {
+      const LANG_KEY = "eskala_lang";
+
+      // Global hook used by form-navbar.js
+      window.setLanguage = function setLanguage(lang) {
+        lang = lang === "es" ? "es" : "en";
+
+        // Update all visible text
+        document.querySelectorAll("[data-en]").forEach((el) => {
+          const text = el.getAttribute("data-" + lang);
+          if (text != null) el.textContent = text;
+    });
+
+        // Update placeholders
+        document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+          const ph = el.getAttribute("data-" + lang + "-placeholder");
+          if (ph != null) el.placeholder = ph;
+        });
+
+        // Sync <html lang>
+        document.documentElement.setAttribute("lang", lang);
+
+        // Optional: update the dropdown label immediately
+        const btn = document.querySelector('[data-menu="lang"]');
+        if (btn)
+          btn.innerHTML = (lang === "es" ? "Español" : "English") + " ▾";
+
+        // Translate the navbar Home link
+        const home = document.getElementById("esk-form-home");
+        if (home) {
+          home.textContent = lang === "es" ? "← Inicio" : "← Home";
+        }
+        };
+
+        // Apply the saved or default language before navbar JS runs
+        const saved = localStorage.getItem(LANG_KEY) || "en";
+        window.setLanguage(saved);
+        })();
+  </script>
+
+  <!-- Navbar logic -->
+  <script src="/js/form-navbar.js" defer></script>
+
+  <!-- Submission logic (if any) -->
+    <script src="/js/form-autosave.js"></script>
+  <script type="module" src="/js/Equity_Entry.client.js" defer></script>
+</body>
+</html>

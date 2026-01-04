@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eskala — Admin</title>
+    <link rel="stylesheet" href="/web/styles/admin.css" />
+    <link rel="stylesheet" href="/web/styles/navbar.css" />
+    <style>
+      /* Pending approvals highlight */
+      .pending-section {
+        background: #fef3c7;
+        border: 2px solid #f59e0b;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+      }
+      .pending-section h2 {
+        color: #92400e;
+        margin-top: 0;
+      }
+      
+      /* Status badges */
+      .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .status-active { background: #dcfce7; color: #166534; }
+      .status-pending { background: #fef3c7; color: #92400e; }
+      .status-unverified { background: #fee2e2; color: #991b1b; }
+      .status-inactive { background: #e5e7eb; color: #4b5563; }
+      
+      /* Action buttons */
+      .btn-approve {
+        background: #16a34a;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        margin-right: 4px;
+      }
+      .btn-approve:hover { background: #15803d; }
+      
+      .btn-reject {
+        background: #dc2626;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        margin-right: 4px;
+      }
+      .btn-reject:hover { background: #b91c1c; }
+      
+      .btn-deactivate {
+        background: #6b7280;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        margin-right: 4px;
+      }
+      .btn-deactivate:hover { background: #4b5563; }
+      
+      .btn-activate {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        margin-right: 4px;
+      }
+      .btn-activate:hover { background: #1d4ed8; }
+      
+      .btn-delete {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .btn-delete:hover { background: #dc2626; }
+      
+      .info-text {
+        color: #6b7280;
+        font-size: 13px;
+        margin-right: 8px;
+      }
+      
+      /* Filter buttons */
+      .filter-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .filter-btn {
+        padding: 8px 16px;
+        border: 1px solid #d1d5db;
+        background: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      .filter-btn:hover {
+        background: #f3f4f6;
+      }
+      .filter-btn.active {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+      }
+      
+      /* Pending count badge */
+      .pending-count {
+        background: #f59e0b;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        margin-left: 6px;
+      }
+      
+      /* Info message for unverified users */
+      .info-text {
+        color: #6b7280;
+        font-size: 13px;
+        font-style: italic;
+      }
+
+      /* Hint text */
+      .hint {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 16px;
+      }
+      
+      /* Table horizontal scroll for many columns */
+      .table-wrap {
+        overflow-x: auto;
+      }
+      
+      .table td, .table th {
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ─────────────────────────────  NAV  ───────────────────────────── -->
+    <nav class="esk-nav">
+      <div class="esk-nav__inner">
+        <a href="/web/Dashboard.html" class="esk-nav__brand">
+          <img src="/Assets/Eskala-Logo.png" alt="Eskala" />
+          <span>Eskala</span>
+        </a>
+        <div class="esk-nav__spacer"></div>
+        <div class="esk-nav__group">
+          <button class="esk-nav__btn" data-menu="lang">English ▾</button>
+          <div class="esk-nav__menu" hidden>
+            <a href="#" data-lang="en">English</a>
+            <a href="#" data-lang="es">Español</a>
+          </div>
+        </div>
+        <a id="esk-form-home" class="esk-nav__btn esk-nav__btn--ghost" href="/web/Dashboard.html">← Home</a>
+      </div>
+    </nav>
+
+    <!-- ────────────────────────────  MAIN  ───────────────────────────── -->
+    <main class="page">
+      <h1 data-en="User Administration" data-es="Administración de usuarios">User Administration</h1>
+
+      <!-- ───────────────  PENDING APPROVALS SECTION  ─────────────── -->
+      <section id="pendingSection" class="pending-section" style="display: none;">
+        <h2 data-en="Pending Approval" data-es="Aprobación pendiente">
+          Pending Approval <span id="pendingCount" class="pending-count">0</span>
+        </h2>
+        <div class="table-wrap">
+        <table class="table">
+          <tbody id="pendingBody"></tbody>
+        </table>
+        </div>
+      </section>
+
+      <!-- ───────────────────  ADD USER FORM  ──────────────────── -->
+      <section class="card">
+        <h2 class="section-title" data-en="Add User" data-es="Agregar usuario">Add User</h2>
+        <form id="addForm" autocomplete="off">
+          <!-- Row 1 -->
+          <div class="row">
+            <label class="field">
+              <span class="label">Email</span>
+              <input
+                id="email"
+                type="email"
+                class="input"
+                placeholder="name@example.com"
+                required
+              />
+            </label>
+
+            <label class="field">
+              <span class="label">Role</span>
+              <select id="role" class="input" required>
+                <option value="STAFF">Staff</option>
+                <option value="COMMUNITY_REP">Bank Partner</option>
+              </select>
+            </label>
+          </div>
+          
+          <p class="hint">
+            <span data-en="User will receive an email to set their own password." data-es="El usuario recibirá un correo para establecer su contraseña.">User will receive an email to set their own password.</span>
+          </p>
+
+          <!-- Row 2: Profile fields -->
+          <div class="row">
+            <label class="field">
+              <span class="label">First Name (optional)</span>
+              <input id="first_name" type="text" class="input" />
+            </label>
+            <label class="field">
+              <span class="label">Last Name (optional)</span>
+              <input id="last_name" type="text" class="input" />
+            </label>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="row">
+            <label class="field">
+              <span class="label">Title (optional)</span>
+              <input id="title" type="text" class="input" />
+            </label>
+          </div>
+
+          <!-- Partner-only fields -->
+          <div id="partnerFields" class="row" style="display: none">
+            <label class="field">
+              <span class="label">Bank Name (optional)</span>
+              <input id="bank_name" type="text" class="input" />
+            </label>
+            <label class="field">
+              <span class="label">RTN Number (Tax ID)</span>
+              <input
+                id="rtn_number"
+                type="text"
+                class="input"
+                placeholder="9–10 digits"
+                pattern="[0-9]{9,10}"
+              />
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary" data-en="Add User" data-es="Agregar usuario">Add User</button>
+          <span id="formStatus" style="margin-left: 1rem"></span>
+        </form>
+      </section>
+
+      <!-- ───────────────────  USER LIST  ──────────────────────── -->
+      <section class="card">
+        <h2 class="section-title" data-en="All Users" data-es="Todos los usuarios">All Users</h2>
+        
+        <!-- Filter buttons -->
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="active">Active</button>
+          <button class="filter-btn" data-filter="pending">Pending</button>
+          <button class="filter-btn" data-filter="staff">Staff Only</button>
+          <button class="filter-btn" data-filter="partner">Partners Only</button>
+        </div>
+        
+        <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Role</th>
+              <th>Title</th>
+              <th>Bank</th>
+              <th>RTN</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="userBody"></tbody>
+        </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- ───────────────────────────  JS  ───────────────────────────── -->
+    <script src="/js/form-navbar.js"></script>
+    <script>
+      const $ = (s) => document.querySelector(s);
+      const $$ = (s) => document.querySelectorAll(s);
+      const roleSel = $("#role");
+      const partnerFields = $("#partnerFields");
+
+      // Show/hide partner-only fields
+      function syncPartnerFields() {
+        partnerFields.style.display = roleSel.value === "COMMUNITY_REP" ? "flex" : "none";
+      }
+      roleSel.addEventListener("change", syncPartnerFields);
+      syncPartnerFields();
+
+      // ---- api helper ----
+      async function api(url, opts = {}) {
+        const res = await fetch(url, {
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          ...opts,
+        });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || "Unknown error");
+        return json;
+      }
+
+      function setStatus(msg, ok) {
+        const el = $("#formStatus");
+        el.textContent = msg;
+        el.style.color = ok ? "green" : "red";
+      }
+
+      // ---- Filter functionality ----
+      let allUsers = [];
+      let currentFilter = 'all';
+      
+      $$('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          $$('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          renderUsers();
+        });
+      });
+
+      // ---- load users ----
+      async function loadUsers() {
+        try {
+          const data = await api("/api/admin/users");
+          allUsers = data.users || [];
+          renderUsers();
+          renderPendingSection();
+        } catch (err) {
+          console.error("Failed to load users:", err);
+        }
+      }
+      
+      function renderPendingSection() {
+        const pending = allUsers.filter(u => u.status === 'Pending');
+        const section = $('#pendingSection');
+        const countEl = $('#pendingCount');
+        const tbody = $('#pendingBody');
+        
+        if (pending.length === 0) {
+          section.style.display = 'none';
+          return;
+        }
+        
+        section.style.display = 'block';
+        countEl.textContent = pending.length;
+        
+        tbody.innerHTML = pending.map(u => `
+          <tr>
+            <td>${u.user_id}</td>
+            <td>${u.email}</td>
+            <td>${u.first_name || ""}</td>
+            <td>${u.last_name || ""}</td>
+            <td>${u.role || ""}</td>
+            <td>${u.title || ""}</td>
+            <td>${u.bank_name || ""}</td>
+            <td>${u.rtn_number || ""}</td>
+            <td>
+              <button class="btn-approve" onclick="approveUser(${u.user_id})">✓ Approve</button>
+              <button class="btn-reject" onclick="rejectUser(${u.user_id})">✗ Reject</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+      
+      function renderUsers() {
+        let filtered = allUsers;
+        
+        switch (currentFilter) {
+          case 'active':
+            filtered = allUsers.filter(u => u.status === 'Active');
+            break;
+          case 'pending':
+            filtered = allUsers.filter(u => u.status === 'Pending' || u.status === 'Unverified');
+            break;
+          case 'staff':
+            filtered = allUsers.filter(u => u.role === 'STAFF');
+            break;
+          case 'partner':
+            filtered = allUsers.filter(u => u.role === 'COMMUNITY_REP');
+            break;
+        }
+        
+        const tbody = $("#userBody");
+        tbody.innerHTML = filtered.map((u) => {
+          // Status badge
+          let statusClass = 'status-active';
+          if (u.status === 'Pending') statusClass = 'status-pending';
+          else if (u.status === 'Unverified') statusClass = 'status-unverified';
+          else if (u.status === 'Inactive') statusClass = 'status-inactive';
+          
+          // Action buttons based on status
+          let actions = '';
+          if (u.status === 'Unverified') {
+            actions = `
+              <span class="info-text">Awaiting email</span>
+              <button class="btn-delete" onclick="deleteUser(${u.user_id})">Delete</button>
+            `;
+          } else if (u.status === 'Pending') {
+            actions = `
+              <button class="btn-approve" onclick="approveUser(${u.user_id})">✓ Approve</button>
+              <button class="btn-reject" onclick="rejectUser(${u.user_id})">✗ Reject</button>
+            `;
+          } else if (u.status === 'Active') {
+            actions = `
+              <button class="btn-deactivate" onclick="toggleActive(${u.user_id})">Deactivate</button>
+              <button class="btn-delete" onclick="deleteUser(${u.user_id})">Delete</button>
+            `;
+          } else if (u.status === 'Inactive') {
+            actions = `
+              <button class="btn-activate" onclick="toggleActive(${u.user_id})">Activate</button>
+              <button class="btn-delete" onclick="deleteUser(${u.user_id})">Delete</button>
+            `;
+          }
+          
+          return `
+            <tr>
+              <td>${u.user_id}</td>
+              <td>${u.email}</td>
+              <td>${u.first_name || ""}</td>
+              <td>${u.last_name || ""}</td>
+              <td>${u.role || ""}</td>
+              <td>${u.title || ""}</td>
+              <td>${u.bank_name || ""}</td>
+              <td>${u.rtn_number || ""}</td>
+              <td><span class="status-badge ${statusClass}">${u.status}</span></td>
+              <td>${actions}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+      
+      // ---- Approve user ----
+      async function approveUser(uid) {
+        if (!confirm("Approve this user? They will be able to log in.")) return;
+        try {
+          await api(`/api/admin/users/${uid}/approve`, { method: "POST" });
+          await loadUsers();
+        } catch (err) {
+          alert("Failed to approve: " + err.message);
+        }
+      }
+      
+      // ---- Reject user ----
+      async function rejectUser(uid) {
+        const reason = prompt("Optional: Enter a reason for rejection (or leave blank):");
+        if (reason === null) return; // cancelled
+        
+        try {
+          await api(`/api/admin/users/${uid}/reject`, { 
+            method: "POST",
+            body: JSON.stringify({ reason })
+          });
+          await loadUsers();
+        } catch (err) {
+          alert("Failed to reject: " + err.message);
+        }
+      }
+      
+      // ---- Toggle active status ----
+      async function toggleActive(uid) {
+        try {
+          await api(`/api/admin/users/${uid}/toggle-active`, { method: "POST" });
+          await loadUsers();
+        } catch (err) {
+          alert("Failed to toggle status: " + err.message);
+        }
+      }
+
+      // ---- delete user ----
+      async function deleteUser(uid) {
+        if (!confirm("Delete this user? This action cannot be undone.")) return;
+        try {
+          await api(`/api/admin/users/${uid}`, { method: "DELETE" });
+          await loadUsers();
+        } catch (err) {
+          alert("Delete failed: " + err.message);
+        }
+      }
+
+      // ---- add user ----
+      $("#addForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = ($("#email").value || "").trim().toLowerCase();
+        const account_type = roleSel.value;
+
+        if (!email) {
+          setStatus("Email is required.", false);
+          return;
+        }
+
+        const profile = {
+          first_name: $("#first_name").value.trim() || null,
+          last_name: $("#last_name").value.trim() || null,
+          title: $("#title").value.trim() || null,
+          bank_name: account_type === "COMMUNITY_REP" ? $("#bank_name").value.trim() || null : null,
+          rtn_number: account_type === "COMMUNITY_REP" ? $("#rtn_number").value.trim() || null : null,
+        };
+
+        // basic client-side checks for partner RTN
+        if (account_type === "COMMUNITY_REP" && profile.rtn_number) {
+          if (!/^[0-9]{9,10}$/.test(profile.rtn_number)) {
+            setStatus("RTN must be 9–10 digits.", false);
+            return;
+          }
+        }
+
+        const payload = { email, account_type, profile };
+
+        try {
+          setStatus("Creating user...", true);
+          const result = await api("/api/admin/users", {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          setStatus("User created ✓ Invite email sent!", true);
+          e.target.reset();
+          syncPartnerFields();
+          await loadUsers();
+        } catch (err) {
+          setStatus(err.message, false);
+        }
+      });
+
+      // ════════════════  i18n (minimal)  ════════════════
+      (() => {
+        const LANG_KEY = "eskala_lang";
+        const DICT = {
+          // Page title
+          "User Administration": { es: "Administración de usuarios" },
+          
+          // Sections
+          "Pending Approvals": { es: "Aprobaciones pendientes" },
+          "Add User": { es: "Agregar usuario" },
+          "All Users": { es: "Todos los usuarios" },
+          
+          // Labels
+          Email: { es: "Correo electrónico" },
+          Role: { es: "Rol" },
+          "First Name (optional)": { es: "Nombre (opcional)" },
+          "Last Name (optional)": { es: "Apellido (opcional)" },
+          "Title (optional)": { es: "Título (opcional)" },
+          "Bank Name (optional)": { es: "Nombre del banco (opcional)" },
+          "RTN Number (Tax ID)": { es: "Número RTN (ID fiscal)" },
+          
+          // Placeholders
+          "name@example.com": { es: "nombre@ejemplo.com" },
+          "9–10 digits": { es: "9–10 dígitos" },
+
+          // Hint
+          "User will receive an email to set their own password.": { es: "El usuario recibirá un correo para establecer su contraseña." },
+          
+          // Table headers
+          ID: { es: "ID" },
+          Email: { es: "Correo" },
+          "First Name": { es: "Nombre" },
+          "Last Name": { es: "Apellido" },
+          Role: { es: "Rol" },
+          Title: { es: "Título" },
+          Username: { es: "Usuario" },
+          Bank: { es: "Banco" },
+          RTN: { es: "RTN" },
+          Status: { es: "Estado" },
+          Actions: { es: "Acciones" },
+          
+          // Buttons
+          "Add User": { es: "Agregar usuario" },
+          
+          // Filter buttons
+          All: { es: "Todos" },
+          Active: { es: "Activos" },
+          Pending: { es: "Pendientes" },
+          "Staff Only": { es: "Solo personal" },
+          "Partners Only": { es: "Solo socios" },
+          
+          // Nav
+          "← Home": { es: "← Inicio" },
+        };
+
+        function getLang() {
+          try {
+            return localStorage.getItem(LANG_KEY) || "en";
+          } catch {
+            return "en";
+          }
+        }
+        function setLang(l) {
+          try {
+            localStorage.setItem(LANG_KEY, l);
+          } catch {}
+        }
+
+        // Seed data-* attributes from DICT for static texts
+        function seedStaticDataAttrs() {
+          // Elements that are pure text (headings, labels, buttons, th, nav home)
+          const candidates = [
+            ...document.querySelectorAll(
+              "h1, h2.section-title, .field .label, th, .btn.btn-primary, #esk-form-home, .filter-btn, .hint span"
+            ),
+            ...document.querySelectorAll('[data-menu="lang"]'),
+          ];
+
+          candidates.forEach((el) => {
+            const txt = el.textContent.trim();
+            if (DICT[txt]) {
+              if (!el.dataset.en) el.dataset.en = txt;
+              if (!el.dataset.es) el.dataset.es = DICT[txt].es;
+            }
+          });
+
+          // Placeholders
+          const phEls = ["#email", "#rtn_number"];
+          phEls.forEach((sel) => {
+            const el = document.querySelector(sel);
+            if (el && el.placeholder && DICT[el.placeholder]) {
+              el.dataset.phEn = el.placeholder;
+              el.dataset.phEs = DICT[el.placeholder].es;
+            }
+          });
+        }
+
+        function applyLang(l) {
+          document.querySelectorAll("[data-en][data-es]").forEach((el) => {
+            el.textContent = l === "es" ? el.dataset.es : el.dataset.en;
+          });
+          document.querySelectorAll("[data-ph-en][data-ph-es]").forEach((el) => {
+            el.placeholder = l === "es" ? el.dataset.phEs : el.dataset.phEn;
+          });
+          const langBtn = document.querySelector('[data-menu="lang"]');
+          if (langBtn) langBtn.textContent = l === "es" ? "Español ▾" : "English ▾";
+        }
+
+        // Language dropdown toggle
+        const langBtn = document.querySelector('[data-menu="lang"]');
+        const langMenu = langBtn ? langBtn.nextElementSibling : null;
+        
+        if (langBtn && langMenu) {
+          langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langMenu.hidden = !langMenu.hidden;
+          });
+          
+          document.addEventListener('click', () => {
+            langMenu.hidden = true;
+          });
+        }
+
+        document.querySelectorAll("[data-lang]").forEach((a) => {
+          a.addEventListener("click", (e) => {
+            e.preventDefault();
+            const chosen = a.dataset.lang;
+            setLang(chosen);
+            applyLang(chosen);
+            if (langMenu) langMenu.hidden = true;
+          });
+        });
+
+        // Init
+        seedStaticDataAttrs();
+        applyLang(getLang());
+      })();
+
+      // ---- init ----
+      loadUsers();
+    </script>
+  </body>
+</html>

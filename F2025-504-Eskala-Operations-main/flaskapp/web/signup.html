@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eskala – Create Account / Crear Cuenta</title>
+  <link rel="stylesheet" href="/web/styles/signup.css" />
+  <style>
+    /* Success message styles */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .success-modal {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: #dcfce7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 40px;
+    }
+    .success-title {
+      font-size: 24px;
+      color: #1f2937;
+      margin-bottom: 12px;
+    }
+    .success-message {
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .success-steps {
+      background: #f3f4f6;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .success-steps h4 {
+      margin: 0 0 12px 0;
+      color: #374151;
+    }
+    .success-steps ol {
+      margin: 0;
+      padding-left: 20px;
+      color: #6b7280;
+    }
+    .success-steps li {
+      margin-bottom: 8px;
+    }
+    .success-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .success-btn:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <!-- Left brand panel -->
+    <aside class="brand-side">
+      <img src="/Assets/Logo_2.png" alt="Eskala" class="logo" />
+    </aside>
+
+    <!-- Right card -->
+    <section class="card">
+      <h1><span data-i18n="title">Create your Account</span></h1>
+
+      <!-- Role + language row -->
+      <div class="role-switch">
+        <div class="role-row">
+          <!-- Read-only role badge (role determined by ?role=Partner|Staff) -->
+          <button id="role-badge" type="button" class="role-badge">Bank Partner</button>
+
+          <!-- Single translation button -->
+          <button id="lang-toggle" type="button" class="lang-toggle" aria-label="Toggle language">
+            <span class="globe">🌐</span>
+            <span id="lang-toggle-label">Español</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sign-up form -->
+      <form id="signup-form" novalidate>
+        <div class="grid">
+          <label>
+            <span data-i18n="labelEmail">Email</span>
+            <input id="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+          </label>
+
+          <label>
+            <span data-i18n="labelPassword">Password</span>
+            <input id="password" type="password" autocomplete="new-password" required minlength="8" placeholder="********" />
+          </label>
+
+          <label>
+            <span data-i18n="labelConfirm">Confirm Password</span>
+            <input id="password2" type="password" autocomplete="new-password" required minlength="8" placeholder="********" />
+          </label>
+
+          <label>
+            <span data-i18n="labelFirst">First Name (optional)</span>
+            <input id="first_name" type="text" placeholder="First name" />
+          </label>
+
+          <label>
+            <span data-i18n="labelLast">Last Name (optional)</span>
+            <input id="last_name" type="text" placeholder="Last name" />
+          </label>
+
+          <label>
+            <span data-i18n="labelTitle">Title (optional)</span>
+            <input id="title" type="text" placeholder="Title" />
+          </label>
+
+          <!-- Partner-only fields (shown for bank_partner; hidden for eskala_staff) -->
+          <div id="partner-fields" class="partner-only">
+            <label>
+              <span data-i18n="labelBank">Bank Name (optional)</span>
+              <input id="bank_name" type="text" />
+            </label>
+
+            <label>
+              <span data-i18n="labelRTN">RTN Number (Tax ID)</span>
+              <input id="rtn_number" type="text" inputmode="numeric" pattern="\d*" />
+            </label>
+          </div>
+        </div>
+
+        <p class="hint"><span data-i18n="hint">Passwords must be at least 8 characters.</span></p>
+
+        <button id="create-btn" class="btn primary" type="submit">
+          <span data-i18n="btnCreate">Create Account</span>
+        </button>
+
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+
+        <p class="small">
+          <span data-i18n="alreadyPrefix">Already have an account?</span>
+          <a href="/web/partner-login.html" data-i18n="signinLink">Sign in</a>
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <!-- Success Modal -->
+  <div class="success-overlay" id="success-overlay">
+    <div class="success-modal">
+      <div class="success-icon">✉️</div>
+      <h2 class="success-title" data-i18n="successTitle">Check Your Email!</h2>
+      <p class="success-message" data-i18n="successMessage">
+        We've sent a verification link to your email address. Please click the link to verify your account.
+      </p>
+      <div class="success-steps">
+        <h4 data-i18n="nextSteps">Next Steps:</h4>
+        <ol>
+          <li data-i18n="step1">Check your email inbox (and spam folder)</li>
+          <li data-i18n="step2">Click the verification link</li>
+          <li data-i18n="step3">Wait for admin approval</li>
+          <li data-i18n="step4">Log in once approved</li>
+        </ol>
+      </div>
+      <a href="/web/staff-login.html" class="success-btn" id="success-login-btn" data-i18n="goToLogin">Go to Login</a>
+    </div>
+  </div>
+
+  <!-- Inline JS only (no layout changes) -->
+  <script>
+  (function () {
+    const LANG_KEY = "eskala_lang";
+    const $ = (sel) => document.querySelector(sel);
+    const role = (() => {
+      const p = new URLSearchParams(location.search);
+      const r = (p.get("role") || "").toLowerCase();
+      return r === "staff" ? "STAFF" : "COMMUNITY_REP";
+    })();
+
+    const STR = {
+      en: {
+        title: "Create your Account",
+        labelEmail: "Email",
+        labelPassword: "Password",
+        labelConfirm: "Confirm Password",
+        labelFirst: "First Name (optional)",
+        labelLast: "Last Name (optional)",
+        labelTitle: "Title (optional)",
+        labelBank: "Bank Name (optional)",
+        labelRTN: "RTN Number (Tax ID)",
+        hint: "Passwords must be at least 8 characters.",
+        btnCreate: "Create Account",
+        alreadyPrefix: "Already have an account?",
+        signinLink: "Sign in",
+        toggle: "Español",
+        badgeStaff: "Eskala Staff",
+        badgePartner: "Bank Partner",
+        successTitle: "Check Your Email!",
+        successMessage: "We've sent a verification link to your email address. Please click the link to verify your account.",
+        nextSteps: "Next Steps:",
+        step1: "Check your email inbox (and spam folder)",
+        step2: "Click the verification link",
+        step3: "Wait for admin approval",
+        step4: "Log in once approved",
+        goToLogin: "Go to Login",
+        ph: {
+          email: "you@example.com",
+          pw: "********",
+          cf: "********",
+          fn: "First name",
+          ln: "Last name",
+          title: "Title"
+        },
+        msg: {
+          badEmail: "Please enter a valid email.",
+          pwLen: "Password must be at least 8 characters.",
+          pwMatch: "Passwords do not match.",
+          needRTN: "Please enter the partner RTN number.",
+          rtnNumeric: "RTN must be numeric.",
+          creating: "Creating account…",
+          created: "Account created! Check your email.",
+          failed: "There was a problem creating your account."
+        }
+      },
+      es: {
+        title: "Crea tu cuenta",
+        labelEmail: "Correo electrónico",
+        labelPassword: "Contraseña",
+        labelConfirm: "Confirmar contraseña",
+        labelFirst: "Nombre (opcional)",
+        labelLast: "Apellido (opcional)",
+        labelTitle: "Cargo (opcional)",
+        labelBank: "Nombre del banco (opcional)",
+        labelRTN: "Número RTN (ID tributario)",
+        hint: "La contraseña debe tener al menos 8 caracteres.",
+        btnCreate: "Crear cuenta",
+        alreadyPrefix: "¿Ya tienes una cuenta?",
+        signinLink: "Inicia sesión",
+        toggle: "English",
+        badgeStaff: "Personal de Eskala",
+        badgePartner: "Banco Aliado",
+        successTitle: "¡Revisa tu correo!",
+        successMessage: "Hemos enviado un enlace de verificación a tu correo electrónico. Por favor haz clic en el enlace para verificar tu cuenta.",
+        nextSteps: "Próximos pasos:",
+        step1: "Revisa tu bandeja de entrada (y carpeta de spam)",
+        step2: "Haz clic en el enlace de verificación",
+        step3: "Espera la aprobación del administrador",
+        step4: "Inicia sesión una vez aprobado",
+        goToLogin: "Ir a iniciar sesión",
+        ph: {
+          email: "tu@ejemplo.com",
+          pw: "********",
+          cf: "********",
+          fn: "Nombre",
+          ln: "Apellido",
+          title: "Cargo"
+        },
+        msg: {
+          badEmail: "Por favor ingresa un correo válido.",
+          pwLen: "La contraseña debe tener al menos 8 caracteres.",
+          pwMatch: "Las contraseñas no coinciden.",
+          needRTN: "Por favor ingresa el RTN del aliado.",
+          rtnNumeric: "El RTN debe ser numérico.",
+          creating: "Creando cuenta…",
+          created: "¡Cuenta creada! Revisa tu correo.",
+          failed: "Hubo un problema creando tu cuenta."
+        }
+      }
+    };
+
+    function getLang() { return localStorage.getItem(LANG_KEY) || "en"; }
+    function setLang(l) { localStorage.setItem(LANG_KEY, l); }
+
+    function setText(key, value) {
+      const el = document.querySelector('[data-i18n="' + key + '"]');
+      if (el) el.textContent = value;
+    }
+
+    function applyLang(lang) {
+      const s = STR[lang];
+
+      setText("title", s.title);
+      setText("labelEmail", s.labelEmail);
+      setText("labelPassword", s.labelPassword);
+      setText("labelConfirm", s.labelConfirm);
+      setText("labelFirst", s.labelFirst);
+      setText("labelLast", s.labelLast);
+      setText("labelTitle", s.labelTitle);
+      setText("labelBank", s.labelBank);
+      setText("labelRTN", s.labelRTN);
+      setText("hint", s.hint);
+      setText("btnCreate", s.btnCreate);
+      setText("alreadyPrefix", s.alreadyPrefix);
+      setText("signinLink", s.signinLink);
+      
+      // Success modal
+      setText("successTitle", s.successTitle);
+      setText("successMessage", s.successMessage);
+      setText("nextSteps", s.nextSteps);
+      setText("step1", s.step1);
+      setText("step2", s.step2);
+      setText("step3", s.step3);
+      setText("step4", s.step4);
+      setText("goToLogin", s.goToLogin);
+
+      const badge = $("#role-badge");
+      if (badge) badge.textContent = role === "STAFF" ? s.badgeStaff : s.badgePartner;
+
+      const toggle = $("#lang-toggle-label");
+      if (toggle) toggle.textContent = s.toggle;
+
+      // placeholders
+      const email = $("#email");
+      const pw = $("#password");
+      const cf = $("#password2");
+      const fn = $("#first_name");
+      const ln = $("#last_name");
+      const tt = $("#title");
+      if (email) email.placeholder = s.ph.email;
+      if (pw)    pw.placeholder    = s.ph.pw;
+      if (cf)    cf.placeholder    = s.ph.cf;
+      if (fn)    fn.placeholder    = s.ph.fn;
+      if (ln)    ln.placeholder    = s.ph.ln;
+      if (tt)    tt.placeholder    = s.ph.title;
+
+      // show/hide partner fields
+      const partnerFields = $("#partner-fields");
+      if (partnerFields) partnerFields.style.display = (role === "COMMUNITY_REP") ? "grid" : "none";
+      
+      // Update login link based on role
+      const loginBtn = $("#success-login-btn");
+      if (loginBtn) {
+        loginBtn.href = role === "STAFF" ? "/web/staff-login.html" : "/web/partner-login.html";
+      }
+    }
+
+    // --- helper for POST ---
+    async function postJSON(url, data) {
+      const r = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(data)
+      });
+      let payload = {};
+      try { payload = await r.json(); } catch(e) {}
+      if (!r.ok) throw new Error(payload.error || ("HTTP " + r.status));
+      return payload;
+    }
+
+    // --- username helper ---
+    function makeUsername(email) {
+      const local = (email.split("@")[0] || "").toLowerCase();
+      const cleaned = local.replace(/[^a-z0-9._-]/g, "");
+      return cleaned.slice(0,30) || ("user" + Date.now());
+    }
+
+    // --- show success modal ---
+    function showSuccess() {
+      const overlay = $("#success-overlay");
+      if (overlay) {
+        overlay.style.display = "flex";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // initial language + badge
+      applyLang(getLang());
+
+      // toggle language
+      $("#lang-toggle")?.addEventListener("click", () => {
+        const next = getLang() === "en" ? "es" : "en";
+        setLang(next);
+        applyLang(next);
+      });
+
+      // submit
+      const status = $("#status");
+      $("#signup-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const s = STR[getLang()].msg;
+
+        try {
+          // validate
+          const email = ($("#email").value || "").trim().toLowerCase();
+          const pw = $("#password").value || "";
+          const cf = $("#password2").value || "";
+
+          if (!/.+@.+\..+/.test(email)) throw new Error(s.badEmail);
+          if (pw.length < 8) throw new Error(s.pwLen);
+          if (pw !== cf) throw new Error(s.pwMatch);
+
+          if (role === "COMMUNITY_REP") {
+            const rtn = ($("#rtn_number").value || "").trim();
+            if (!rtn) throw new Error(s.needRTN);
+            if (!/^\d+$/.test(rtn)) throw new Error(s.rtnNumeric);
+          }
+
+          status.textContent = s.creating;
+          status.style.color = "";
+
+          const payload = {
+            email,
+            username: makeUsername(email),
+            password: pw,
+            account_type: role,
+            profile: {
+              first_name: ($("#first_name").value || "").trim() || null,
+              last_name:  ($("#last_name").value  || "").trim() || null,
+              title:      ($("#title").value      || "").trim() || null,
+              bank_name:  role === "COMMUNITY_REP" ? ($("#bank_name")?.value || "").trim() || null : null,
+              rtn_number: role === "COMMUNITY_REP" ? ($("#rtn_number")?.value || "").trim() || null : null
+            }
+          };
+
+          const res = await postJSON("/api/auth/signup", payload);
+          if (!res || res.ok !== true) throw new Error(res?.error || s.failed);
+
+          status.textContent = s.created;
+          status.style.color = "#16a34a";
+          
+          // Show success modal instead of redirecting immediately
+          showSuccess();
+          
+        } catch (err) {
+          console.error(err);
+          status.textContent = err.message || STR[getLang()].msg.failed;
+          status.style.color = "#dc2626";
+        }
+      });
+
+      // Make the button submit without changing DOM
+      $("#create-btn")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        $("#signup-form")?.dispatchEvent(new Event("submit", { cancelable: true }));
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

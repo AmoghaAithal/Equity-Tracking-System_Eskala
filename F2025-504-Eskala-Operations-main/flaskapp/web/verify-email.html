@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eskala – Verify Email / Verificar correo</title>
+  <link rel="stylesheet" href="/web/styles/login-staff.css" />
+  <style>
+    .status-card {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .status-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    .status-icon.success { color: #16a34a; }
+    .status-icon.error { color: #dc2626; }
+    .status-icon.loading { color: #2563eb; animation: pulse 1.5s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .status-title {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: #1f2937;
+    }
+    .status-message {
+      color: #6b7280;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary {
+      background: transparent;
+      color: #2563eb;
+      border: 1px solid #2563eb;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 12px;
+    }
+    .btn-secondary:hover { background: #eff6ff; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="card-container">
+      <div class="card-content" style="display: block;">
+        <div class="status-card" id="status-card">
+          <div class="status-icon loading" id="status-icon">⏳</div>
+          <h2 class="status-title" id="status-title" data-en="Verifying your email..." data-es="Verificando tu correo...">Verifying your email...</h2>
+          <p class="status-message" id="status-message" data-en="Please wait while we verify your email address." data-es="Por favor espera mientras verificamos tu correo.">Please wait while we verify your email address.</p>
+          <div id="action-buttons" style="display: none;">
+            <a href="/web/staff-login.html" class="btn-primary" id="login-btn" data-en="Go to Login" data-es="Ir a iniciar sesión">Go to Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const LANG_KEY = 'eskala_lang';
+    let currentLang = localStorage.getItem(LANG_KEY) || 'en';
+
+    function t(el, key) {
+      if (!el) return;
+      const text = el.getAttribute('data-' + currentLang);
+      if (text) el.textContent = text;
+    }
+
+    function applyLang() {
+      document.querySelectorAll('[data-en]').forEach(el => t(el));
+    }
+
+    function showSuccess(message, role) {
+      document.getElementById('status-icon').textContent = '✓';
+      document.getElementById('status-icon').className = 'status-icon success';
+      document.getElementById('status-title').setAttribute('data-en', 'Email Verified!');
+      document.getElementById('status-title').setAttribute('data-es', '¡Correo verificado!');
+      document.getElementById('status-message').setAttribute('data-en', message || 'Email verified successfully! Please wait for admin approval.');
+      document.getElementById('status-message').setAttribute('data-es', message || 'Tu correo ha sido verificado exitosamente. Por favor espera la aprobación del administrador.');
+      
+      // Set login link based on role
+      const loginBtn = document.getElementById('login-btn');
+      if (role === 'STAFF') {
+        loginBtn.href = '/web/staff-login.html';
+      } else {
+        loginBtn.href = '/web/partner-login.html';
+      }
+      
+      document.getElementById('action-buttons').style.display = 'block';
+      applyLang();
+    }
+
+    function showError(message) {
+      document.getElementById('status-icon').textContent = '✗';
+      document.getElementById('status-icon').className = 'status-icon error';
+      document.getElementById('status-title').setAttribute('data-en', 'Verification Failed');
+      document.getElementById('status-title').setAttribute('data-es', 'Verificación fallida');
+      document.getElementById('status-message').setAttribute('data-en', message || 'Unable to verify your email. The link may be invalid or expired.');
+      document.getElementById('status-message').setAttribute('data-es', message || 'No se pudo verificar tu correo. El enlace puede ser inválido o haber expirado.');
+      
+      // Show resend option
+      const actions = document.getElementById('action-buttons');
+      actions.innerHTML = `
+        <a href="/web/staff-login.html" class="btn-primary" data-en="Go to Login" data-es="Ir a iniciar sesión">Go to Login</a>
+        <br>
+        <button class="btn-secondary" onclick="resendVerification()" data-en="Resend Verification Email" data-es="Reenviar correo de verificación">Resend Verification Email</button>
+      `;
+      actions.style.display = 'block';
+      applyLang();
+    }
+
+    async function verifyEmail(token) {
+      try {
+        const res = await fetch('/api/auth/verify-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+        const data = await res.json();
+        
+        if (data.ok) {
+          showSuccess(data.message, data.role);
+        } else {
+          showError(data.error);
+        }
+      } catch (err) {
+        console.error('Verification error:', err);
+        showError('An error occurred during verification. Please try again.');
+      }
+    }
+
+    async function resendVerification() {
+      const email = prompt(currentLang === 'es' ? 'Ingresa tu correo electrónico:' : 'Enter your email address:');
+      if (!email) return;
+      
+      try {
+        const res = await fetch('/api/auth/resend-verification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        alert(data.message || (currentLang === 'es' ? 'Correo enviado si la cuenta existe.' : 'Email sent if account exists.'));
+      } catch (err) {
+        alert(currentLang === 'es' ? 'Error al enviar correo.' : 'Failed to send email.');
+      }
+    }
+
+    // On page load
+    document.addEventListener('DOMContentLoaded', () => {
+      applyLang();
+      
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      
+      if (!token) {
+        showError('No verification token provided.');
+        return;
+      }
+      
+      verifyEmail(token);
+    });
+  </script>
+</body>
+</html>

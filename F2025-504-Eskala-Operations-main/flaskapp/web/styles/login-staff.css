@@ -1,0 +1,176 @@
+
+/* === Base Page Styles === */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to right, #F48434 50%, #ffffff 50%);
+}
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.card-container {
+  width: 950px;
+  height: 620px;
+  border-radius: 36px;
+  background: white;
+  box-shadow: 8px 12px 16px rgba(0,0,0,0.2);
+  overflow: hidden;
+  display: flex;
+}
+
+.card-content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* === LEFT SIDE: Logo Column === */
+.card-left {
+  width: 50%;
+  background-color: #F48434;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-image {
+  width: 320px;
+  height: 320px;
+  background-image: url('/Assets/Logo_2.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* === RIGHT SIDE: Login Form === */
+.card-right {
+  width: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 🌐 Español/English toggle pill */
+.language-toggle {
+  position: absolute;
+  top: -1.2rem;
+  left: 0;
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #e6f7f1;
+  color: #1f3d38;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.language-toggle:hover {
+  background: #d0ede8;
+}
+
+/* Form heading */
+.login-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 1.5rem 0 30px;
+  color: #000;
+}
+
+/* Labels & inputs */
+.input-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  margin: 15px 0 4px;
+}
+.login-input {
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  padding: 0 10px;
+  font-size: 14px;
+  width: 100%;
+}
+
+/* Remember me */
+.remember-row {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+}
+.remember-label {
+  font-size: 12px;
+  margin-left: 6px;
+  color: #333;
+}
+
+/* === Make Staff sign-in button match Partner style === */
+.sign-in-button{
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  background: #0D5A43;          /* same green as partner */
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(13, 90, 67, 0.25); /* same depth as partner */
+  transition: background-color .2s ease, transform .06s ease, box-shadow .2s ease;
+}
+
+.sign-in-button:hover {
+  background-color: #00432F;     /* darker on hover, like partner */
+}
+
+.sign-in-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 6px 16px rgba(13, 90, 67, 0.22);
+}
+
+.sign-in-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ✅ helper link under button */
+.auth-helper{
+  margin-top:12px;
+  text-align:center;
+  color:#6b7280;
+  font-size:.95rem
+}
+.auth-link{
+  color:#00573E;
+  text-decoration:none;
+  font-weight:600
+}
+.auth-link:hover{ text-decoration:underline }

@@ -1,0 +1,184 @@
+:root {
+  --white: #ffffff;
+  --esk-green: #00573e;
+  --esk-orange: #f48434;
+  --light-green: #e7ede1;
+  --radius-sm: 12px;
+  --radius-lg: 24px;
+  --gap: 20px;
+  --nav-h: 72px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100%;
+  font-family: "Segoe UI", sans-serif;
+  background: var(--light-green);
+}
+
+/* NAVBAR */
+#navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* MAIN CONTAINER */
+.container {
+  display: flex;
+  min-height: calc(100vh - var(--nav-h));
+  align-items: stretch; /* ✅ both sides equal height */
+}
+
+/* LEFT PANEL */
+.left-panel {
+  flex: 1;
+  background: var(--esk-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.left-panel img {
+  max-width: 60%;
+  max-height: 60%;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* RIGHT PANEL */
+.right-panel {
+  flex: 1;
+  background: var(--white);
+  display: grid; /* ✅ enables full-height stretch */
+  align-items: stretch; /* stretch card to bottom */
+  justify-items: center;
+  padding: 25px 20px 0; /* ✅ removed bottom padding */
+  box-sizing: border-box;
+}
+
+/* CARD CONTAINER */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: clamp(28px, 4vw, 52px);
+  width: 100%;
+  max-width: 880px;
+  margin: 0;
+  height: 100%; /* ✅ fills right panel height */
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER + LANGUAGE TOGGLE */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.card-header h1 {
+  color: #000;
+  font-size: clamp(1.6rem, 3vw, 1.9rem);
+}
+.lang-toggle {
+  background: var(--white);
+  color: var(--esk-green);
+  border: 2px solid var(--esk-green);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* INSTRUCTION TEXT */
+.instruction {
+  color: var(--esk-green);
+  margin-bottom: 14px;
+  text-align: center;
+  font-size: clamp(1rem, 2vw, 1.1rem);
+}
+
+/* BUTTON GRID + DESCRIPTIONS */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--gap);
+  margin-top: auto; /* ✅ pushes buttons down if needed for even spacing */
+  margin-bottom: auto;
+}
+.button-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* BUTTONS */
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--esk-green);
+  color: var(--white);
+  font-size: clamp(1rem, 1.8vw, 1.1rem);
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 15px 16px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  width: 100%;
+  text-align: center;
+  line-height: 1.2;
+}
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.button .emoji {
+  font-size: 1.8rem;
+  margin-right: 10px;
+}
+.button > span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* DESCRIPTIONS */
+.desc {
+  color: var(--esk-green);
+  font-size: 0.96rem;
+  text-align: center;
+  margin-top: 8px;
+  text-wrap: pretty;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 768px) {
+  .right-panel {
+    padding: 20px 14px 0;
+  }
+  .card {
+    padding: clamp(24px, 5vw, 44px);
+  }
+  .instruction {
+    margin-bottom: 12px;
+  }
+}
+
+/* SPANISH LANGUAGE ADJUSTMENTS */
+:root:lang(es) .card {
+  padding-block: clamp(30px, 4vw, 60px);
+}
+:root:lang(es) .buttons {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}

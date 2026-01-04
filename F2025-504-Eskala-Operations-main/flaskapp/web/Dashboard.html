@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Partner Dashboard</title>
+    <link rel="stylesheet" href="/web/styles/Dashboard.css" />
+    <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+  </head>
+  <body>
+    <div id="navbar"></div>
+    <script>
+      fetch("navbar.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("navbar").innerHTML = html;
+
+          const script = document.createElement("script");
+          script.src = "/js/navbar.js";
+          document.body.appendChild(script);
+        });
+    </script>
+
+    <div class="container">
+      <!-- LEFT PANEL -->
+      <div class="left-panel">
+        <img src="/Assets/Partner_Logo.png" alt="Partner" />
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="right-panel">
+        <div class="card">
+          <div class="card-header">
+            <h1 id="welcome">Welcome, Valued Member!</h1>
+            <!-- <button id="lang-toggle" class="lang-toggle">Español</button> -->
+          </div>
+
+          <p id="instruction" class="instruction">
+            Please select one of the following options depending on your service
+            need.
+          </p>
+
+          <div class="buttons">
+            <!-- Dividend Entry Form -->
+            <div class="button-block">
+              <a href="/web/Equity_Entry.html" class="button">
+                <span class="emoji">💸</span>
+                <span id="dividend-label">Dividend Entry Form</span>
+              </a>
+              <p id="dividend-desc" class="desc">
+                Submit dividend payment proof.
+              </p>
+            </div>
+
+            <!-- Request for Equity Conversion -->
+            <div class="button-block">
+              <a href="/web/Equity_Conversion.html" class="button">
+                <span class="emoji">🔄</span>
+                <span id="equity-label">Request for Equity Conversion</span>
+              </a>
+              <p id="equity-desc" class="desc">
+                Convert dividends to equity or request more funding.
+              </p>
+            </div>
+
+            <!-- Investments vs Loans (Staff only) -->
+            <div
+              class="button-block staff-only"
+              id="ivl-block"
+              style="display: none"
+            >
+              <a href="/web/Loan_vs_Investments.html" class="button">
+                <span class="emoji">📊</span>
+                <span id="ivl-label">Investments vs Loans</span>
+              </a>
+              <p id="ivl-desc" class="desc">
+                Enter client data for investment or loan evaluation.
+              </p>
+            </div>
+
+            <!-- Micro Equity Matching (Staff only) -->
+            <div
+              class="button-block staff-only"
+              id="match-block"
+              style="display: none"
+            >
+              <a
+                href="/web/matching-equity.html"
+                class="button"
+                aria-label="Micro Equity Matching"
+              >
+                <span class="emoji">🧮</span>
+                <span id="match-label">Micro Equity Matching</span>
+              </a>
+              <p id="match-desc" class="desc">
+                Enter partner, share, and proposal details.
+              </p>
+            </div>
+
+            <!-- Micro Equity Profit (Staff only) -->
+            <div
+              class="button-block staff-only"
+              id="profit-block"
+              style="display: none"
+            >
+              <a
+                href="/web/profit_form.html"
+                class="button"
+                aria-label="Micro Equity Profit"
+              >
+                <span class="emoji">💹</span>
+                <span id="profit-label">Micro Equity Profit</span>
+              </a>
+              <p id="profit-desc" class="desc">
+                Record profit, valuation, FX, and deal info.
+              </p>
+            </div>
+
+            <!-- Reports Dashboard (Staff only) -->
+            <div
+              class="button-block staff-only"
+              id="reports-block"
+              style="display: none"
+            >
+              <a
+                href="/web/reports.html"
+                class="button"
+                aria-label="Reports Dashboard"
+              >
+                <span class="emoji">📈</span>
+                <span id="reports-label">Reports Dashboard</span>
+              </a>
+              <p id="reports-desc" class="desc">
+                View analytics and export summaries.
+              </p>
+            </div>
+
+            <!-- Formula Manager (Staff only) -->
+            <div
+              class="button-block staff-only"
+              id="formula-block"
+              style="display: none"
+            >
+              <a
+                href="/web/formula-manager.html"
+                class="button"
+                aria-label="Formula Manager"
+              >
+                <span class="emoji">⚙️</span>
+                <span id="formula-label">Formula Manager</span>
+              </a>
+              <p id="formula-desc" class="desc">
+                Manage and update calculation formulas.
+              </p>
+            </div>
+
+            <!-- Manage Users (Staff only) -->
+            <div
+              class="button-block staff-only"
+              id="admin-block"
+              style="display: none"
+            >
+              <a
+                href="/web/admin.html"
+                class="button"
+                id="admin-button"
+                aria-label="Manage Users"
+              >
+                <span class="emoji">🛠️</span>
+                <span id="admin-label">Manage Users</span>
+              </a>
+              <p id="admin-desc" class="desc">Add or remove user accounts.</p>
+            </div>
+
+            <!-- Exchange Rate Manager (Staff only) -->
+            <div
+              class="button-block staff-only"
+              id="exchange-block"
+              style="display: none"
+            >
+              <a
+                href="/web/exchange-rate-manager.html"
+                class="button"
+                aria-label="Exchange Rate Manager"
+              >
+                <span class="emoji">⚙️</span>
+                <span id="exchange-label">Exchange Rate Manager</span>
+              </a>
+              <p id="exchange-desc" class="desc">
+                Manage and update exchange rates for L to USD conversions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ---------- i18n strings ----------
+      const translations = {
+        en: {
+          welcome: "Welcome, Valued Member!",
+          instruction:
+            "Please select one of the following options depending on your service need.",
+          dividendLabel: "Dividend Entry Form",
+          dividendDesc: "Submit dividend payment proof.",
+          equityLabel: "Request for Equity Conversion",
+          equityDesc: "Convert dividends to equity or request more funding.",
+          ivlLabel: "Investments vs Loans",
+          ivlDesc: "Enter client data for investment or loan evaluation.",
+          // langButton: "Español",
+          matchLabel: "Micro Equity Matching",
+          matchDesc: "Enter partner, share, and proposal details.",
+          profitLabel: "Micro Equity Profit",
+          profitDesc: "Record profit, valuation, FX, and deal info.",
+          formulaLabel: "Formula Manager",
+          formulaDesc: "Manage and update calculation formulas.",
+          adminLabel: "Manage Users",
+          adminDesc: "Add or remove user accounts.",
+          exchangeLabel: "Exchange Rate Manager",
+          exchangeDesc:
+            "Manage and update exchange rates for L to USD conversions.",
+          reportsLabel: "Reports Dashboard",
+          reportsDesc: "View analytics and export summaries.",
+        },
+        es: {
+          welcome: "¡Bienvenido, Miembro Valorado!",
+          instruction:
+            "Por favor seleccione una de las siguientes opciones según su necesidad de servicio.",
+          dividendLabel: "Formulario de Pago de Dividendos",
+          dividendDesc: "Envíe comprobante de pago de dividendos.",
+          equityLabel: "Solicitud de Conversión de Participación",
+          equityDesc:
+            "Convierta dividendos en acciones o solicite más financiación.",
+          ivlLabel: "Inversiones vs Préstamos",
+          ivlDesc:
+            "Ingrese datos del cliente para evaluar inversión o préstamo.",
+          // langButton: "English",
+          matchLabel: "Correspondencia de Microequidad",
+          matchDesc: "Ingrese detalles de socio, participación y propuesta.",
+          profitLabel: "Ganancia de Microequidad",
+          profitDesc:
+            "Registre beneficios, valoración, tipo de cambio y datos de operaciones.",
+          formulaLabel: "Gestor de Fórmulas",
+          formulaDesc: "Gestione y actualice fórmulas de cálculo.",
+          adminLabel: "Administrar Usuarios",
+          adminDesc: "Agregue o elimine cuentas de usuario.",
+          exchangeLabel: "Gestor de Tasas de Cambio",
+          exchangeDesc:
+            "Gestione y actualice las tasas de cambio para conversiones de L a USD.",
+          reportsLabel: "Panel de Reportes",
+          reportsDesc: "Vea analíticas y exporte resúmenes.",
+        },
+      };
+
+      let currentLang = "en";
+      const els = {
+        welcome: document.getElementById("welcome"),
+        instruction: document.getElementById("instruction"),
+        dividendLabel: document.getElementById("dividend-label"),
+        dividendDesc: document.getElementById("dividend-desc"),
+        equityLabel: document.getElementById("equity-label"),
+        equityDesc: document.getElementById("equity-desc"),
+        ivlLabel: document.getElementById("ivl-label"),
+        ivlDesc: document.getElementById("ivl-desc"),
+        ivlBlock: document.getElementById("ivl-block"),
+        adminLabel: document.getElementById("admin-label"),
+        adminDesc: document.getElementById("admin-desc"),
+        matchLabel: document.getElementById("match-label"),
+        matchDesc: document.getElementById("match-desc"),
+        profitLabel: document.getElementById("profit-label"),
+        profitDesc: document.getElementById("profit-desc"),
+        formulaLabel: document.getElementById("formula-label"),
+        formulaDesc: document.getElementById("formula-desc"),
+        formulaBlock: document.getElementById("formula-block"),
+        exchangeLabel: document.getElementById("exchange-label"),
+        exchangeDesc: document.getElementById("exchange-desc"),
+        exchangeBlock: document.getElementById("exchange-block"),
+        // langToggle: document.getElementById("lang-toggle"),
+        adminBlock: document.getElementById("admin-block"),
+        matchBlock: document.getElementById("match-block"),
+        profitBlock: document.getElementById("profit-block"),
+        profitBlock: document.getElementById("profit-block"),
+        profitLabel: document.getElementById("profit-label"),
+        profitDesc: document.getElementById("profit-desc"),
+
+        reportsBlock: document.getElementById("reports-block"),
+        reportsLabel: document.getElementById("reports-label"),
+        reportsDesc: document.getElementById("reports-desc"),
+      };
+
+      function setLanguage(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang; // NEW: helps CSS :lang(es)
+        const t = translations[lang];
+
+        els.welcome.textContent = t.welcome;
+        els.instruction.textContent = t.instruction;
+
+        els.dividendLabel.textContent = t.dividendLabel;
+        els.dividendDesc.textContent = t.dividendDesc;
+
+        els.equityLabel.textContent = t.equityLabel;
+        els.equityDesc.textContent = t.equityDesc;
+
+        els.ivlLabel.textContent = t.ivlLabel;
+        els.ivlDesc.textContent =
+          els.ivlDesc.getAttribute(`data-${lang}`) || t.ivlDesc;
+
+        els.adminLabel.textContent = t.adminLabel;
+        els.adminDesc.textContent =
+          els.adminDesc.getAttribute(`data-${lang}`) || t.adminDesc;
+
+        els.matchLabel.textContent = t.matchLabel;
+        els.matchDesc.textContent =
+          els.matchDesc.getAttribute(`data-${lang}`) || t.matchDesc;
+
+        els.profitLabel.textContent = t.profitLabel;
+        els.profitDesc.textContent =
+          els.profitDesc.getAttribute(`data-${lang}`) || t.profitDesc;
+
+        els.formulaLabel.textContent = t.formulaLabel;
+        els.formulaDesc.textContent =
+          els.formulaDesc.getAttribute(`data-${lang}`) || t.formulaDesc;
+
+        els.exchangeLabel.textContent = t.exchangeLabel;
+        els.exchangeDesc.textContent =
+          els.exchangeDesc.getAttribute(`data-${lang}`) || t.exchangeDesc;
+
+        els.reportsLabel.textContent = t.reportsLabel;
+        els.reportsDesc.textContent =
+          els.reportsDesc.getAttribute(`data-${lang}`) || t.reportsDesc;
+
+        if (els.langToggle) els.langToggle.textContent = t.langButton; // SAFE GUARD
+      }
+
+      // els.langToggle?.addEventListener("click", () => {
+      //   setLanguage(currentLang === "en" ? "es" : "en");
+      // });
+
+      // ---------- Staff-only reveal (SECURE - uses API) ----------
+      async function checkUserRole() {
+        try {
+          const res = await fetch('/api/user/role', { credentials: 'include' });
+          const data = await res.json();
+          
+          if (data.ok && data.role === 'STAFF') {
+            // Show all staff-only features
+            els.ivlBlock.style.display = "flex";
+            els.adminBlock.style.display = "flex";
+            els.matchBlock.style.display = "flex";
+            els.profitBlock.style.display = "flex";
+            els.formulaBlock.style.display = "flex";
+            els.exchangeBlock.style.display = "flex";
+            els.reportsBlock.style.display = "flex";
+          } else {
+            // Partner view - hide staff features
+            els.ivlBlock.style.display = "none";
+            els.adminBlock.style.display = "none";
+            els.matchBlock.style.display = "none";
+            els.profitBlock.style.display = "none";
+            els.formulaBlock.style.display = "none";
+            els.exchangeBlock.style.display = "none";
+            els.reportsBlock.style.display = "none";
+          }
+        } catch (err) {
+          console.error('Error checking role:', err);
+          // On error, hide staff features for security
+          els.ivlBlock.style.display = "none";
+          els.adminBlock.style.display = "none";
+          els.matchBlock.style.display = "none";
+          els.profitBlock.style.display = "none";
+          els.formulaBlock.style.display = "none";
+          els.exchangeBlock.style.display = "none";
+          els.reportsBlock.style.display = "none";
+        }
+      }
+
+      // Check role on page load
+      checkUserRole();
+
+      // boot language
+      setLanguage("en");
+    </script>
+    <script src="/js/Dashboard.client.js"></script>
+  </body>
+</html>

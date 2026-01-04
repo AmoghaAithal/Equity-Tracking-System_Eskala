@@ -1,0 +1,1478 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Equity Conversion Submissions - Admin</title>
+
+    <!-- Eskala form navbar styles -->
+    <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: #f5f5f5;
+        min-height: 100vh;
+      }
+
+      /* leave some breathing room below the navbar */
+      .page-wrap {
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: #134e4a;
+        color: white;
+        padding: 24px 30px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .header p {
+        opacity: 0.9;
+        font-size: 14px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1px;
+        background: #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 20px 24px;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #134e4a;
+      }
+
+      .controls {
+        padding: 20px 24px;
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 280px;
+      }
+      .search-box input {
+        width: 100%;
+        padding: 10px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      .search-box input:focus {
+        outline: none;
+        border-color: #134e4a;
+        box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.1);
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 10px;
+      }
+
+      select {
+        padding: 10px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      select:focus {
+        outline: none;
+        border-color: #134e4a;
+        box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.1);
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn-refresh {
+        background: #134e4a;
+        color: white;
+      }
+      .btn-refresh:hover {
+        background: #0f3f3a;
+      }
+      .btn-download {
+        background: #0891b2;
+        color: white;
+      }
+      .btn-download:hover {
+        background: #0e7490;
+      }
+      .btn-view {
+        background: #3b82f6;
+        color: white;
+        padding: 6px 14px;
+        font-size: 13px;
+      }
+      .btn-view:hover {
+        background: #2563eb;
+      }
+      .btn-edit {
+        background: #f59e0b;
+        color: white;
+        padding: 6px 14px;
+        font-size: 13px;
+      }
+      .btn-edit:hover {
+        background: #d97706;
+      }
+      .btn-delete {
+        background: #ef4444;
+        color: white;
+        padding: 6px 14px;
+        font-size: 13px;
+      }
+      .btn-delete:hover {
+        background: #dc2626;
+      }
+      .btn-save {
+        background: #10b981;
+        color: white;
+      }
+      .btn-save:hover {
+        background: #059669;
+      }
+      .btn-cancel {
+        background: #6b7280;
+        color: white;
+      }
+      .btn-cancel:hover {
+        background: #4b5563;
+      }
+
+      .file-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 13px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+      .file-link:hover {
+        background: #dbeafe;
+        color: #2563eb;
+      }
+      .no-file {
+        color: #9ca3af;
+        font-size: 13px;
+      }
+
+      .confirmed-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .confirmed-yes {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .confirmed-no {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      thead {
+        background: #f9fafb;
+        border-bottom: 2px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      th {
+        padding: 12px 16px;
+        text-align: left;
+        font-weight: 600;
+        color: #374151;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+      tbody tr {
+        border-bottom: 1px solid #f3f4f6;
+        transition: background 0.15s;
+      }
+      tbody tr:hover {
+        background: #f9fafb;
+      }
+      td {
+        padding: 16px;
+        color: #1f2937;
+        max-width: 200px;
+      }
+      .id-cell {
+        font-weight: 600;
+        color: #134e4a;
+      }
+      .comments-cell {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+        color: #6b7280;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .status-submitted {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-approved {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #6b7280;
+      }
+      .empty-state-icon {
+        font-size: 56px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+      .loading {
+        text-align: center;
+        padding: 60px 20px;
+        font-size: 16px;
+        color: #6b7280;
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        overflow-y: auto;
+      }
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .modal-content {
+        background: white;
+        border-radius: 12px;
+        max-width: 700px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 30px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .modal-header h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #134e4a;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+      .close-btn:hover {
+        background: #f3f4f6;
+        color: #374151;
+      }
+
+      #modal-body {
+        padding: 30px;
+      }
+      .detail-row {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid #f3f4f6;
+      }
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+      .detail-label {
+        font-weight: 600;
+        color: #6b7280;
+        width: 200px;
+        flex-shrink: 0;
+      }
+      .detail-value {
+        color: #1f2937;
+        flex: 1;
+        word-break: break-word;
+      }
+
+      .form-grid {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group label {
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+      }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 10px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #134e4a;
+        box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.1);
+      }
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        .modal-content {
+          max-height: 95vh;
+        }
+        .detail-row {
+          flex-direction: column;
+          gap: 4px;
+        }
+        .detail-label {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- FORM NAVBAR (same component used on the form page) -->
+    <nav class="esk-nav" role="navigation" aria-label="Primary">
+      <div class="esk-nav__inner">
+        <!-- Brand -->
+        <a class="esk-nav__brand" id="esk-form-brand" href="#">
+          <img src="/Assets/Eskala-Logo.png" alt="" />
+          <span>Eskala</span>
+        </a>
+
+        <div class="esk-nav__spacer"></div>
+
+        <!-- Language Dropdown -->
+        <div class="esk-nav__group">
+          <button
+            class="esk-nav__btn"
+            type="button"
+            data-menu="lang"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="menu-lang"
+          >
+            English ▾
+          </button>
+          <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+            <a href="#" role="menuitem" data-lang="en">English</a>
+            <a href="#" role="menuitem" data-lang="es">Español</a>
+          </div>
+        </div>
+
+        <!-- Back/Home -->
+        <a
+          id="esk-form-home"
+          class="esk-nav__btn esk-nav__btn--ghost"
+          href="/web/Equity_Conversion.html"
+          onclick="location.href='/web/Equity_Conversion.html' + (location.search||''); return false;"
+          >← Back</a
+        >
+      </div>
+    </nav>
+
+    <div class="page-wrap">
+      <div class="container">
+        <div class="header">
+          <h1
+            data-en="🔄 Equity Conversion Submissions"
+            data-es="🔄 Envíos de Conversión de Capital"
+          >
+            🔄 Equity Conversion Submissions
+          </h1>
+          <p
+            data-en="Review and manage loan-to-equity conversion requests from community banks"
+            data-es="Revise y gestione solicitudes de conversión de préstamos a capital de bancos comunitarios"
+          >
+            Review and manage loan-to-equity conversion requests from community
+            banks
+          </p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div
+              class="stat-label"
+              data-en="Total Submissions"
+              data-es="Envíos Totales"
+            >
+              Total Submissions
+            </div>
+            <div class="stat-value" id="total-submissions">0</div>
+          </div>
+          <div class="stat-card">
+            <div
+              class="stat-label"
+              data-en="Total Original Loans"
+              data-es="Total Préstamos Originales"
+            >
+              Total Original Loans
+            </div>
+            <div class="stat-value" id="total-original">L 0.00</div>
+          </div>
+          <div class="stat-card">
+            <div
+              class="stat-label"
+              data-en="Total Conversion Requested"
+              data-es="Total Conversión Solicitada"
+            >
+              Total Conversion Requested
+            </div>
+            <div class="stat-value" id="total-conversion">L 0.00</div>
+          </div>
+          <div class="stat-card">
+            <div
+              class="stat-label"
+              data-en="Pending Review"
+              data-es="Pendientes de Revisión"
+            >
+              Pending Review
+            </div>
+            <div class="stat-value" id="pending-submissions">0</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="search-box">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="🔍 Search by bank name, RTN, or representative..."
+              data-en-placeholder="🔍 Search by bank name, RTN, or representative..."
+              data-es-placeholder="🔍 Buscar por banco, RTN o representante..."
+            />
+          </div>
+          <div class="filter-group">
+            <select id="status-filter">
+              <option
+                value=""
+                data-en="All Statuses"
+                data-es="Todos los Estados"
+              >
+                All Statuses
+              </option>
+              <option value="SUBMITTED" data-en="Submitted" data-es="Enviado">
+                Submitted
+              </option>
+              <option value="APPROVED" data-en="Approved" data-es="Aprobado">
+                Approved
+              </option>
+              <option value="REJECTED" data-en="Rejected" data-es="Rechazado">
+                Rejected
+              </option>
+            </select>
+            <button
+              class="btn btn-refresh"
+              onclick="loadSubmissions()"
+              data-en="🔄 Refresh"
+              data-es="🔄 Actualizar"
+            >
+              🔄 Refresh
+            </button>
+            <button
+              class="btn btn-download"
+              onclick="downloadCSV()"
+              data-en="📥 Download CSV"
+              data-es="📥 Descargar CSV"
+            >
+              📥 Download CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div id="loading" class="loading">
+            <div
+              data-en="⏳ Loading submissions..."
+              data-es="⏳ Cargando envíos..."
+            >
+              ⏳ Loading submissions...
+            </div>
+          </div>
+
+          <div id="empty-state" class="empty-state" style="display: none">
+            <div class="empty-state-icon">📋</div>
+            <h3
+              data-en="No Submissions Found"
+              data-es="No se encontraron envíos"
+            >
+              No Submissions Found
+            </h3>
+            <p
+              data-en="There are no equity conversion submissions to display."
+              data-es="No hay envíos de conversión de capital para mostrar."
+            >
+              There are no equity conversion submissions to display.
+            </p>
+          </div>
+
+          <table id="submissions-table" style="display: none">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Bank Name</th>
+                <th>RTN</th>
+                <th>Representative</th>
+                <th>Phone</th>
+                <th>Loan ID</th>
+                <th>Original Loan</th>
+                <th>Remaining</th>
+                <th>Conversion Amt</th>
+                <th>Equity %</th>
+                <th>Attachment</th>
+                <th>Comments</th>
+                <th>Confirmed</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Last Edited</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2
+            data-en="Conversion Request Details"
+            data-es="Detalles de la Solicitud de Conversión"
+          >
+            Conversion Request Details
+          </h2>
+          <button class="close-btn" onclick="closeModal('details-modal')">
+            &times;
+          </button>
+        </div>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2
+            data-en="Edit Conversion Request"
+            data-es="Editar Solicitud de Conversión"
+          >
+            Edit Conversion Request
+          </h2>
+          <button class="close-btn" onclick="closeModal('edit-modal')">
+            &times;
+          </button>
+        </div>
+        <form id="edit-form" class="form-grid">
+          <input type="hidden" id="edit-submission-id" />
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-bank-name">Bank Name</label>
+              <input type="text" id="edit-bank-name" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-rtn">RTN Number</label>
+              <input type="text" id="edit-rtn" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-representative">Representative Name</label>
+              <input type="text" id="edit-representative" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-phone">Phone Number</label>
+              <input type="text" id="edit-phone" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-loan-id">Loan ID</label>
+              <input type="text" id="edit-loan-id" />
+            </div>
+            <div class="form-group">
+              <label for="edit-original-loan">Original Loan Amount (L)</label>
+              <input type="number" id="edit-original-loan" step="0.01" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-loan-approval-date">Loan Approval Date</label>
+              <input type="date" id="edit-loan-approval-date" />
+            </div>
+            <div class="form-group">
+              <label for="edit-interest-paid">Interest Paid (L)</label>
+              <input type="number" id="edit-interest-paid" step="0.01" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-remaining">Loan Amount Remaining (L)</label>
+              <input type="number" id="edit-remaining" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label for="edit-repayment-frequency">Repayment Frequency</label>
+              <select id="edit-repayment-frequency">
+                <option value="">Select...</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Bi-weekly">Bi-weekly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Annually">Annually</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-conversion-amount">Proposed Conversion Amount (L)</label>
+              <input type="number" id="edit-conversion-amount" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label for="edit-conversion-ratio">Conversion Ratio</label>
+              <input type="text" id="edit-conversion-ratio" placeholder="e.g., 1:1" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-equity-percentage">Proposed Equity Percentage (%)</label>
+              <input type="number" id="edit-equity-percentage" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label for="edit-desired-date">Desired Conversion Date</label>
+              <input type="date" id="edit-desired-date" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="edit-status">Status</label>
+              <select id="edit-status">
+                <option value="Pending">Pending</option>
+                <option value="SUBMITTED">Submitted</option>
+                <option value="Under Review">Under Review</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-comments">Comments</label>
+            <textarea id="edit-comments" rows="3"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-cancel"
+              onclick="closeModal('edit-modal')"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-save">💾 Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      /* ---------- Language bootstrap (same as form page) ---------- */
+      (function () {
+        const LANG_KEY = "eskala_lang";
+
+        // Global hook used by /form-navbar.js
+        window.setLanguage = function setLanguage(lang) {
+          lang = lang === "es" ? "es" : "en";
+
+          // Update all labeled text
+          document.querySelectorAll("[data-en]").forEach((el) => {
+            const text = el.getAttribute("data-" + lang);
+            if (text != null) el.textContent = text;
+          });
+
+          // Update placeholders
+          document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+            const ph = el.getAttribute("data-" + lang + "-placeholder");
+            if (ph != null) el.placeholder = ph;
+          });
+
+          // <html lang>
+          document.documentElement.setAttribute("lang", lang);
+
+          // Update dropdown label immediately
+          const btn = document.querySelector('[data-menu="lang"]');
+          if (btn)
+            btn.innerHTML = (lang === "es" ? "Español" : "English") + " ▾";
+
+          // Translate the navbar Home link
+          const home = document.getElementById("esk-form-home");
+          if (home) home.textContent = lang === "es" ? "← Atrás" : "← Back";
+        };
+
+        // Apply saved or default language before navbar JS runs
+        const saved = localStorage.getItem(LANG_KEY) || "en";
+        window.setLanguage(saved);
+      })();
+    </script>
+
+    <script>
+      const API_BASE = "";
+      let allSubmissions = [];
+      let currentUserRole = null;
+
+      // ---------- helper: find a valid attachment path ----------
+      function getAttachmentPath(sub) {
+        if (!sub || typeof sub !== "object") return null;
+
+        const keys = [
+          "attachment_path",
+          "attachment",
+          "supporting_file_path",
+          "supporting_file",
+          "payment_proof_path",
+          "payment_proof",
+          "file_path",
+        ];
+
+        for (const key of keys) {
+          const raw = sub[key];
+          if (!raw) continue;
+          const val = String(raw).trim();
+          if (!val || val === "undefined" || val === "null") continue;
+          return val;
+        }
+
+        // Fallback: any string that looks like a file path
+        for (const [k, v] of Object.entries(sub)) {
+          if (typeof v !== "string") continue;
+          const val = v.trim();
+          if (!val || val === "undefined" || val === "null") continue;
+          if (
+            val.includes("/uploads/") ||
+            val.toLowerCase().endsWith(".pdf") ||
+            val.toLowerCase().endsWith(".jpg") ||
+            val.toLowerCase().endsWith(".jpeg") ||
+            val.toLowerCase().endsWith(".png")
+          ) {
+            return val;
+          }
+        }
+        return null;
+      }
+
+      // adding user role
+      async function loadUserRole() {
+        try {
+          const res = await fetch(`${API_BASE}/api/user/role`, {
+            credentials: "include",
+          });
+          if (!res.ok) return;
+
+          const data = await res.json();
+          currentUserRole = (data.role || data.user_role || "").toUpperCase();
+          console.log("Current user role:", currentUserRole);
+        } catch (err) {
+          console.warn("Could not load user role", err);
+        }
+      }
+
+      async function loadSubmissions() {
+        const loading = document.getElementById("loading");
+        const emptyState = document.getElementById("empty-state");
+        const table = document.getElementById("submissions-table");
+
+        loading.style.display = "block";
+        emptyState.style.display = "none";
+        table.style.display = "none";
+
+        try {
+          const res = await fetch(
+            `${API_BASE}/api/equity/conversion/submissions`
+          );
+          const data = await res.json();
+
+          if (!res.ok || !data.ok)
+            throw new Error(data.error || "Failed to load");
+
+          allSubmissions = data.submissions || [];
+          console.log("Conversion submissions:", allSubmissions);
+          updateStats();
+          displaySubmissions(allSubmissions);
+        } catch (err) {
+          console.error("Error loading submissions:", err);
+          loading.innerHTML =
+            '<div style="color: #ef4444;">❌ Error loading submissions. Please try again.</div>';
+        } finally {
+          loading.style.display = "none";
+        }
+      }
+
+      function updateStats() {
+        const total = allSubmissions.length;
+        const pending = allSubmissions.filter(
+          (s) => s.status === "SUBMITTED"
+        ).length;
+
+        const totalOriginal = allSubmissions.reduce(
+          (sum, s) => sum + (parseFloat(s.original_loan_amount) || 0),
+          0
+        );
+
+        const totalConversion = allSubmissions.reduce(
+          (sum, s) => sum + (parseFloat(s.proposed_conversion_amount) || 0),
+          0
+        );
+
+        document.getElementById("total-submissions").textContent = total;
+        document.getElementById("pending-submissions").textContent = pending;
+        document.getElementById("total-original").textContent =
+          formatCurrency(totalOriginal);
+        document.getElementById("total-conversion").textContent =
+          formatCurrency(totalConversion);
+      }
+
+      function displaySubmissions(submissions) {
+        const tbody = document.getElementById("table-body");
+        const table = document.getElementById("submissions-table");
+        const emptyState = document.getElementById("empty-state");
+
+        if (!submissions || submissions.length === 0) {
+          table.style.display = "none";
+          emptyState.style.display = "block";
+          return;
+        }
+
+        table.style.display = "table";
+        emptyState.style.display = "none";
+
+        tbody.innerHTML = submissions
+          .map((sub) => {
+            const filePath = getAttachmentPath(sub);
+            const href =
+              filePath && filePath.startsWith("http")
+                ? filePath
+                : filePath
+                ? `${API_BASE}${filePath}`
+                : null;
+
+            const attachmentCell = href
+              ? `<a href="${href}" target="_blank" class="file-link" download>📎 Download</a>`
+              : '<span class="no-file">No file</span>';
+
+            return `
+        <tr>
+          <td class="id-cell">#${sub.submission_id}</td>
+          <td>${sub.bank_name || "-"}</td>
+          <td>${sub.rtn_number || "-"}</td>
+          <td>${sub.representative_name || "-"}</td>
+          <td>${sub.phone_number || "-"}</td>
+          <td>${sub.loan_id || "-"}</td>
+          <td>${formatCurrency(sub.original_loan_amount)}</td>
+          <td>${formatCurrency(sub.loan_amount_remaining)}</td>
+          <td>${formatCurrency(sub.proposed_conversion_amount)}</td>
+          <td>${
+            sub.proposed_equity_percentage
+              ? sub.proposed_equity_percentage + "%"
+              : "-"
+          }</td>
+          <td>${attachmentCell}</td>
+          <td class="comments-cell" title="${sub.comments || ""}">${
+              sub.comments || "-"
+            }</td>
+          <td>
+            <span class="confirmed-badge ${
+              sub.confirmed ? "confirmed-yes" : "confirmed-no"
+            }">
+              ${sub.confirmed ? "✓ Yes" : "✗ No"}
+            </span>
+          </td>
+          <td><span class="status-badge status-${sub.status.toLowerCase()}">${
+              sub.status
+            }</span></td>
+          <td>${formatDate(sub.created_at)}</td>
+          <td>${
+            sub.edited_by
+              ? `${
+                  sub.edited_by
+                }<br><small style="color: #6b7280;">${formatDate(
+                  sub.edited_at
+                )}</small>`
+              : "-"
+          }</td>
+          <td>
+            <div class="actions">
+              <button class="btn btn-view" onclick="viewDetails(${sub.submission_id})">
+                View
+              </button>
+              ${
+                currentUserRole === "STAFF"
+                  ? `
+                  <button class="btn btn-edit" onclick="editSubmission(${sub.submission_id})">
+                    ✏️ Edit
+                  </button>
+                  <button class="btn btn-delete" onclick="deleteSubmission(${sub.submission_id})">
+                    🗑️ Delete
+                  </button>
+                `
+                  : ""
+              }
+            </div>
+          </td>
+        </tr>`;
+          })
+          .join("");
+      }
+
+      function viewDetails(submissionId) {
+        const sub = allSubmissions.find(
+          (s) => s.submission_id === submissionId
+        );
+        if (!sub) return;
+
+        const modalBody = document.getElementById("modal-body");
+
+        const filePath = getAttachmentPath(sub);
+        const href =
+          filePath && filePath.startsWith("http")
+            ? filePath
+            : filePath
+            ? `${API_BASE}${filePath}`
+            : null;
+        const attachmentHtml = href
+          ? `<a href="${href}" target="_blank" class="file-link" download>📎 Download Attachment</a>`
+          : "No attachment uploaded";
+
+        modalBody.innerHTML = `
+        <div class="detail-row">
+          <div class="detail-label">Submission ID</div>
+          <div class="detail-value">#${sub.submission_id}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Bank Name</div>
+          <div class="detail-value">${sub.bank_name || "-"}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">RTN Number</div>
+          <div class="detail-value">${sub.rtn_number || "-"}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Representative</div>
+          <div class="detail-value">${sub.representative_name || "-"}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Phone</div>
+          <div class="detail-value">${sub.phone_number || "-"}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Loan ID</div>
+          <div class="detail-value">${sub.loan_id || "-"}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Original Loan</div>
+          <div class="detail-value">${formatCurrency(
+            sub.original_loan_amount
+          )}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Remaining Balance</div>
+          <div class="detail-value">${formatCurrency(
+            sub.loan_amount_remaining
+          )}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Conversion Amount</div>
+          <div class="detail-value">${formatCurrency(
+            sub.proposed_conversion_amount
+          )}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Equity Percentage</div>
+          <div class="detail-value">${
+            sub.proposed_equity_percentage
+              ? sub.proposed_equity_percentage + "%"
+              : "-"
+          }</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Attachment</div>
+          <div class="detail-value">${attachmentHtml}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Comments</div>
+          <div class="detail-value">${sub.comments || "No comments"}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Confirmed</div>
+          <div class="detail-value">
+            <span class="confirmed-badge ${
+              sub.confirmed ? "confirmed-yes" : "confirmed-no"
+            }">
+              ${
+                sub.confirmed
+                  ? "✓ Yes - Payment Confirmed"
+                  : "✗ No - Not Confirmed"
+              }
+            </span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Status</div>
+          <div class="detail-value">
+            <span class="status-badge status-${sub.status.toLowerCase()}">${
+          sub.status
+        }</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Submitted</div>
+          <div class="detail-value">${formatDate(sub.created_at)}</div>
+        </div>
+        ${
+          sub.edited_by
+            ? `<div class="detail-row">
+                 <div class="detail-label">Last Edited By</div>
+                 <div class="detail-value">${sub.edited_by} on ${formatDate(
+                sub.edited_at
+              )}</div>
+               </div>`
+            : ""
+        }
+      `;
+
+        document.getElementById("details-modal").classList.add("active");
+      }
+
+      function editSubmission(submissionId) {
+        const sub = allSubmissions.find(
+          (s) => s.submission_id === submissionId
+        );
+        if (!sub) return;
+
+        // Populate all edit form fields
+        document.getElementById("edit-submission-id").value = sub.submission_id;
+        document.getElementById("edit-bank-name").value = sub.bank_name || "";
+        document.getElementById("edit-rtn").value = sub.rtn_number || "";
+        document.getElementById("edit-representative").value = sub.representative_name || "";
+        document.getElementById("edit-phone").value = sub.phone_number || "";
+        document.getElementById("edit-loan-id").value = sub.loan_id || "";
+        document.getElementById("edit-original-loan").value = sub.original_loan_amount || "";
+        document.getElementById("edit-loan-approval-date").value = sub.loan_approval_date ? sub.loan_approval_date.split('T')[0] : "";
+        document.getElementById("edit-interest-paid").value = sub.interest_paid || "";
+        document.getElementById("edit-remaining").value = sub.loan_amount_remaining || "";
+        document.getElementById("edit-repayment-frequency").value = sub.repayment_frequency || "";
+        document.getElementById("edit-conversion-amount").value = sub.proposed_conversion_amount || "";
+        document.getElementById("edit-conversion-ratio").value = sub.proposed_conversion_ratio || "";
+        document.getElementById("edit-equity-percentage").value = sub.proposed_equity_percentage || "";
+        document.getElementById("edit-desired-date").value = sub.desired_conversion_date ? sub.desired_conversion_date.split('T')[0] : "";
+        document.getElementById("edit-status").value = sub.status || "Pending";
+        document.getElementById("edit-comments").value = sub.comments || "";
+
+        // Open the edit modal
+        document.getElementById("edit-modal").classList.add("active");
+      }
+
+      async function deleteSubmission(submissionId) {
+        if (
+          !confirm(
+            "Are you sure you want to delete this submission? This action cannot be undone."
+          )
+        )
+          return;
+
+        try {
+          const res = await fetch(
+            `${API_BASE}/api/equity/conversion/submission/${submissionId}`,
+            { method: "DELETE" }
+          );
+          const result = await res.json();
+          if (!res.ok || !result.ok)
+            throw new Error(result.error || "Failed to delete");
+
+          alert("Submission deleted successfully!");
+          loadSubmissions();
+        } catch (err) {
+          console.error("Error deleting submission:", err);
+          alert("Failed to delete submission: " + err.message);
+        }
+      }
+
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("active");
+      }
+
+      document
+        .getElementById("edit-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const submissionId =
+            document.getElementById("edit-submission-id").value;
+
+          const data = {
+            bank_name: document.getElementById("edit-bank-name").value,
+            rtn_number: document.getElementById("edit-rtn").value,
+            representative_name: document.getElementById("edit-representative")
+              .value,
+            phone_number: document.getElementById("edit-phone").value,
+            loan_id: document.getElementById("edit-loan-id").value,
+            original_loan_amount:
+              parseFloat(document.getElementById("edit-original-loan").value) ||
+              null,
+            loan_approval_date:
+              document.getElementById("edit-loan-approval-date").value || null,
+            interest_paid:
+              parseFloat(document.getElementById("edit-interest-paid").value) ||
+              null,
+            loan_amount_remaining:
+              parseFloat(document.getElementById("edit-remaining").value) ||
+              null,
+            repayment_frequency: document.getElementById(
+              "edit-repayment-frequency"
+            ).value,
+            proposed_conversion_amount:
+              parseFloat(
+                document.getElementById("edit-conversion-amount").value
+              ) || null,
+            proposed_conversion_ratio: document.getElementById(
+              "edit-conversion-ratio"
+            ).value,
+            proposed_equity_percentage:
+              parseFloat(
+                document.getElementById("edit-equity-percentage").value
+              ) || null,
+            desired_conversion_date:
+              document.getElementById("edit-desired-date").value || null,
+            status: document.getElementById("edit-status").value,
+            comments: document.getElementById("edit-comments").value,
+          };
+
+          try {
+            const res = await fetch(
+              `${API_BASE}/api/equity/conversion/submission/${submissionId}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+              }
+            );
+            const result = await res.json();
+            if (!res.ok || !result.ok)
+              throw new Error(result.error || "Failed to update");
+
+            alert("Submission updated successfully!");
+            closeModal("edit-modal");
+            loadSubmissions();
+          } catch (err) {
+            console.error("Error updating submission:", err);
+            alert("Failed to update submission: " + err.message);
+          }
+        });
+
+      function formatCurrency(value) {
+        if (!value) return "-";
+        return (
+          "L " +
+          parseFloat(value).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        );
+      }
+
+      function formatDate(dateStr, type = "datetime") {
+        if (!dateStr) return "-";
+        const date = new Date(dateStr);
+        if (type === "date") {
+          return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          });
+        }
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      document
+        .getElementById("search-input")
+        .addEventListener("input", filterSubmissions);
+      document
+        .getElementById("status-filter")
+        .addEventListener("change", filterSubmissions);
+
+      function filterSubmissions() {
+        const term = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const status = document.getElementById("status-filter").value;
+        const filtered = allSubmissions.filter((sub) => {
+          const matchesSearch =
+            (sub.bank_name || "").toLowerCase().includes(term) ||
+            (sub.rtn_number || "").toLowerCase().includes(term) ||
+            (sub.representative_name || "").toLowerCase().includes(term);
+          const matchesStatus = !status || sub.status === status;
+          return matchesSearch && matchesStatus;
+        });
+        displaySubmissions(filtered);
+      }
+
+      document
+        .getElementById("details-modal")
+        .addEventListener("click", (e) => {
+          if (e.target.id === "details-modal") closeModal("details-modal");
+        });
+      document.getElementById("edit-modal").addEventListener("click", (e) => {
+        if (e.target.id === "edit-modal") closeModal("edit-modal");
+      });
+
+      function downloadCSV() {
+        if (!allSubmissions || allSubmissions.length === 0) {
+          alert("No data to export. Please load submissions first.");
+          return;
+        }
+        const headers = [
+          "ID",
+          "Bank Name",
+          "RTN Number",
+          "Representative",
+          "Phone",
+          "Loan ID",
+          "Original Loan",
+          "Loan Approval Date",
+          "Interest Paid",
+          "Remaining Balance",
+          "Repayment Frequency",
+          "Conversion Amount",
+          "Conversion Ratio",
+          "Equity Percentage",
+          "Desired Date",
+          "Attachment",
+          "Comments",
+          "Confirmed",
+          "Status",
+          "Created At",
+          "Last Edited By",
+          "Last Edited At",
+        ];
+        let csv = headers.join(",") + "\n";
+        allSubmissions.forEach((sub) => {
+          const hasAttachment = !!getAttachmentPath(sub);
+          const row = [
+            sub.submission_id || "",
+            escapeCSV(sub.bank_name || ""),
+            escapeCSV(sub.rtn_number || ""),
+            escapeCSV(sub.representative_name || ""),
+            escapeCSV(sub.phone_number || ""),
+            escapeCSV(sub.loan_id || ""),
+            sub.original_loan_amount || "",
+            sub.loan_approval_date || "",
+            sub.interest_paid || "",
+            sub.loan_amount_remaining || "",
+            escapeCSV(sub.repayment_frequency || ""),
+            sub.proposed_conversion_amount || "",
+            escapeCSV(sub.proposed_conversion_ratio || ""),
+            sub.proposed_equity_percentage || "",
+            sub.desired_conversion_date || "",
+            hasAttachment ? "Yes" : "No",
+            escapeCSV(sub.comments || ""),
+            sub.confirmed ? "Yes" : "No",
+            escapeCSV(sub.status || ""),
+            sub.created_at || "",
+            escapeCSV(sub.edited_by || ""),
+            sub.edited_at || "",
+          ];
+          csv += row.join(",") + "\n";
+        });
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        const dateStr = new Date().toISOString().split("T")[0];
+        link.download = `equity_conversion_submissions_${dateStr}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function escapeCSV(v) {
+        if (v == null) return "";
+        const s = String(v);
+        return s.includes(",") || s.includes('"') || s.includes("\n")
+          ? '"' + s.replace(/"/g, '""') + '"'
+          : s;
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadUserRole();
+        loadSubmissions();
+      });
+    </script>
+
+    <!-- Navbar logic (handles role-based home, language menu, etc.) -->
+    <script src="/js/form-navbar.js" defer></script>
+  </body>
+</html>

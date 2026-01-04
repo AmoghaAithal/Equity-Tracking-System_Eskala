@@ -1,0 +1,118 @@
+/* Reset body spacing and set a clean font */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+
+  /* Split background: left side orange, right side white */
+  background: linear-gradient(to right, #F48434 50%, #ffffff 50%);
+}
+
+/* Full page wrapper centers everything vertically and horizontally */
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full screen height */
+}
+
+/* Outer box that contains both left and right sides */
+.card-container {
+  width: 950px;
+  height: 620px;
+  border-radius: 36px;
+  background: white;
+  box-shadow: 8px 12px 16px rgba(0, 0, 0, 0.2); /* Drop shadow */
+  overflow: hidden;
+  display: flex; /* Side-by-side layout */
+}
+
+/* Inside the card: row layout (left and right sides) */
+.card-content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* LEFT side (orange background with logo) */
+.card-left {
+  width: 50%;
+  background-color: #F48434;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Eskala logo image inside the orange section */
+.logo-image {
+  width: 370px;
+  height: 370px;
+  background-image: url('/Assets/Logo(Landing).png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* RIGHT side (white background with buttons and text) */
+.card-right {
+  width: 50%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Header text above buttons */
+.role-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 20px;
+  align-self: flex-start; /* Left-aligned */
+  margin-left: 0px;
+  padding-left: 10px;
+}
+
+/* Style for login buttons (Eskala Staff, Bank Partner) */
+.role-button {
+  width: 280px;
+  height: 45px;
+  margin-bottom: 15px;
+  background-color: #00573E; /* Dark green */
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+/* Hover effect for login buttons */
+.role-button:hover {
+  background-color: #007B55; /* Lighter green */
+  transform: translateY(-2px); /* Lift effect */
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Container for role-title, buttons, and image */
+.role-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  /* Align content to the left */
+  padding-left: 10px;
+}
+
+/* Decorative image shown below the buttons */
+.decorative-image {
+  width: 320px;
+  height: 330px;
+  margin-top: 25px;
+  background-image: url('/Assets/Local.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

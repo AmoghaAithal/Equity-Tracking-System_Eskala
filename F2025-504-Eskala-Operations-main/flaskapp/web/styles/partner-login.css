@@ -1,0 +1,166 @@
+
+/* === Base Page Styling === */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to right, #F48434 50%, #ffffff 50%);
+}
+
+/* Centers the login card in the middle of the screen */
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Takes full viewport height */
+}
+
+/* White card container */
+.card-container {
+  width: 950px;
+  height: 620px;
+  border-radius: 36px;
+  background: white;
+  box-shadow: 8px 12px 16px rgba(0, 0, 0, 0.2); /* Soft shadow around the box */
+  overflow: hidden;
+  display: flex;
+}
+
+/* Internal structure split into left and right halves */
+.card-content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* === LEFT SIDE: Logo Section === */
+.card-left {
+  width: 50%;
+  background-color: #F48434; /* Orange background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Logo image for bank partner view */
+.partner-logo {
+  width: 370px;
+  height: 370px;
+  background-image: url('/Assets/Logo_2.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* === RIGHT SIDE: Login Form Section === */
+.card-right {
+  width: 50%;
+  background-color: white;
+  padding: 60px 50px; /* Top/bottom: 60px, Left/right: 50px */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* HEADER: logo and language toggle */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.form-header .eskala-header {
+  height: 48px;
+}
+
+.form-header .language-toggle {
+  background: #e6f7f1;
+  color: #1f3d38;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.form-header .language-toggle:hover {
+  background: #d0ede8;
+}
+
+/* Title at the top of the form */
+.form-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 30px;
+}
+
+/* Label above input fields */
+.input-label {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #444;
+  letter-spacing: 0.5px;
+}
+
+/* Input box styling */
+.form-input {
+  height: 40px;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 10px 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #fdfdfd;
+  box-sizing: border-box;
+}
+
+/* Checkbox row for "Remember Me" */
+.remember-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.remember-label {
+  font-size: 12px;
+  margin-left: 8px;
+  color: #333;
+}
+
+/* Login button styling */
+.login-button {
+  width: 100%;
+  height: 45px;
+  background-color: #00573E; /* Eskala green */
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect on login button */
+.login-button:hover {
+  background-color: #00432F; /* Darker green on hover */
+}
+
+/* ✅ helper link under button */
+.auth-helper{
+  margin-top:14px;
+  text-align:center;
+  color:#6b7280;
+  font-size:.95rem
+}
+.auth-link{
+  color:#00573E;
+  text-decoration:none;
+  font-weight:600
+}
+.auth-link:hover{ text-decoration:underline }

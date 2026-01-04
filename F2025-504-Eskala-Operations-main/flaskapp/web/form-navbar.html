@@ -1,0 +1,57 @@
+
+<!-- Form Navigation with Progress Bar -->
+<nav class="esk-nav" role="navigation" aria-label="Primary">
+  <div class="esk-nav__inner">
+    <a class="esk-nav__brand" href="/web/Dashboard.html" id="esk-form-brand">
+      <img src="/Assets/Eskala-Logo.png" alt="" />
+      <span>Eskala</span>
+    </a>
+
+    <div class="esk-nav__spacer"></div>
+
+    <!-- HOME BUTTON -->
+    <a 
+      href="/web/Dashboard.html" 
+      class="esk-nav__btn"
+      id="esk-form-home"
+      data-en="Home"
+      data-es="Inicio"
+    >
+      Home
+    </a>
+
+    <!-- Language -->
+    <div class="esk-nav__group">
+      <button
+        class="esk-nav__btn"
+        type="button"
+        data-menu="lang"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="menu-lang"
+      >
+        English ▾
+      </button>
+      <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+        <a href="#" role="menuitem" data-lang="en">English</a>
+        <a href="#" role="menuitem" data-lang="es">Español</a>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    
+      href="#"
+      class="esk-nav__btn esk-nav__btn--ghost"
+      data-action="logout"
+      data-en="Logout"
+      data-es="Cerrar sesión"
+    >
+      Logout
+    </a>
+  </div>
+</nav>
+
+<!-- Form Completion Progress Bar -->
+<div class="esk-form-progress" aria-label="Form completion progress">
+  <div class="esk-form-progress__bar" id="esk-form-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+</div>

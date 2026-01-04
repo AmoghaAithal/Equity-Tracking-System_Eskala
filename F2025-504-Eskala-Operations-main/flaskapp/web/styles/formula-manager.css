@@ -1,0 +1,498 @@
+
+/* ===========================================
+   Eskala Formula Manager (keeps screenshot look, Nunito Sans font)
+   =========================================== */
+
+/* --- Design Tokens --- */
+:root {
+  --esk-green: #134e4a;
+  --esk-green-900: #0f3f3a;
+  --esk-teal: #10b981;
+  --esk-gray-700: #374151;
+  --esk-gray-600: #6b7280;
+  --esk-gray-500: #9ca3af;
+  --esk-gray-400: #cbd5e1;
+  --esk-gray-300: #d1d5db;
+  --esk-bg: #f3f4f6; /* matches the light gray in your screenshot */
+  --esk-white: #ffffff;
+}
+
+/* --- Base --- */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  background-color: var(--esk-bg);
+  color: var(--esk-green);
+  padding: 0 16px;
+}
+
+/* Headings tuned to match screenshot */
+h1,
+h2,
+h3 {
+  font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+p,
+a,
+label,
+input,
+select,
+textarea {
+  font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  font-weight: 400;
+}
+
+/* Narrow, centered content (NO white card; preserves your look) */
+.container {
+  max-width: 700px; /* keep the narrow width */
+  margin: 48px auto 56px;
+  padding: 0; /* no inner padding box */
+  background: transparent; /* no white card background */
+  border-radius: 0; /* no rounded card */
+  box-shadow: none; /* no shadow */
+}
+
+/* Header & Branding */
+header {
+  text-align: center;
+  margin-bottom: 22px;
+  position: relative;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0 10px;
+}
+.logo {
+  height: 40px;
+}
+h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 800;
+  margin: 6px 0 8px;
+}
+p {
+  color: var(--esk-gray-600);
+  margin: 0 0 16px;
+  font-size: 16px;
+}
+
+/* Yellow accent line exactly like your screenshot */
+.accent-line {
+  border: none;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(to right, #facc15, #fcd34d);
+  margin: 18px 0 28px;
+}
+
+/* Section heading & divider spacing */
+h2 {
+  font-size: 24px;
+  line-height: 1.3;
+  margin: 18px 0 10px;
+  font-weight: 800;
+  color: var(--esk-green);
+}
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--esk-gray-400);
+  margin: 28px 0;
+}
+
+/* Back link keeps default link color (purple in your screenshot) */
+.back-link {
+  display: inline-block;
+  margin: 0 0 14px;
+  font-weight: 600;
+  text-decoration: underline; /* appears like your screenshot */
+}
+
+/* Loading / empty states */
+.loading,
+.no-data {
+  text-align: left; /* left-aligned like your screenshot */
+  padding: 6px 0 10px;
+  color: var(--esk-gray-700);
+}
+
+/* --- Tables (shared) --- */
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 14px;
+}
+.table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f9fafb;
+  border-bottom: 2px solid var(--esk-gray-300);
+}
+.table th,
+.table td {
+  padding: 12px;
+  vertical-align: top;
+  word-wrap: break-word;
+  color: #1f2937;
+}
+.table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.15s;
+}
+.table tbody tr:hover {
+  background: #f9fafb;
+}
+.table code {
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* Wide tables + column widths */
+.table--wide {
+  min-width: 1600px;
+}
+
+/* Active Formulas column widths */
+#formulas-table th:nth-child(1),
+#formulas-table td:nth-child(1) {
+  width: 18%;
+} /* Field Name */
+#formulas-table th:nth-child(2),
+#formulas-table td:nth-child(2) {
+  width: 20%;
+} /* Field Label */
+#formulas-table th:nth-child(3),
+#formulas-table td:nth-child(3) {
+  width: 28%;
+} /* Formula Expression */
+#formulas-table th:nth-child(4),
+#formulas-table td:nth-child(4) {
+  width: 18%;
+} /* Description */
+#formulas-table th:nth-child(5),
+#formulas-table td:nth-child(5) {
+  width: 12%;
+} /* Status */
+#formulas-table th:nth-child(6),
+#formulas-table td:nth-child(6) {
+  width: 10%;
+} /* Last Updated */
+#formulas-table th:nth-child(7),
+#formulas-table td:nth-child(7) {
+  width: 8%;
+} /* Actions */
+
+/* History column widths */
+#history-table th:nth-child(1),
+#history-table td:nth-child(1) {
+  width: 18%;
+} /* Field Name */
+#history-table th:nth-child(2),
+#history-table td:nth-child(2) {
+  width: 28%;
+} /* Old Formula */
+#history-table th:nth-child(3),
+#history-table td:nth-child(3) {
+  width: 28%;
+} /* New Formula */
+#history-table th:nth-child(4),
+#history-table td:nth-child(4) {
+  width: 8%;
+} /* Changed By */
+#history-table th:nth-child(5),
+#history-table td:nth-child(5) {
+  width: 10%;
+} /* Changed At */
+#history-table th:nth-child(6),
+#history-table td:nth-child(6) {
+  width: 8%;
+} /* Reason */
+
+/* --- Forms in modal (look unchanged) --- */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.row .form-group {
+  flex: 1;
+  min-width: 220px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--esk-green);
+}
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  background: var(--esk-white);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input[readonly] {
+  background: #f8fafc;
+  color: #334155;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--esk-teal);
+  outline: none;
+  box-shadow: 0 0 0 1px var(--esk-teal);
+}
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--esk-teal);
+}
+
+.hint {
+  color: var(--esk-gray-600);
+  font-size: 12px;
+}
+
+/* --- Buttons (unified, same look) --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.05s ease-in-out;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn--primary {
+  background-color: var(--esk-green);
+  color: var(--esk-white);
+}
+.btn--primary:hover {
+  background-color: var(--esk-green-900);
+}
+.btn--neutral {
+  background-color: var(--esk-gray-600);
+  color: var(--esk-white);
+}
+.btn--neutral:hover {
+  background-color: #4b5563;
+}
+
+/* --- Modal (shared) --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--esk-white);
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.modal-header h2 {
+  margin: 0;
+  color: var(--esk-green);
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--esk-gray-600);
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+.close-btn:hover {
+  background: #eef2f7;
+  color: #000;
+}
+
+/* --- Formula Builder Styles --- */
+.formula-builder {
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 120px;
+}
+
+.formula-component {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px;
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+.formula-select {
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 140px;
+  cursor: pointer;
+}
+
+.formula-select-operator {
+  min-width: 60px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.formula-input {
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100px;
+}
+
+/* Read-only variable display */
+.formula-variable-label {
+  padding: 6px 12px;
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+
+.formula-preview-container {
+  margin-top: 12px;
+  padding: 12px;
+  background: #fffbeb;
+  border: 1px solid #fbbf24;
+  border-radius: 6px;
+}
+
+.formula-preview-container strong {
+  color: #92400e;
+  margin-right: 8px;
+}
+
+#formula-preview {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #1f2937;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin: 2px;
+}
+
+.action-btn:hover {
+  background: #059669;
+}
+
+/* --- Responsive --- */
+@media (max-width: 640px) {
+  .container {
+    margin: 32px auto 44px;
+  }
+  h1 {
+    font-size: 28px;
+  }
+  h2 {
+    font-size: 22px;
+  }
+  
+  .formula-component {
+    flex-wrap: wrap;
+  }
+  
+  .formula-select {
+    min-width: 120px;
+  }
+}

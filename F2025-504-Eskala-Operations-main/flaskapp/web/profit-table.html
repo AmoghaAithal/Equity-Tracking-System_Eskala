@@ -1,0 +1,1127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profit & Investment Entries - Admin Table</title>
+
+    <!-- Shared Eskala form navbar styles -->
+    <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: #f5f5f5;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      /* Header */
+      .header {
+        background: #134e4a;
+        color: white;
+        padding: 24px 30px;
+      }
+      .header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .header p {
+        opacity: 0.9;
+        font-size: 14px;
+      }
+
+      /* Statistics Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1px;
+        background: #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .stat-card {
+        background: white;
+        padding: 20px 24px;
+        text-align: center;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
+      .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #134e4a;
+      }
+
+      /* Bulk Upload Section - Matching Equity Style */
+      .bulk-upload-section {
+        background: linear-gradient(135deg, #134e4a 0%, #0f3f3a 100%);
+        padding: 24px 30px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .bulk-upload-title {
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .bulk-upload-content {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .bulk-upload-info {
+        flex: 1;
+        min-width: 280px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .bulk-upload-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .btn-template {
+        background: white;
+        color: #134e4a;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn-template:hover {
+        background: #f0f9ff;
+        transform: translateY(-1px);
+      }
+
+      .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+      }
+      .file-input-wrapper input[type="file"] {
+        position: absolute;
+        left: -9999px;
+      }
+      .btn-upload {
+        background: #fbbf24;
+        color: #78350f;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn-upload:hover {
+        background: #f59e0b;
+        transform: translateY(-1px);
+      }
+
+      /* UPDATED: Upload Progress and Results */
+      .upload-progress {
+        display: none;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+        backdrop-filter: blur(10px);
+      }
+      .upload-progress.active {
+        display: block;
+      }
+      .progress-bar-container {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        height: 8px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .progress-bar {
+        background: #fbbf24;
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      .progress-text {
+        color: white;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .upload-result {
+        display: none;
+        padding: 16px 20px;
+        margin: 16px 24px;
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .upload-result.active {
+        display: block;
+      }
+
+      /* Search and Filter Controls */
+      .controls {
+        padding: 20px 24px;
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 300px;
+      }
+      .search-box input {
+        width: 100%;
+        padding: 10px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      .search-box input:focus {
+        outline: none;
+        border-color: #134e4a;
+        box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.1);
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      select {
+        padding: 10px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+        min-width: 140px;
+      }
+      select:focus {
+        outline: none;
+        border-color: #134e4a;
+        box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.1);
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .btn-refresh {
+        background: #134e4a;
+        color: white;
+      }
+      .btn-refresh:hover {
+        background: #0f3f3a;
+        transform: translateY(-1px);
+      }
+      .btn-download {
+        background: #3b82f6;
+        color: white;
+      }
+      .btn-download:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+      }
+
+      /* Table Container */
+      .table-container {
+        overflow-x: auto;
+        padding: 20px;
+      }
+      #table-loading,
+      #table-no-data {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6b7280;
+        font-size: 16px;
+      }
+      #table-loading {
+        display: block;
+      }
+      #table-no-data {
+        display: none;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        display: none;
+      }
+      thead {
+        background: #f9fafb;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 2px solid #e5e7eb;
+      }
+      th {
+        padding: 12px 16px;
+        text-align: left;
+        font-weight: 600;
+        color: #374151;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+      tbody tr {
+        border-bottom: 1px solid #e5e7eb;
+        transition: background-color 0.2s;
+      }
+      tbody tr:hover {
+        background: #f9fafb;
+      }
+      tbody tr[data-recently-edited="true"] {
+        background: #fef3c7;
+      }
+      tbody tr[data-recently-edited="true"]:hover {
+        background: #fde68a;
+      }
+      td {
+        padding: 12px 16px;
+        color: #374151;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 8px;
+      }
+      .btn-edit,
+      .btn-delete {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .btn-edit {
+        background: #3b82f6;
+        color: white;
+      }
+      .btn-edit:hover {
+        background: #2563eb;
+      }
+      .btn-delete {
+        background: #ef4444;
+        color: white;
+      }
+      .btn-delete:hover {
+        background: #dc2626;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        padding: 20px;
+        overflow-y: auto;
+      }
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background: white;
+        border-radius: 8px;
+        max-width: 900px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .modal-header {
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .modal-header h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #134e4a;
+      }
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: #6b7280;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+      }
+      .close-modal:hover {
+        color: #374151;
+      }
+
+      /* Form styles */
+      form {
+        padding: 24px;
+      }
+      .form-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #134e4a;
+        margin: 24px 0 16px 0;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e5e7eb;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+      }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #134e4a;
+        box-shadow: 0 0 0 3px rgba(19, 78, 74, 0.1);
+      }
+      .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+      }
+      .btn-save,
+      .btn-cancel {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-save {
+        background: #134e4a;
+        color: white;
+      }
+      .btn-save:hover {
+        background: #0f3f3a;
+      }
+      .btn-cancel {
+        background: #e5e7eb;
+        color: #374151;
+      }
+      .btn-cancel:hover {
+        background: #d1d5db;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="esk-nav" role="navigation" aria-label="Primary">
+      <div class="esk-nav__inner">
+        <!-- Brand -->
+        <a class="esk-nav__brand" id="esk-form-brand" href="#">
+          <img src="/Assets/Eskala-Logo.png" alt="" />
+          <span>Eskala</span>
+        </a>
+
+        <div class="esk-nav__spacer"></div>
+
+        <!-- Language Dropdown -->
+        <div class="esk-nav__group">
+          <button
+            class="esk-nav__btn"
+            type="button"
+            data-menu="lang"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="menu-lang"
+          >
+            English ▾
+          </button>
+          <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+            <a href="#" role="menuitem" data-lang="en">English</a>
+            <a href="#" role="menuitem" data-lang="es">Español</a>
+          </div>
+        </div>
+
+        <!-- Back -->
+        <a
+          href="/web/profit_form.html"
+          id="esk-form-home"
+          class="esk-nav__btn esk-nav__btn--ghost"
+          >← Back</a
+        >
+      </div>
+    </nav>
+    <div id="esk-form-navbar"></div>
+    <!-- Navigation -->
+
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1 data-en="Profit & Investment Entries" data-es="Entradas de Ganancias e Inversiones">
+          Profit & Investment Entries
+        </h1>
+        <p data-en="Manage all profit and investment records" data-es="Gestionar todos los registros de ganancias e inversiones">
+          Manage all profit and investment records
+        </p>
+      </div>
+
+      <!-- Statistics Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div
+            class="stat-label"
+            data-en="Total Entries"
+            data-es="Total de Entradas"
+          >
+            Total Entries
+          </div>
+          <div class="stat-value" id="stat-total-entries">0</div>
+        </div>
+        <div class="stat-card">
+          <div
+            class="stat-label"
+            data-en="Total Investment (L)"
+            data-es="Inversión Total (L)"
+          >
+            Total Investment (L)
+          </div>
+          <div class="stat-value" id="stat-investment-l">L 0.00</div>
+        </div>
+        <div class="stat-card">
+          <div
+            class="stat-label"
+            data-en="Total Investment ($)"
+            data-es="Inversión Total ($)"
+          >
+            Total Investment ($)
+          </div>
+          <div class="stat-value" id="stat-investment-usd">$ 0.00</div>
+        </div>
+        <div class="stat-card">
+          <div
+            class="stat-label"
+            data-en="Avg Expected Profit %"
+            data-es="% Promedio de Ganancia Esperada"
+          >
+            Avg Expected Profit %
+          </div>
+          <div class="stat-value" id="stat-avg-profit">0.0%</div>
+        </div>
+      </div>
+
+      <!-- UPDATED: Bulk Upload Section -->
+      <div class="bulk-upload-section">
+        <div class="bulk-upload-title">
+          📤 <span data-en="Bulk CSV Upload" data-es="Carga Masiva CSV">Bulk CSV Upload</span>
+        </div>
+        <div class="bulk-upload-content">
+          <div class="bulk-upload-info">
+            <span data-en="Upload multiple entries at once using a CSV file. Download the template below, fill it with your data following the same format, and upload it back." 
+                  data-es="Cargue múltiples entradas a la vez usando un archivo CSV. Descargue la plantilla a continuación, llénela con sus datos siguiendo el mismo formato y vuelva a cargarla.">
+              Upload multiple entries at once using a CSV file. Download the template below, fill it with your data following the same format, and upload it back.
+            </span>
+          </div>
+          <div class="bulk-upload-actions">
+            <button class="btn-template" id="download-template-btn">
+              📥 <span data-en="Download Template" data-es="Descargar Plantilla">Download Template</span>
+            </button>
+            <div class="file-input-wrapper">
+              <label for="upload-csv-input" class="btn-upload" id="upload-csv-label">
+                📤 <span data-en="Upload CSV" data-es="Subir CSV">Upload CSV</span>
+              </label>
+              <input type="file" id="upload-csv-input" accept=".csv" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="upload-progress" id="upload-progress">
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+          <div class="progress-text" id="progress-text">Processing...</div>
+        </div>
+      </div>
+
+      <!-- Result Display -->
+      <div class="upload-result" id="upload-result"></div>
+
+      <!-- Search and Filter Controls -->
+      <div class="controls">
+        <div class="search-box">
+          <input
+            type="text"
+            id="search-input"
+            data-en-placeholder="🔍 Search by partner name, bank ID, year, or technician..."
+            data-es-placeholder="🔍 Buscar por socio, RTN, año o técnico..."
+            placeholder="🔍 Search by partner name, bank ID, year, or technician..."
+          />
+        </div>
+
+        <div class="filter-group">
+          <select id="year-filter">
+            <option value="" data-en="All Years" data-es="Todos los Años">
+              All Years
+            </option>
+          </select>
+
+          <select id="proposal-filter">
+            <option
+              value=""
+              data-en="All Proposals"
+              data-es="Todas las Propuestas"
+            >
+              All Proposals
+            </option>
+          </select>
+
+          <select id="transaction-filter">
+            <option
+              value=""
+              data-en="All Transactions"
+              data-es="Todas las Transacciones"
+            >
+              All Transactions
+            </option>
+          </select>
+
+          <button
+            class="btn btn-refresh"
+            id="refresh-btn"
+            data-en="🔄 Refresh"
+            data-es="🔄 Actualizar"
+          >
+            🔄 Refresh
+          </button>
+
+          <button
+            class="btn btn-download"
+            id="download-csv-btn"
+            data-en="⬇️ Download CSV"
+            data-es="⬇️ Descargar CSV"
+          >
+            ⬇️ Download CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <div id="table-loading">Loading entries...</div>
+        <div id="table-no-data" style="display: none">No entries found</div>
+
+        <table id="entries-table">
+          <thead>
+            <tr>
+              <th>Partner Name</th>
+              <th>Bank ID</th>
+              <th>Year</th>
+              <th>Technician</th>
+              <th>Profit (L)</th>
+              <th>Expected %</th>
+              <th>Company Value (L)</th>
+              <th>Investment (L)</th>
+              <th>Investment ($)</th>
+              <th>Exchange Rate</th>
+              <th>Proposal State</th>
+              <th>Transaction Type</th>
+              <th>Business Category</th>
+              <th>Company Type</th>
+              <th>Community</th>
+              <th>Municipality</th>
+              <th>State</th>
+              <th>Jan (L)</th>
+              <th>Feb (L)</th>
+              <th>Mar (L)</th>
+              <th>Apr (L)</th>
+              <th>May (L)</th>
+              <th>Jun (L)</th>
+              <th>Jul (L)</th>
+              <th>Aug (L)</th>
+              <th>Sep (L)</th>
+              <th>Oct (L)</th>
+              <th>Nov (L)</th>
+              <th>Dec (L)</th>
+              <th>Comments</th>
+              <th>Last Edited</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="entries-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 data-en="Edit Profit Entry" data-es="Editar Entrada de Ganancias">Edit Profit Entry</h2>
+          <button class="close-modal" id="close-edit-modal">&times;</button>
+        </div>
+
+        <form id="edit-form">
+          <input type="hidden" id="edit-investment-id" />
+
+          <!-- Basic Info -->
+          <div
+            class="form-section-title"
+            data-en="Basic Information"
+            data-es="Información Básica"
+          >
+            Basic Information
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label
+                for="edit-bank-id"
+                data-en="Bank ID / RTN"
+                data-es="ID Banco / RTN"
+                >Bank ID / RTN</label
+              >
+              <input type="text" id="edit-bank-id" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-partner-name"
+                data-en="Partner Name (Required)"
+                data-es="Nombre del Socio (Requerido)"
+                >Partner Name (Required)</label
+              >
+              <input type="text" id="edit-partner-name" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-year" data-en="Year" data-es="Año">Year</label>
+              <input type="number" id="edit-year" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-technician"
+                data-en="Technician"
+                data-es="Técnico"
+                >Technician</label
+              >
+              <input type="text" id="edit-technician" />
+            </div>
+          </div>
+
+          <!-- Financial Info -->
+          <div
+            class="form-section-title"
+            data-en="Financial Information"
+            data-es="Información Financiera"
+          >
+            Financial Information
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label
+                for="edit-profit-l"
+                data-en="Profit (L)"
+                data-es="Ganancia (L)"
+                >Profit (L)</label
+              >
+              <input type="number" id="edit-profit-l" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-expected-pct"
+                data-en="Expected Profit %"
+                data-es="% Ganancia Esperada"
+                >Expected Profit %</label
+              >
+              <input type="number" id="edit-expected-pct" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-company-value"
+                data-en="Company Value (L)"
+                data-es="Valor Empresa (L)"
+                >Company Value (L)</label
+              >
+              <input type="number" id="edit-company-value" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-investment-l"
+                data-en="Investment (L)"
+                data-es="Inversión (L)"
+                >Investment (L)</label
+              >
+              <input type="number" id="edit-investment-l" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-investment-usd"
+                data-en="Investment ($)"
+                data-es="Inversión ($)"
+                >Investment ($)</label
+              >
+              <input type="number" id="edit-investment-usd" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-exchange-rate"
+                data-en="Exchange Rate"
+                data-es="Tasa de Cambio"
+                >Exchange Rate</label
+              >
+              <input type="number" id="edit-exchange-rate" step="0.0001" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-proposal-state"
+                data-en="Proposal State"
+                data-es="Estado de Propuesta"
+                >Proposal State</label
+              >
+              <select id="edit-proposal-state">
+                <option value="" data-en="Select state" data-es="Seleccione estado">
+                  Select state
+                </option>
+                <option value="Presented" data-en="Presented" data-es="Presentado">
+                  Presented
+                </option>
+                <option value="Executed" data-en="Executed" data-es="Ejecutado">
+                  Executed
+                </option>
+                <option value="Rejected" data-en="Rejected" data-es="Rechazado">
+                  Rejected
+                </option>
+                <option value="Accepted" data-en="Accepted" data-es="Aceptado">
+                  Accepted
+                </option>
+                <option value="To Pitch" data-en="To Pitch" data-es="Para Presentar">
+                  To Pitch
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label
+                for="edit-transaction-type"
+                data-en="Transaction Type"
+                data-es="Tipo de Transacción"
+                >Transaction Type</label
+              >
+              <select id="edit-transaction-type">
+                <option value="" data-en="Select type" data-es="Seleccione tipo">
+                  Select type
+                </option>
+                <option value="Conversion" data-en="Conversion" data-es="Conversión">
+                  Conversion
+                </option>
+                <option value="Disbursement" data-en="Disbursement" data-es="Desembolso">
+                  Disbursement
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Location & Business Info -->
+          <div
+            class="form-section-title"
+            data-en="Location & Business Info"
+            data-es="Ubicación y Negocio"
+          >
+            Location & Business Info
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label
+                for="edit-business-category"
+                data-en="Business Category"
+                data-es="Categoría del Negocio"
+                >Business Category</label
+              >
+              <input type="text" id="edit-business-category" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-company-type"
+                data-en="Company Type"
+                data-es="Tipo de Empresa"
+                >Company Type</label
+              >
+              <input type="text" id="edit-company-type" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-community"
+                data-en="Community"
+                data-es="Comunidad"
+                >Community</label
+              >
+              <input type="text" id="edit-community" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-municipality"
+                data-en="Municipality"
+                data-es="Municipio"
+                >Municipality</label
+              >
+              <input type="text" id="edit-municipality" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-state"
+                data-en="State"
+                data-es="Departamento/Estado"
+                >State</label
+              >
+              <input type="text" id="edit-state" />
+            </div>
+          </div>
+
+          <!-- Monthly Distributions -->
+          <div
+            class="form-section-title"
+            data-en="Monthly Profit Distribution (L)"
+            data-es="Distribución Mensual de Ganancias (L)"
+          >
+            Monthly Profit Distribution (L)
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="edit-january" data-en="January" data-es="Enero"
+                >January</label
+              ><input type="number" id="edit-january" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-february" data-en="February" data-es="Febrero"
+                >February</label
+              ><input type="number" id="edit-february" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-march" data-en="March" data-es="Marzo"
+                >March</label
+              ><input type="number" id="edit-march" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-april" data-en="April" data-es="Abril"
+                >April</label
+              ><input type="number" id="edit-april" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-may" data-en="May" data-es="Mayo">May</label
+              ><input type="number" id="edit-may" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-june" data-en="June" data-es="Junio">June</label
+              ><input type="number" id="edit-june" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-july" data-en="July" data-es="Julio">July</label
+              ><input type="number" id="edit-july" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-august" data-en="August" data-es="Agosto"
+                >August</label
+              ><input type="number" id="edit-august" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label
+                for="edit-september"
+                data-en="September"
+                data-es="Septiembre"
+                >September</label
+              ><input type="number" id="edit-september" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-october" data-en="October" data-es="Octubre"
+                >October</label
+              ><input type="number" id="edit-october" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-november" data-en="November" data-es="Noviembre"
+                >November</label
+              ><input type="number" id="edit-november" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="edit-december" data-en="December" data-es="Diciembre"
+                >December</label
+              ><input type="number" id="edit-december" step="0.01" value="0" />
+            </div>
+          </div>
+
+          <!-- Comments -->
+          <div class="form-group">
+            <label for="edit-comments" data-en="Comments" data-es="Comentarios"
+              >Comments</label
+            >
+            <textarea id="edit-comments"></textarea>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn-cancel"
+              id="cancel-edit"
+              data-en="Cancel"
+              data-es="Cancelar"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn-save"
+              data-en="Save Changes"
+              data-es="Guardar Cambios"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Language bootstrap (mirrors your other pages) -->
+    <script>
+      (function () {
+        const LANG_KEY = "eskala_lang";
+
+        window.setLanguage = function setLanguage(lang) {
+          lang = lang === "es" ? "es" : "en";
+
+          // Swap text content
+          document.querySelectorAll("[data-en]").forEach((el) => {
+            const txt = el.getAttribute("data-" + lang);
+            if (txt != null) el.textContent = txt;
+          });
+
+          // Swap placeholders
+          document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+            const ph = el.getAttribute("data-" + lang + "-placeholder");
+            if (ph != null) el.placeholder = ph;
+          });
+
+          // html lang
+          document.documentElement.setAttribute("lang", lang);
+
+          // Language button label
+          const btn = document.querySelector('[data-menu="lang"]');
+          if (btn)
+            btn.innerHTML = (lang === "es" ? "Español" : "English") + " ▾";
+
+          // Back link text + preserve query string flags (role/staff)
+          const home = document.getElementById("esk-form-home");
+          if (home) {
+            const qs = location.search || "";
+            home.textContent = lang === "es" ? "← Atrás" : "← Back";
+            home.setAttribute("href", "/web/profit_form.html" + qs);
+          }
+        };
+
+        // Apply saved/default language ASAP
+        const saved = localStorage.getItem(LANG_KEY) || "en";
+        window.setLanguage(saved);
+      })();
+    </script>
+
+    <!-- Page logic -->
+    <script src="/js/profit-table.client.js"></script>
+
+    <!-- Shared navbar behavior (role-based, language menu, focus mgmt, etc.) -->
+    <script src="/js/form-navbar.js"></script>
+  </body>
+</html>

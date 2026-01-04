@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Equity Conversion Request</title>
+
+    <!-- Base/shared layout styles -->
+    <link rel="stylesheet" href="/web/styles/Loan_vs_Investments.html" />
+    <!-- Bring in the date/select look you prefer -->
+    <link rel="stylesheet" href="/web/styles/Equity_Conversion.css" />
+    <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+    <style>
+      /* Page-specific (admin card only) */
+      .admin-link-container {
+        display: none;
+        text-align: center;
+        margin-top: 20px;
+        padding: 15px;
+        background: #f0f9ff;
+        border: 2px solid #3b82f6;
+        border-radius: 8px;
+      }
+      .admin-link-container.visible {
+        display: block;
+      }
+      .admin-notice {
+        color: #1e40af;
+        font-size: 13px;
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+      .admin-link {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #3b82f6;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        margin-top: 8px;
+      }
+      .admin-link:hover {
+        background: #2563eb;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- FORM NAVBAR (identical style to dashboard) -->
+    <nav class="esk-nav" role="navigation" aria-label="Primary">
+      <div class="esk-nav__inner">
+        <!-- Brand -->
+        <a class="esk-nav__brand" id="esk-form-brand" href="#">
+          <img src="/Assets/Eskala-Logo.png" alt="" />
+          <span>Eskala</span>
+        </a>
+
+        <div class="esk-nav__spacer"></div>
+
+        <!-- Language Dropdown -->
+        <div class="esk-nav__group">
+          <button
+            class="esk-nav__btn"
+            type="button"
+            data-menu="lang"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="menu-lang"
+          >
+            English ▾
+          </button>
+          <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+            <a href="#" role="menuitem" data-lang="en">English</a>
+            <a href="#" role="menuitem" data-lang="es">Español</a>
+          </div>
+        </div>
+
+        <!-- Back/Home -->
+        <a href="#" id="esk-form-home" class="esk-nav__btn esk-nav__btn--ghost"
+          >← Home</a
+        >
+      </div>
+    </nav>
+
+    <!-- Thin completion progress bar -->
+    <div class="esk-form-progress">
+      <div class="esk-form-progress__bar" id="esk-form-progress-bar"></div>
+    </div>
+    <!-- FORM CONTENT -->
+    <div class="eskala-equity-frame">
+      <main class="main-content">
+        <!-- Header / Logo -->
+        <header class="form-header">
+          <img
+            class="eskala-header"
+            src="/Assets/Eskala-Logo.png"
+            alt="Eskala logo"
+          />
+          <!-- <button
+            class="language-toggle"
+            type="button"
+            onclick="toggleLanguage()"
+          >
+            Español
+          </button> -->
+        </header>
+
+        <!-- Title -->
+        <h1
+          class="form-title"
+          data-en="Equity Conversion Request"
+          data-es="Solicitud de Conversión de Capital"
+        >
+          Equity Conversion Request
+        </h1>
+
+        <!-- Form -->
+        <form
+          id="conversion-form"
+          class="form-container"
+          method="post"
+          action="#"
+          novalidate
+        >
+          <!-- Community Bank Details -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Community Bank Details"
+              data-es="Detalles del Banco Comunitario"
+            >
+              Community Bank Details
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="bank-name"
+                data-en="🏦 Community Bank Name"
+                data-es="🏦 Nombre del Banco Comunitario"
+                >🏦 Community Bank Name</label
+              >
+              <input
+                type="text"
+                id="bank-name"
+                placeholder="e.g., Banco Esperanza"
+                data-en-placeholder="e.g., Banco Esperanza"
+                data-es-placeholder="p. ej., Banco Esperanza"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="rtn-number"
+                data-en="🧾 RTN Number (Tax ID)"
+                data-es="🧾 Número RTN (ID Fiscal)"
+                >🧾 RTN Number (Tax ID)</label
+              >
+              <input
+                type="text"
+                id="rtn-number"
+                placeholder="e.g., 08011985123456"
+                data-en-placeholder="e.g., 08011985123456"
+                data-es-placeholder="p. ej., 08011985123456"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="representative-name"
+                data-en="👤 Representative Name"
+                data-es="👤 Nombre del Representante"
+                >👤 Representative Name</label
+              >
+              <input
+                type="text"
+                id="representative-name"
+                placeholder="e.g., Ana García"
+                data-en-placeholder="e.g., Ana García"
+                data-es-placeholder="p. ej., Ana García"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="phone-number"
+                data-en="📞 Phone Number"
+                data-es="📞 Número de Teléfono"
+                >📞 Phone Number</label
+              >
+              <input
+                type="tel"
+                id="phone-number"
+                placeholder="e.g., +504 9876-5432"
+                data-en-placeholder="e.g., +504 9876-5432"
+                data-es-placeholder="p. ej., +504 9876-5432"
+              />
+            </div>
+          </section>
+
+          <!-- Original Loan Details -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Original Loan Details"
+              data-es="Detalles del Préstamo Original"
+            >
+              Original Loan Details
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="loan-id"
+                data-en="🆔 Loan ID"
+                data-es="🆔 ID de Préstamo"
+                >🆔 Loan ID</label
+              >
+              <input
+                type="text"
+                id="loan-id"
+                placeholder="e.g., LN-2025-0042"
+                data-en-placeholder="e.g., LN-2025-0042"
+                data-es-placeholder="p. ej., LN-2025-0042"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="original-loan-amount"
+                data-en="💸 Original Loan Amount"
+                data-es="💸 Monto Original del Préstamo"
+                >💸 Original Loan Amount</label
+              >
+              <div class="inline">
+                <input
+                  type="number"
+                  id="original-loan-amount"
+                  min="0"
+                  step="0.01"
+                  inputmode="decimal"
+                  placeholder="e.g., 250,000.00"
+                  data-en-placeholder="e.g., 250,000.00"
+                  data-es-placeholder="p. ej., 250,000.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="loan-approval-date"
+                data-en="📅 Loan Approval Date"
+                data-es="📅 Fecha de Aprobación"
+                >📅 Loan Approval Date</label
+              >
+              <input type="date" id="loan-approval-date" />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="interest-paid"
+                data-en="💸 Interest Paid"
+                data-es="💸 Intereses Pagados"
+                >💸 Interest Paid</label
+              >
+              <div class="inline">
+                <input
+                  type="number"
+                  id="interest-paid"
+                  min="0"
+                  step="0.01"
+                  inputmode="decimal"
+                  placeholder="e.g., 12,500.00"
+                  data-en-placeholder="e.g., 12,500.00"
+                  data-es-placeholder="p. ej., 12,500.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="loan-amount-remaining"
+                data-en="🧮 Loan Amount Remaining"
+                data-es="🧮 Saldo del Préstamo"
+                >🧮 Loan Amount Remaining</label
+              >
+              <div class="inline">
+                <input
+                  type="number"
+                  id="loan-amount-remaining"
+                  min="0"
+                  step="0.01"
+                  inputmode="decimal"
+                  placeholder="e.g., 137,500.00"
+                  data-en-placeholder="e.g., 137,500.00"
+                  data-es-placeholder="p. ej., 137,500.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="repayment-frequency"
+                data-en="🔁 Repayment Frequency"
+                data-es="🔁 Frecuencia de Pago"
+                >🔁 Repayment Frequency</label
+              >
+              <select id="repayment-frequency" required>
+                <option
+                  value=""
+                  data-en="Select frequency"
+                  data-es="Seleccione frecuencia"
+                >
+                  Select frequency
+                </option>
+                <option value="monthly" data-en="Monthly" data-es="Mensual">
+                  Monthly
+                </option>
+                <option
+                  value="quarterly"
+                  data-en="Quarterly"
+                  data-es="Trimestral"
+                >
+                  Quarterly
+                </option>
+                <option value="annually" data-en="Annually" data-es="Anual">
+                  Annually
+                </option>
+              </select>
+            </div>
+          </section>
+
+          <!-- Proposed Conversion Terms -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Proposed Conversion Terms"
+              data-es="Términos Propuestos de Conversión"
+            >
+              Proposed Conversion Terms
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="proposed-conversion-amount"
+                data-en="💸 Proposed Conversion Amount"
+                data-es="💸 Monto Propuesto a Convertir"
+                >💸 Proposed Conversion Amount</label
+              >
+              <div class="inline">
+                <input
+                  type="number"
+                  id="proposed-conversion-amount"
+                  min="0"
+                  step="0.01"
+                  inputmode="decimal"
+                  placeholder="e.g., 75,000.00"
+                  data-en-placeholder="e.g., 75,000.00"
+                  data-es-placeholder="p. ej., 75,000.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="proposed-conversion-ratio"
+                data-en="⚖️ Proposed Conversion Ratio"
+                data-es="⚖️ Tasa de Conversión Propuesta"
+                >⚖️ Proposed Conversion Ratio</label
+              >
+              <input
+                type="text"
+                id="proposed-conversion-ratio"
+                placeholder="e.g., 1 L = 1 Share"
+                data-en-placeholder="e.g., 1 L = 1 Share"
+                data-es-placeholder="p. ej., 1 L = 1 Acción"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="proposed-equity-percentage"
+                data-en="📊 Proposed Equity %"
+                data-es="📊 % de Capital Propuesto"
+                >📊 Proposed Equity %</label
+              >
+              <div class="inline">
+                <input
+                  type="number"
+                  id="proposed-equity-percentage"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  inputmode="decimal"
+                  placeholder="e.g., 25"
+                  data-en-placeholder="e.g., 25"
+                  data-es-placeholder="p. ej., 25"
+                />
+                <span class="addon">%</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="desired-conversion-date"
+                data-en="📅 Desired Conversion Date"
+                data-es="📅 Fecha de Conversión Deseada"
+                >📅 Desired Conversion Date</label
+              >
+              <input type="date" id="desired-conversion-date" />
+            </div>
+          </section>
+
+          <!-- Attachments & Declaration -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Attachments and Declaration"
+              data-es="Adjuntos y Declaración"
+            >
+              Attachments and Declaration
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="supporting-file"
+                data-en="📎 Upload file (optional)"
+                data-es="📎 Subir archivo (opcional)"
+              >
+                📎 Upload file (optional)
+              </label>
+              <input
+                id="supporting-file"
+                name="supporting_file"
+                type="file"
+                accept="application/pdf"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="comments"
+                data-en="📝 Comments"
+                data-es="📝 Comentarios"
+                >📝 Comments</label
+              >
+              <textarea
+                id="comments"
+                name="comments"
+                rows="4"
+                placeholder="Any additonal comments "
+                data-en-placeholder="Any additonal comments "
+                data-es-placeholder="¿Algún comentario adicional?"
+              ></textarea>
+            </div>
+
+            <label class="confirm-row" for="confirm-accurate">
+              <input
+                type="checkbox"
+                id="confirm-accurate"
+                name="confirm_accurate"
+                required
+              />
+              <span
+                data-en="I confirm the submitted details are accurate"
+                data-es="Confirmo que los datos enviados son correctos"
+              >
+                I confirm the submitted details are accurate
+              </span>
+            </label>
+
+            <hr class="submit-divider" />
+            <button
+              type="submit"
+              class="submit-button"
+              data-en="SUBMIT"
+              data-es="ENVIAR"
+            >
+              SUBMIT
+            </button>
+
+            <div
+              id="conv-alert"
+              class="alert"
+              role="status"
+              aria-live="polite"
+            ></div>
+          </section>
+        </form>
+
+        <!-- Staff and Banking Partner link -->
+        <div
+          class="admin-link-container"
+          id="admin-link-container"
+          style="display: none"
+        >
+          <div class="admin-notice" id="admin-notice">🔒 View Submissions</div>
+          <a href="/web/Equity_Conversion_Table.html" class="admin-link" id="admin-link"
+            >View Submissions</a
+          >
+        </div>
+      </main>
+    </div>
+
+    <!-- Language toggle -->
+    <script>
+      // (function ensureEnglishOnLoad() {
+      //   document.querySelectorAll("[data-en]").forEach((el) => {
+      //     const en = el.getAttribute("data-en");
+      //     if (en) el.textContent = en;
+      //   });
+      //   document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+      //     const ph = el.getAttribute("data-en-placeholder");
+      //     if (ph) el.placeholder = ph;
+      //   });
+      // })();
+
+      // let currentLang = "en";
+      // function toggleLanguage() {
+      //   currentLang = currentLang === "en" ? "es" : "en";
+      //   document.querySelectorAll("[data-en]").forEach((el) => {
+      //     const val = el.getAttribute(`data-${currentLang}`);
+      //     if (val) el.textContent = val;
+      //   });
+      //   document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+      //     const ph = el.getAttribute(`data-${currentLang}-placeholder`);
+      //     if (ph) el.placeholder = ph;
+      //   });
+      //   const btn = document.querySelector(".language-toggle");
+      //   if (btn) btn.textContent = currentLang === "en" ? "Español" : "English";
+      // }
+
+      // Check user role and show appropriate link
+      
+      (async function checkUserRole() {
+        try {
+          const res = await fetch('/api/auth/check-session', { credentials: 'include' });
+          const data = await res.json();
+          
+          if (data.is_authenticated) {
+            // Get user role
+            const roleRes = await fetch('/api/user/role', { credentials: 'include' });
+            const roleData = await roleRes.json();
+            
+            const container = document.getElementById('admin-link-container');
+            const notice = document.getElementById('admin-notice');
+            const link = document.getElementById('admin-link');
+            
+            if (roleData.ok && roleData.role) {
+              if (roleData.role === 'STAFF') {
+                notice.textContent = '🔒 Eskala Staff Access';
+                link.textContent = 'View All Conversion Submissions';
+                container.style.display = 'block';
+              } else if (roleData.role === 'COMMUNITY_REP') {
+                notice.textContent = '📊 View Your Submissions';
+                link.textContent = 'View My Conversion Submissions';
+                container.style.display = 'block';
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Error checking user role:', err);
+        }
+      })();
+    </script>
+
+    <!-- Language handler: must come before /form-navbar.js -->
+    <script>
+      (function () {
+        const LANG_KEY = "eskala_lang";
+
+        // Global hook used by form-navbar.js
+        window.setLanguage = function setLanguage(lang) {
+          lang = lang === "es" ? "es" : "en";
+
+          // 1️⃣ Update all visible text
+          document.querySelectorAll("[data-en]").forEach((el) => {
+            const text = el.getAttribute("data-" + lang);
+            if (text != null) el.textContent = text;
+          });
+
+          // 2️⃣ Update placeholders
+          document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+            const ph = el.getAttribute("data-" + lang + "-placeholder");
+            if (ph != null) el.placeholder = ph;
+          });
+
+          // 3️⃣ Sync <html lang>
+          document.documentElement.setAttribute("lang", lang);
+
+          // 4️⃣ Optional: update the dropdown label immediately
+          const btn = document.querySelector('[data-menu="lang"]');
+          if (btn)
+            btn.innerHTML = (lang === "es" ? "Español" : "English") + " ▾";
+
+          // Translate the navbar Home link
+          const home = document.getElementById("esk-form-home");
+          if (home) {
+            home.textContent = lang === "es" ? "← Inicio" : "← Home";
+          }
+        };
+
+        // Apply the saved or default language before navbar JS runs
+        const saved = localStorage.getItem(LANG_KEY) || "en";
+        window.setLanguage(saved);
+      })();
+    </script>
+
+    <!-- Navbar logic -->
+    <script src="/js/form-navbar.js" defer></script>
+    <script src="/js/form-autosave.js"></script>
+    <script src="/js/Equity_Conversion.client.js" defer></script>
+  </body>
+</html>

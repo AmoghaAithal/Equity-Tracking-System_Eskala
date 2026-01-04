@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Investments vs Loans</title>
+
+    <!-- Base/shared layout styles -->
+    <link rel="stylesheet" href="/web/styles/Loan_vs_Investments.css" />
+    <link rel="stylesheet" href="/web/styles/Equity_Conversion.css" />
+    <link rel="stylesheet" href="/web/styles/form-navbar.css" />
+
+    <style>
+      /* ---------- Inline alert styles (added) ---------- */
+      .alert {
+        display: none;
+        margin-top: 16px;
+        padding: 16px 18px;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        font-weight: 700;
+        line-height: 1.3;
+      }
+      .alert--success {
+        display: block;
+        background: #dff3e4;
+        border-color: #b7e2c4;
+        color: #0b6b2b;
+      }
+      .alert--error {
+        display: block;
+        background: #fdecea;
+        border-color: #f5c6cb;
+        color: #8a1f11;
+      }
+      .alert__icon {
+        margin-right: 8px;
+      }
+
+      /* ---------- Summary styles (added) ---------- */
+      .summary-container {
+        background: var(--panel);
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 24px;
+      }
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 16px;
+      }
+      .summary-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid var(--green);
+      }
+      .summary-label {
+        font-size: 14px;
+        color: #666;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .summary-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--green);
+      }
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+      }
+      .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+        font-style: italic;
+      }
+
+      /* ---------- Data table styles (added) ---------- */
+      .data-table-container {
+        margin-top: 20px;
+        overflow-x: auto;
+      }
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .data-table th {
+        background: var(--green);
+        color: #fff;
+        padding: 16px 12px;
+        text-align: left;
+        font-weight: 700;
+        white-space: normal;
+        font-size: 15px;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .data-table th:last-child {
+        border-right: none;
+      }
+      .data-table td {
+        padding: 14px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+        font-size: 14px;
+      }
+      .data-table tr:hover {
+        background: #f5f5f5;
+      }
+      .data-table tr:last-child td {
+        border-bottom: none;
+      }
+      /* Column widths */
+      .data-table th:nth-child(1),
+      .data-table td:nth-child(1) {
+        width: 120px;
+      }
+      .data-table th:nth-child(2),
+      .data-table td:nth-child(2) {
+        width: 100px;
+      }
+      .data-table th:nth-child(3),
+      .data-table td:nth-child(3) {
+        width: 120px;
+      }
+      .data-table th:nth-child(4),
+      .data-table td:nth-child(4) {
+        width: 110px;
+      }
+      .data-table th:nth-child(5),
+      .data-table td:nth-child(5) {
+        width: 110px;
+      }
+      .data-table th:nth-child(6),
+      .data-table td:nth-child(6) {
+        width: 180px;
+      }
+      .data-table th:nth-child(7),
+      .data-table td:nth-child(7) {
+        width: 80px;
+        text-align: center;
+      }
+      .data-table th:nth-child(8),
+      .data-table td:nth-child(8) {
+        width: 100px;
+      }
+      .data-table th:nth-child(9),
+      .data-table td:nth-child(9) {
+        width: 100px;
+      }
+      .data-table th:nth-child(10),
+      .data-table td:nth-child(10) {
+        width: 100px;
+      }
+      .data-table th:nth-child(11),
+      .data-table td:nth-child(11) {
+        width: 160px;
+      }
+      .data-table td:nth-child(6) {
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .difference-positive {
+        color: #10b981;
+        font-weight: 600;
+      }
+      .difference-negative {
+        color: #ef4444;
+        font-weight: 600;
+      }
+      .file-link {
+        color: #4a90e2;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .file-link:hover {
+        text-decoration: underline;
+      }
+      .file-icon {
+        font-size: 16px;
+      }
+      .action-btn {
+        padding: 6px 12px;
+        margin: 0 4px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .edit-btn {
+        background: #4a90e2;
+        color: #fff;
+      }
+      .edit-btn:hover {
+        background: #357abd;
+      }
+      .delete-btn {
+        background: #e74c3c;
+        color: #fff;
+      }
+      .delete-btn:hover {
+        background: #c0392b;
+      }
+
+      /* ---------- Modal styles (added) ---------- */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .modal-title {
+        color: var(--green);
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #999;
+      }
+      .close-btn:hover {
+        color: #333;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+      .cancel-btn {
+        background: #95a5a6;
+        color: #fff;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .cancel-btn:hover {
+        background: #7f8c8d;
+      }
+      .save-btn {
+        background: var(--yellow);
+        color: #fff;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .save-btn:hover {
+        background: #e09400;
+      }
+
+      /* ---------- Page-specific (admin card) ---------- */
+      .admin-link-container {
+        display: none;
+        text-align: center;
+        margin-top: 20px;
+        padding: 15px;
+        background: #f0f9ff;
+        border: 2px solid #3b82f6;
+        border-radius: 8px;
+      }
+      .admin-link-container.visible {
+        display: block;
+      }
+      .admin-notice {
+        color: #1e40af;
+        font-size: 13px;
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+      .admin-link {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #3b82f6;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        margin-top: 8px;
+      }
+      .admin-link:hover {
+        background: #2563eb;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- FORM NAVBAR (identical style to dashboard) -->
+    <nav class="esk-nav" role="navigation" aria-label="Primary">
+      <div class="esk-nav__inner">
+        <!-- Brand -->
+        <a class="esk-nav__brand" id="esk-form-brand" href="#">
+          <img src="/Assets/Eskala-Logo.png" alt="" />
+          <span>Eskala</span>
+        </a>
+
+        <div class="esk-nav__spacer"></div>
+
+        <!-- Language Dropdown -->
+        <div class="esk-nav__group">
+          <button
+            class="esk-nav__btn"
+            type="button"
+            data-menu="lang"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="menu-lang"
+          >
+            English ▾
+          </button>
+          <div class="esk-nav__menu" id="menu-lang" role="menu" hidden>
+            <a href="#" role="menuitem" data-lang="en">English</a>
+            <a href="#" role="menuitem" data-lang="es">Español</a>
+          </div>
+        </div>
+
+        <!-- Back/Home -->
+        <a href="#" id="esk-form-home" class="esk-nav__btn esk-nav__btn--ghost"
+          >← Home</a
+        >
+      </div>
+    </nav>
+
+    <!-- Thin completion progress bar -->
+    <div class="esk-form-progress">
+      <div class="esk-form-progress__bar" id="esk-form-progress-bar"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="eskala-equity-frame">
+      <main class="main-content">
+        <!-- Header / Logo -->
+        <header class="form-header">
+          <img
+            class="eskala-header"
+            src="/Assets/Eskala-Logo.png"
+            alt="Eskala logo"
+          />
+        </header>
+
+        <!-- Title -->
+        <h1
+          class="form-title"
+          data-en="Investments vs Loans"
+          data-es="Inversiones vs Préstamos – Ingreso de Datos"
+        >
+          Investments vs Loans
+        </h1>
+
+        <!-- Hidden iframe to avoid navigation if JS fails (added) -->
+        <iframe name="ivl_hidden_target" style="display: none"></iframe>
+
+        <!-- Form -->
+        <form
+          id="ivl-form"
+          class="form-container"
+          method="post"
+          action="#"
+          target="ivl_hidden_target"
+          novalidate
+        >
+          <!-- Section -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Investments vs Loans Details"
+              data-es="Detalles de Inversiones y Préstamos"
+            >
+              Investments vs Loans
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="partner-name"
+                data-en="👤 Partner Name"
+                data-es="👤 Nombre del Socio"
+                >👤 Partner Name</label
+              >
+              <input
+                type="text"
+                id="partner-name"
+                name="partner_name"
+                autocomplete="organization"
+                required
+                placeholder="e.g., María Fernanda López"
+                data-en-placeholder="e.g., María Fernanda López"
+                data-es-placeholder="p. ej., María Fernanda López"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="expected-profit"
+                data-en="📊 Expected Profit Percentage"
+                data-es="📊 Porcentaje de Utilidad Esperado"
+                >📊 Expected Profit Percentage</label
+              >
+              <div class="inline">
+                <input
+                  type="number"
+                  id="expected-profit"
+                  name="expected_profit_pct"
+                  min="0"
+                  max="100"
+                  step="1"
+                  inputmode="numeric"
+                  required
+                  placeholder="e.g., 20"
+                  data-en-placeholder="e.g., 20"
+                  data-es-placeholder="p. ej., 20"
+                />
+                <span class="addon">%</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="investment-amount"
+                data-en="💸 Investment Amount (L.)"
+                data-es="💸 Monto de Inversión (L.)"
+                >💸 Investment Amount (L.)</label
+              >
+              <div class="inline">
+                <input
+                  type="number"
+                  id="investment-amount"
+                  name="investment_amount_l"
+                  step="0.01"
+                  min="0"
+                  inputmode="decimal"
+                  required
+                  placeholder="e.g., 46,320.00"
+                  data-en-placeholder="e.g., 46,320.00"
+                  data-es-placeholder="p. ej., 46,320.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label
+                for="last-loan"
+                data-en="🏦 Last Loan (L.)"
+                data-es="🏦 Último Préstamo (L.)"
+                >🏦 Last Loan (L.)</label
+              >
+              <div class="inline">
+                <input
+                  type="number"
+                  id="last-loan"
+                  name="last_loan_l"
+                  step="0.01"
+                  min="0"
+                  inputmode="decimal"
+                  required
+                  placeholder="e.g., 25,000.00"
+                  data-en-placeholder="e.g., 25,000.00"
+                  data-es-placeholder="p. ej., 25,000.00"
+                />
+                <span class="addon">L.</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Attachments & Declaration -->
+          <section>
+            <h2
+              class="section-title"
+              data-en="Attachments and Declaration"
+              data-es="Adjuntos y Declaración"
+            >
+              Attachments and Declaration
+            </h2>
+
+            <div class="input-group">
+              <label
+                for="supporting-file"
+                data-en="📎 Upload file (optional)"
+                data-es="📎 Subir archivo (opcional)"
+                >📎 Upload file (optional)</label
+              >
+              <input
+                id="supporting-file"
+                name="supporting_file"
+                type="file"
+                accept="application/pdf"
+              />
+            </div>
+
+            <div class="input-group">
+              <label
+                for="comments"
+                data-en="📝 Comments"
+                data-es="📝 Comentarios"
+                >📝 Comments</label
+              >
+              <textarea
+                id="comments"
+                name="comments"
+                rows="4"
+                placeholder="Any additonal comments "
+                data-en-placeholder="Any additonal comments "
+                data-es-placeholder="¿Algún comentario adicional?"
+              ></textarea>
+            </div>
+
+            <label class="confirm-row" for="confirm-accurate">
+              <input
+                type="checkbox"
+                id="confirm-accurate"
+                name="confirm_accurate"
+                required
+              />
+              <span
+                data-en="I confirm the submitted details are accurate"
+                data-es="Confirmo que los datos enviados son correctos"
+              >
+                I confirm the submitted details are accurate
+              </span>
+            </label>
+
+            <hr class="submit-divider" />
+            <button
+              type="submit"
+              class="submit-button"
+              data-en="SUBMIT"
+              data-es="ENVIAR"
+            >
+              SUBMIT
+            </button>
+
+            <!-- Inline success/error banner (added) -->
+            <div
+              id="ivl-alert"
+              class="alert"
+              role="status"
+              aria-live="polite"
+            ></div>
+          </section>
+        </form>
+
+        <!-- Summary Section (added) -->
+        <section class="summary-container">
+          <h2
+            class="section-title"
+            data-en="Summary Totals"
+            data-es="Totales Resumidos"
+          >
+            Summary Totals
+          </h2>
+          <div id="summary-loading" class="loading">Loading summary...</div>
+          <div id="summary-content" class="summary-grid" style="display: none">
+            <div class="summary-card">
+              <div
+                class="summary-label"
+                data-en="Total Investment (L.)"
+                data-es="Inversión Total (L.)"
+              >
+                Total Investment (L.)
+              </div>
+              <div class="summary-value" id="total-investment">L. 0.00</div>
+            </div>
+            <div class="summary-card">
+              <div
+                class="summary-label"
+                data-en="Total Last Loan (L.)"
+                data-es="Total Último Préstamo (L.)"
+              >
+                Total Last Loan (L.)
+              </div>
+              <div class="summary-value" id="total-last-loan">L. 0.00</div>
+            </div>
+            <div class="summary-card">
+              <div
+                class="summary-label"
+                data-en="Total Difference (L.)"
+                data-es="Diferencia Total (L.)"
+              >
+                Total Difference (L.)
+              </div>
+              <div class="summary-value" id="total-difference">L. 0.00</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bulk Upload Section (added) -->
+        <section class="summary-container" style="margin-top: 20px">
+          <h2
+            class="section-title"
+            data-en="Bulk Upload via CSV"
+            data-es="Carga Masiva vía CSV"
+          >
+            Bulk Upload via CSV
+          </h2>
+          <div style="padding: 20px">
+            <p style="margin-bottom: 16px; color: #666">
+              <span
+                data-en="Download the CSV template, fill in your data, and upload it to add multiple entries at once. All bulk uploads will be tracked with your username and timestamp."
+                data-es="Descargue la plantilla CSV, complete sus datos y cárguelo para agregar múltiples entradas a la vez. Todas las cargas masivas se rastrearán con su nombre de usuario y marca de tiempo."
+              >
+                Download the CSV template, fill in your data, and upload it to
+                add multiple entries at once. All bulk uploads will be tracked
+                with your username and timestamp.
+              </span>
+            </p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap">
+              <button id="download-csv-template-btn" class="csv-download-btn">
+                <span class="csv-icon">📋</span>
+                <span
+                  data-en="Download CSV Template"
+                  data-es="Descargar Plantilla CSV"
+                  >Download CSV Template</span
+                >
+              </button>
+              <button
+                id="csv-upload-btn"
+                class="csv-download-btn"
+                style="background-color: var(--yellow)"
+              >
+                <span class="csv-icon">📤</span>
+                <span data-en="Upload CSV File" data-es="Subir Archivo CSV"
+                  >Upload CSV File</span
+                >
+              </button>
+              <input
+                type="file"
+                id="csv-upload-input"
+                accept=".csv"
+                style="display: none"
+              />
+            </div>
+          </div>
+        </section>
+
+        <!-- Current Entries Table (added) -->
+        <section class="summary-container">
+          <h2 class="section-title" data-en="Current Entries" data-es="Entradas Actuales">
+            Current Entries
+          </h2>
+          <!-- Search and CSV Controls -->
+          <div class="table-controls">
+            <div class="search-container">
+              <input
+                type="text"
+                id="ivl-search"
+                class="search-input"
+                placeholder="Search by partner name, comments, or user..."
+                data-en-placeholder="Search by partner name, comments, or user..."
+                data-es-placeholder="Buscar por nombre de socio, comentarios o usuario..."
+              />
+            </div>
+            <button id="download-csv-btn" class="csv-download-btn">
+              <span class="csv-icon">📥</span>
+              <span data-en="Download CSV" data-es="Descargar CSV"
+                >Download CSV</span
+              >
+            </button>
+          </div>
+
+          <div class="data-table-container">
+            <div id="table-loading" class="loading">Loading entries...</div>
+            <div id="table-no-data" class="no-data" style="display: none">
+              No entries found
+            </div>
+            <table id="entries-table" class="data-table" style="display: none">
+              <thead>
+                <tr>
+                  <th data-en="Partner Name" data-es="Nombre del Socio">
+                    Partner Name
+                  </th>
+                  <th data-en="Expected Profit %" data-es="Utilidad Esperada %">
+                    Expected Profit %
+                  </th>
+                  <th data-en="Investment (L.)" data-es="Inversión (L.)">
+                    Investment (L.)
+                  </th>
+                  <th data-en="Last Loan (L.)" data-es="Último Préstamo (L.)">
+                    Last Loan (L.)
+                  </th>
+                  <th data-en="Difference (L.)" data-es="Diferencia (L.)">
+                    Difference (L.)
+                  </th>
+                  <th data-en="Comments" data-es="Comentarios">Comments</th>
+                  <th data-en="File" data-es="Archivo">File</th>
+                  <th data-en="Date" data-es="Fecha">Date</th>
+                  <th data-en="Created By" data-es="Creado Por">Created By</th>
+                  <th data-en="Last Edited" data-es="Última Edición">
+                    Last Edited
+                  </th>
+                  <th data-en="Actions" data-es="Acciones">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="entries-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Optional staff link (kept) -->
+        <!-- <div
+          class="admin-link-container"
+          id="admin-link-container"
+          style="display: none"
+        >
+          <div class="admin-notice">🔐 Eskala Staff Access</div>
+          <a href="Investments_vs_Loans_Table.html" class="admin-link"
+            >View IVL Submissions</a
+          >
+        </div>
+      </main>
+    </div> -->
+
+    <!-- Edit Modal (added) -->
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" data-en="Edit Entry" data-es="Editar Entrada">
+            Edit Entry
+          </h3>
+          <button class="close-btn" onclick="closeEditModal()">&times;</button>
+        </div>
+
+        <form id="edit-form">
+          <input type="hidden" id="edit-investment-id" />
+
+          <div class="input-group">
+            <label
+              for="edit-partner-name"
+              data-en="Partner Name"
+              data-es="Nombre del Socio"
+              >Partner Name</label
+            >
+            <input type="text" id="edit-partner-name" required />
+          </div>
+
+          <div class="input-group">
+            <label
+              for="edit-expected-profit"
+              data-en="Expected Profit %"
+              data-es="Utilidad Esperada %"
+              >Expected Profit %</label
+            >
+            <div class="inline">
+              <input
+                type="number"
+                id="edit-expected-profit"
+                min="0"
+                max="100"
+                step="0.01"
+                required
+              />
+              <span class="addon">%</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label
+              for="edit-investment-amount"
+              data-en="Investment Amount (L.)"
+              data-es="Monto de Inversión (L.)"
+              >Investment Amount (L.)</label
+            >
+            <input
+              type="number"
+              id="edit-investment-amount"
+              step="0.01"
+              min="0"
+            />
+          </div>
+
+          <div class="input-group">
+            <label
+              for="edit-last-loan"
+              data-en="Last Loan (L.)"
+              data-es="Último Préstamo (L.)"
+              >Last Loan (L.)</label
+            >
+            <input type="number" id="edit-last-loan" step="0.01" min="0" />
+          </div>
+
+          <div class="input-group">
+            <label
+              for="edit-difference"
+              data-en="Difference (L.)"
+              data-es="Diferencia (L.)"
+              >Difference (L.)</label
+            >
+            <input type="number" id="edit-difference" step="0.01" />
+            <small
+              style="color: #666; font-size: 12px"
+              data-en="Manual override of calculated difference"
+              data-es="Anulación manual de diferencia calculada"
+              >Manual override of calculated difference</small
+            >
+          </div>
+
+          <div class="input-group">
+            <label for="edit-comments" data-en="Comments" data-es="Comentarios"
+              >Comments</label
+            >
+            <textarea id="edit-comments" rows="4"></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="cancel-btn"
+              onclick="closeEditModal()"
+              data-en="Cancel"
+              data-es="Cancelar"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="save-btn"
+              data-en="Save Changes"
+              data-es="Guardar Cambios"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Existing staff visibility logic (kept) -->
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("staff") === "true") {
+        const c = document.getElementById("admin-link-container");
+        if (c) c.style.display = "block";
+      }
+    </script>
+
+    <!-- Language handler: must come before /form-navbar.js (kept) -->
+    <script>
+      (function () {
+        const LANG_KEY = "eskala_lang";
+        // Global hook used by form-navbar.js
+        window.setLanguage = function setLanguage(lang) {
+          lang = lang === "es" ? "es" : "en";
+
+          // Update all visible text
+          document.querySelectorAll("[data-en]").forEach((el) => {
+            const text = el.getAttribute("data-" + lang);
+            if (text != null) el.textContent = text;
+          });
+
+          // Update placeholders
+          document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+            const ph = el.getAttribute("data-" + lang + "-placeholder");
+            if (ph != null) el.placeholder = ph;
+          });
+
+          // Sync <html lang>
+          document.documentElement.setAttribute("lang", lang);
+
+          // Update dropdown label immediately
+          const btn = document.querySelector('[data-menu="lang"]');
+          if (btn)
+            btn.innerHTML = (lang === "es" ? "Español" : "English") + " ▾";
+
+          // Translate the navbar Home link
+          const home = document.getElementById("esk-form-home");
+          if (home) home.textContent = lang === "es" ? "← Inicio" : "← Home";
+        };
+
+        // Apply the saved or default language before navbar JS runs
+        const saved = localStorage.getItem(LANG_KEY) || "en";
+        window.setLanguage(saved);
+      })();
+    </script>
+
+    <!-- Navbar logic -->
+    <script src="/js/form-navbar.js" defer></script>
+
+    <!-- Client script (added) -->
+    <script src="/js/form-autosave.js"></script>
+    <script src="/js/Loan_vs_Investments.client.js" defer></script>
+  </body>
+</html>

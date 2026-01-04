@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Required metadata for proper browser rendering -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eskala Partner Login</title>
+
+  <link rel="stylesheet" href="/web/styles/partner-login.css" />
+</head>
+
+<body>
+  <div class="page-wrapper">
+    <div class="card-container">
+      <div class="card-content">
+
+        <!-- LEFT SECTION: Logo area -->
+        <div class="card-left">
+          <div class="partner-logo"></div>
+        </div>
+
+        <!-- RIGHT SECTION: Login Form for Banking Partners -->
+        <div class="card-right">
+          <header class="form-header">
+            <button type="button" class="language-toggle" onclick="toggleLanguage()">🌐 Español</button>
+          </header>
+
+          <h2 class="form-title"
+              data-en="Login to your Account"
+              data-es="Iniciar sesión en su cuenta">
+            Login to your Account
+          </h2>
+
+          <!-- Login form (the JS listens on #login-form submit) -->
+          <form id="login-form" novalidate>
+            <label class="input-label" for="rtn-number"
+                   data-en="RTN Number (Tax ID)" data-es="Número RTN (ID Fiscal)">
+              RTN Number (Tax ID)
+            </label>
+            <input class="form-input" type="text" id="rtn-number"
+                   placeholder="RTN Number (Tax ID)"
+                   data-en-placeholder="RTN Number (Tax ID)"
+                   data-es-placeholder="Número RTN (ID Fiscal)"/>
+
+            <label class="input-label" for="password"
+                   data-en="PASSWORD" data-es="CONTRASEÑA">
+              PASSWORD
+            </label>
+            <input class="form-input" type="password" id="password"
+                   placeholder="Password"
+                   data-en-placeholder="Password"
+                   data-es-placeholder="Contraseña"/>
+
+            <div class="remember-row">
+              <input type="checkbox" id="remember" />
+              <label for="remember" class="remember-label"
+                     data-en="REMEMBER ME" data-es="RECORDARME">
+                REMEMBER ME
+              </label>
+            </div>
+
+            <button class="login-button" type="submit"
+                    data-en="SIGN IN" data-es="INICIAR SESIÓN">
+              SIGN IN
+            </button>
+          </form>
+
+          <!-- helper link to signup (Partner preselected) -->
+          <div class="auth-helper">
+            Don’t have an account?
+            <a class="auth-link" href="/web/signup.html?role=Partner">Create one</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentLang = 'en';
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'es' : 'en';
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.textContent = el.getAttribute(`data-${currentLang}`);
+      });
+      document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+        const ph = el.getAttribute(`data-${currentLang}-placeholder`);
+        if (ph) el.placeholder = ph;
+      });
+      const btn = document.querySelector('.language-toggle');
+      if (btn) btn.textContent = currentLang === 'en' ? '🌐 Español' : '🌐 English';
+    }
+  </script>
+
+  <!-- Order matters: helpers first, then page logic -->
+  <!-- Order matters: helpers first, then page logic -->
+  <script src="/js/api.js"></script>
+  <script src="/js/login.client.js"></script>
+</body>
+</html>
