@@ -93,7 +93,8 @@ Interactive analytics dashboard featuring:
 - **Chart.js** - Interactive charts for Reports Dashboard
 - **html2canvas / jsPDF** - PDF export functionality
 
-## Team Members
+
+## Team Members & Roles
 
 | Name | Role |
 |------|------|
@@ -101,8 +102,25 @@ Interactive analytics dashboard featuring:
 | Noah Dolnick | Technical Lead |
 | Selina Liu | Software Quality Assurance |
 | Giselle Barretto | User Experience Developer |
-| Amogha Althal | Business Systems Analyst |
+| **Amogha Aithal** | **Business Systems Analyst** |
 
+### My Contributions (Amogha Aithal)
+
+As Business Systems Analyst on this project, my responsibilities included:
+
+- **Requirements Analysis:** Defined the project scope & objectives through interaction with client, then documented the system requirements, thereby translating business needs into technical specifications.
+
+- **UI/UX Design:** Created Figma prototypes for three data entry forms (Dividend Entry, Equity Conversion Request, Investments vs Loans), three administrative interfaces (main landing page, Eskala staff login and Eskala staff dashboard) and the Formula Manager.
+
+- **Feature Specification:** Defined functional requirements (what the forms should contain/dashboards should display) and high-level system specifications (such as access controls) for multiple data entry forms and reporting dashboards.
+
+- **Workflow Design:**  Helped in designing end-to-end processes for dividend submissions, equity conversions and reporting workflows to improve operational efficiency by migrating from manual spreadsheets to an automated platform.
+
+- **Agile Team Collaboration:** Collaborated within a 5-person team; built cross-functional relationships with various departments; worked in Scrum-style sprints with Agile planning through development, testing, and deployment.
+
+- **Use Case Documentation:** Prepared a comprehensive use-case documentation detailing the complete functioning of the various data-entry forms, interfaces and dashboards using visuals and explanations.  
+
+---
 ## Repository Structure
 
 ```
